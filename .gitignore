@@ -1,0 +1,16 @@
+# Source documents never enter this repository.
+*.docx
+*.doc
+*.xlsx
+*.xls
+*.pdf
+OneDrive_*/
+documents/
+unpacked/
+
+# Build output
+node_modules/
+dist/
+target/
+__pycache__/
+.DS_Store

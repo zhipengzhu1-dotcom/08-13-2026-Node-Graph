@@ -1,0 +1,4821 @@
+{
+ "nodes": [
+  {
+   "id": "EXL-SOP01",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Hazel Ridge",
+   "revision": "00",
+   "file": "EXL-SOP01-00 Hazel Ridge.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP02",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Marble Otter",
+   "revision": "00",
+   "file": "EXL-SOP02-00 Marble Otter.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP03",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Tidal Ledge",
+   "revision": "00",
+   "file": "EXL-SOP03-00 Tidal Ledge.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP04",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Sage Meadow",
+   "revision": "00",
+   "file": "EXL-SOP04-00 Sage Meadow.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP05",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Clear Ledge",
+   "revision": "00",
+   "file": "EXL-SOP05-00 Clear Ledge.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP06",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Frost Kestrel",
+   "revision": "00",
+   "file": "EXL-SOP06-00 Frost Kestrel.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP07",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Iron Brook",
+   "revision": "01",
+   "file": "EXL-SOP07-01 Iron Brook.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP08",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Ember Delta",
+   "revision": "01",
+   "file": "EXL-SOP08-01 Ember Delta.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP09",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Ruby Peak",
+   "revision": "00",
+   "file": "EXL-SOP09-00 Ruby Peak.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP10",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Velvet Ledge",
+   "revision": "03",
+   "file": "EXL-SOP10-03 Velvet Ledge.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP11",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Indigo Anchor",
+   "revision": "01",
+   "file": "EXL-SOP11-01 Indigo Anchor.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP12",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "North Lark",
+   "revision": "02",
+   "file": "EXL-SOP12-02 North Lark.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP13",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Fern Arrow",
+   "revision": "00",
+   "file": "EXL-SOP13-00 Fern Arrow.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP14",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Velvet Raven",
+   "revision": "00",
+   "file": "EXL-SOP14-00 Velvet Raven.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP15",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Iron Arrow",
+   "revision": "02",
+   "file": "EXL-SOP15-02 Iron Arrow.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP16",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Ember Canyon",
+   "revision": "01",
+   "file": "EXL-SOP16-01 Ember Canyon.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP17",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Quartz Lark",
+   "revision": "01",
+   "file": "EXL-SOP17-01 Quartz Lark.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP18",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "River Brook",
+   "revision": "00",
+   "file": "EXL-SOP18-00 River Brook.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP19",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Juniper Valley",
+   "revision": "01",
+   "file": "EXL-SOP19-01 Juniper Valley.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP20",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Clear Compass",
+   "revision": "00",
+   "file": "EXL-SOP20-00 Clear Compass.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP21",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Cedar Hawk",
+   "revision": "02",
+   "file": "EXL-SOP21-02 Cedar Hawk.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP22",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "North Horizon",
+   "revision": "01",
+   "file": "EXL-SOP22-01 North Horizon.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP23",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Jade Heron",
+   "revision": "01",
+   "file": "EXL-SOP23-01 Jade Heron.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP24",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Sable Wren",
+   "revision": "00",
+   "file": "EXL-SOP24-00 Sable Wren.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP25",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Granite Cascade",
+   "revision": "00",
+   "file": "EXL-SOP25-00 Granite Cascade.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP26",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Rose Garden",
+   "revision": "02",
+   "file": "EXL-SOP26-02 Rose Garden.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP27",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "North Grove",
+   "revision": "01",
+   "file": "EXL-SOP27-01 North Grove.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP29",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Sage Lantern",
+   "revision": "00",
+   "file": "EXL-SOP29-00 Sage Lantern.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP30",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Pine Heron",
+   "revision": "00",
+   "file": "EXL-SOP30-00 Pine Heron.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP32",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Quiet Crane",
+   "revision": "02",
+   "file": "EXL-SOP32-02 Quiet Crane.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP33",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Frost Prism",
+   "revision": "00",
+   "file": "EXL-SOP33-00 Frost Prism.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP34",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Quartz Forge",
+   "revision": "02",
+   "file": "EXL-SOP34-02 Quartz Forge.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP35",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Solar Canyon",
+   "revision": "01",
+   "file": "EXL-SOP35-01 Solar Canyon.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP36",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Golden Comet",
+   "revision": "00",
+   "file": "EXL-SOP36-00 Golden Comet.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP37",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Sage Crane",
+   "revision": "00",
+   "file": "EXL-SOP37-00 Sage Crane.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP38",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Clear Brook",
+   "revision": "00",
+   "file": "EXL-SOP38-00 Clear Brook.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP39",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Quartz Atlas",
+   "revision": "03",
+   "file": "EXL-SOP39-03 Quartz Atlas.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP40",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "North Compass",
+   "revision": "01",
+   "file": "EXL-SOP40-01 North Compass.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP41",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Copper Summit",
+   "revision": "02",
+   "file": "EXL-SOP41-02 Copper Summit.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP42",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Jade Quill",
+   "revision": "02",
+   "file": "EXL-SOP42-02 Jade Quill.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP43",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Maple Crane",
+   "revision": "00",
+   "file": "EXL-SOP43-00 Maple Crane.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP44",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Quartz Crest",
+   "revision": "00",
+   "file": "EXL-SOP44-00 Quartz Crest.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP45",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Velvet Anchor",
+   "revision": "02",
+   "file": "EXL-SOP45-02 Velvet Anchor.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP46",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Quartz Garden",
+   "revision": "00",
+   "file": "EXL-SOP46-00 Quartz Garden.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP47",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Azure Wren",
+   "revision": "00",
+   "file": "EXL-SOP47-00 Azure Wren.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP48",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Golden Cascade",
+   "revision": "00",
+   "file": "EXL-SOP48-00 Golden Cascade.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP49",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Winter Lynx",
+   "revision": "00",
+   "file": "EXL-SOP49-00 Winter Lynx.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP50",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Misty Garden",
+   "revision": "00",
+   "file": "EXL-SOP50-00 Misty Garden.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP51",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Golden Atlas",
+   "revision": "00",
+   "file": "EXL-SOP51-00 Golden Atlas.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP52",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Swift Falcon",
+   "revision": "01",
+   "file": "EXL-SOP52-01 Swift Falcon.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP53",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Azure Beacon",
+   "revision": "00",
+   "file": "EXL-SOP53-00 Azure Beacon.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP54",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "North Ledge",
+   "revision": "00",
+   "file": "EXL-SOP54-00 North Ledge.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP55",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Meadow Sparrow",
+   "revision": "00",
+   "file": "EXL-SOP55-00 Meadow Sparrow.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP56",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Dawn Orbit",
+   "revision": "00",
+   "file": "EXL-SOP56-00 Dawn Orbit.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP57",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Harbor Orbit",
+   "revision": "00",
+   "file": "EXL-SOP57-00 Harbor Orbit.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP58",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Solar Orbit",
+   "revision": "00",
+   "file": "EXL-SOP58-00 Solar Orbit.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP59",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Willow Peak",
+   "revision": "03",
+   "file": "EXL-SOP59-03 Willow Peak.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-SOP60",
+   "type": "standard operating procedure",
+   "cls": "SOP",
+   "title": "Coral Horizon",
+   "revision": "00",
+   "file": "EXL-SOP60-00 Coral Horizon.docx",
+   "folder": "documents/SOP",
+   "present": true
+  },
+  {
+   "id": "EXL-FM01",
+   "type": "form",
+   "cls": "FM",
+   "title": "Iron Meadow",
+   "revision": "00",
+   "file": "EXL-FM01-00 Iron Meadow.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM02",
+   "type": "form",
+   "cls": "FM",
+   "title": "Sage Bridge",
+   "revision": "00",
+   "file": "EXL-FM02-00 Sage Bridge.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM03",
+   "type": "form",
+   "cls": "FM",
+   "title": "Amber Wren",
+   "revision": "00",
+   "file": "EXL-FM03-00 Amber Wren.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM04",
+   "type": "form",
+   "cls": "FM",
+   "title": "Dawn Otter",
+   "revision": "01",
+   "file": "EXL-FM04-01 Dawn Otter.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM05",
+   "type": "form",
+   "cls": "FM",
+   "title": "Quartz Heron",
+   "revision": "00",
+   "file": "EXL-FM05-00 Quartz Heron.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM06",
+   "type": "form",
+   "cls": "FM",
+   "title": "Rapid Otter",
+   "revision": "00",
+   "file": "EXL-FM06-00 Rapid Otter.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM07",
+   "type": "form",
+   "cls": "FM",
+   "title": "River Orbit",
+   "revision": "00",
+   "file": "EXL-FM07-00 River Orbit.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM08",
+   "type": "form",
+   "cls": "FM",
+   "title": "Crimson Spire",
+   "revision": "00",
+   "file": "EXL-FM08-00 Crimson Spire.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM09",
+   "type": "form",
+   "cls": "FM",
+   "title": "Amber Prism",
+   "revision": "01",
+   "file": "EXL-FM09-01 Amber Prism.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM10",
+   "type": "form",
+   "cls": "FM",
+   "title": "Marble Beacon",
+   "revision": "00",
+   "file": "EXL-FM10-00 Marble Beacon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM11",
+   "type": "form",
+   "cls": "FM",
+   "title": "Jade Cascade",
+   "revision": "02",
+   "file": "EXL-FM11-02 Jade Cascade.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM12",
+   "type": "form",
+   "cls": "FM",
+   "title": "Ivory Thistle",
+   "revision": "00",
+   "file": "EXL-FM12-00 Ivory Thistle.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM13",
+   "type": "form",
+   "cls": "FM",
+   "title": "Copper Arrow",
+   "revision": "00",
+   "file": "EXL-FM13-00 Copper Arrow.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM14",
+   "type": "form",
+   "cls": "FM",
+   "title": "Indigo Orbit",
+   "revision": "00",
+   "file": "EXL-FM14-00 Indigo Orbit.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM15",
+   "type": "form",
+   "cls": "FM",
+   "title": "Tidal Spire",
+   "revision": "01",
+   "file": "EXL-FM15-01 Tidal Spire.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM16",
+   "type": "form",
+   "cls": "FM",
+   "title": "Lunar Spire",
+   "revision": "00",
+   "file": "EXL-FM16-00 Lunar Spire.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM17",
+   "type": "form",
+   "cls": "FM",
+   "title": "Marble Island",
+   "revision": "00",
+   "file": "EXL-FM17-00 Marble Island.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM19",
+   "type": "form",
+   "cls": "FM",
+   "title": "Winter Lark",
+   "revision": "01",
+   "file": "EXL-FM19-01 Winter Lark.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM20",
+   "type": "form",
+   "cls": "FM",
+   "title": "Pine Birch",
+   "revision": "02",
+   "file": "EXL-FM20-02 Pine Birch.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM21",
+   "type": "form",
+   "cls": "FM",
+   "title": "Velvet Crest",
+   "revision": "02",
+   "file": "EXL-FM21-02 Velvet Crest.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM22",
+   "type": "form",
+   "cls": "FM",
+   "title": "Slate Spire",
+   "revision": "00",
+   "file": "EXL-FM22-00 Slate Spire.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM23",
+   "type": "form",
+   "cls": "FM",
+   "title": "Teal Badger",
+   "revision": "02",
+   "file": "EXL-FM23-02 Teal Badger.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM25",
+   "type": "form",
+   "cls": "FM",
+   "title": "Granite Lynx",
+   "revision": "00",
+   "file": "EXL-FM25-00 Granite Lynx.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM26",
+   "type": "form",
+   "cls": "FM",
+   "title": "Rapid Island",
+   "revision": "00",
+   "file": "EXL-FM26-00 Rapid Island.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM27",
+   "type": "form",
+   "cls": "FM",
+   "title": "Meadow Horizon",
+   "revision": "00",
+   "file": "EXL-FM27-00 Meadow Horizon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM28",
+   "type": "form",
+   "cls": "FM",
+   "title": "Tidal Harbor",
+   "revision": "01",
+   "file": "EXL-FM28-01 Tidal Harbor.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM29",
+   "type": "form",
+   "cls": "FM",
+   "title": "Slate Peak",
+   "revision": "01",
+   "file": "EXL-FM29-01 Slate Peak.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM30",
+   "type": "form",
+   "cls": "FM",
+   "title": "Tidal Crane",
+   "revision": "00",
+   "file": "EXL-FM30-00 Tidal Crane.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM31",
+   "type": "form",
+   "cls": "FM",
+   "title": "Stone Canyon",
+   "revision": "00",
+   "file": "EXL-FM31-00 Stone Canyon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM32",
+   "type": "form",
+   "cls": "FM",
+   "title": "Crimson Bridge",
+   "revision": "00",
+   "file": "EXL-FM32-00 Crimson Bridge.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM33",
+   "type": "form",
+   "cls": "FM",
+   "title": "Willow Thistle",
+   "revision": "00",
+   "file": "EXL-FM33-00 Willow Thistle.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM34",
+   "type": "form",
+   "cls": "FM",
+   "title": "Quartz Kestrel",
+   "revision": "00",
+   "file": "EXL-FM34-00 Quartz Kestrel.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM35",
+   "type": "form",
+   "cls": "FM",
+   "title": "Bright Beacon",
+   "revision": "00",
+   "file": "EXL-FM35-00 Bright Beacon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM36",
+   "type": "form",
+   "cls": "FM",
+   "title": "Sable Finch",
+   "revision": "00",
+   "file": "EXL-FM36-00 Sable Finch.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM37",
+   "type": "form",
+   "cls": "FM",
+   "title": "Granite Ledge",
+   "revision": "00",
+   "file": "EXL-FM37-00 Granite Ledge.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM38",
+   "type": "form",
+   "cls": "FM",
+   "title": "Copper Finch",
+   "revision": "03",
+   "file": "EXL-FM38-03 Copper Finch.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM39",
+   "type": "form",
+   "cls": "FM",
+   "title": "Bright Thistle",
+   "revision": "00",
+   "file": "EXL-FM39-00 Bright Thistle.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM40",
+   "type": "form",
+   "cls": "FM",
+   "title": "Clear Valley",
+   "revision": "00",
+   "file": "EXL-FM40-00 Clear Valley.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM41",
+   "type": "form",
+   "cls": "FM",
+   "title": "Solar Spire",
+   "revision": "00",
+   "file": "EXL-FM41-00 Solar Spire.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM42",
+   "type": "form",
+   "cls": "FM",
+   "title": "Ivory Arrow",
+   "revision": "00",
+   "file": "EXL-FM42-00 Ivory Arrow.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM43",
+   "type": "form",
+   "cls": "FM",
+   "title": "Sage Forge",
+   "revision": "00",
+   "file": "EXL-FM43-00 Sage Forge.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM44",
+   "type": "form",
+   "cls": "FM",
+   "title": "Marble Lantern",
+   "revision": "00",
+   "file": "EXL-FM44-00 Marble Lantern.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM45",
+   "type": "form",
+   "cls": "FM",
+   "title": "Indigo Canyon",
+   "revision": "00",
+   "file": "EXL-FM45-00 Indigo Canyon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM46",
+   "type": "form",
+   "cls": "FM",
+   "title": "Copper Peak",
+   "revision": "00",
+   "file": "EXL-FM46-00 Copper Peak.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM47",
+   "type": "form",
+   "cls": "FM",
+   "title": "Azure Spire",
+   "revision": "00",
+   "file": "EXL-FM47-00 Azure Spire.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM48",
+   "type": "form",
+   "cls": "FM",
+   "title": "Slate Forge",
+   "revision": "00",
+   "file": "EXL-FM48-00 Slate Forge.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM49",
+   "type": "form",
+   "cls": "FM",
+   "title": "River Island",
+   "revision": "00",
+   "file": "EXL-FM49-00 River Island.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM50",
+   "type": "form",
+   "cls": "FM",
+   "title": "Crimson Ledge",
+   "revision": "00",
+   "file": "EXL-FM50-00 Crimson Ledge.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM51",
+   "type": "form",
+   "cls": "FM",
+   "title": "Lunar Anchor",
+   "revision": "00",
+   "file": "EXL-FM51-00 Lunar Anchor.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM52",
+   "type": "form",
+   "cls": "FM",
+   "title": "Maple Island",
+   "revision": "00",
+   "file": "EXL-FM52-00 Maple Island.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM53",
+   "type": "form",
+   "cls": "FM",
+   "title": "Clear Anchor",
+   "revision": "00",
+   "file": "EXL-FM53-00 Clear Anchor.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM54",
+   "type": "form",
+   "cls": "FM",
+   "title": "Silver Delta",
+   "revision": "00",
+   "file": "EXL-FM54-00 Silver Delta.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM55",
+   "type": "form",
+   "cls": "FM",
+   "title": "Granite Lantern",
+   "revision": "00",
+   "file": "EXL-FM55-00 Granite Lantern.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM56",
+   "type": "form",
+   "cls": "FM",
+   "title": "Coral Quill",
+   "revision": "00",
+   "file": "EXL-FM56-00 Coral Quill.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM57",
+   "type": "form",
+   "cls": "FM",
+   "title": "Slate Horizon",
+   "revision": "00",
+   "file": "EXL-FM57-00 Slate Horizon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM58",
+   "type": "form",
+   "cls": "FM",
+   "title": "Harbor Peak",
+   "revision": "00",
+   "file": "EXL-FM58-00 Harbor Peak.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM59",
+   "type": "form",
+   "cls": "FM",
+   "title": "Azure Lark",
+   "revision": "00",
+   "file": "EXL-FM59-00 Azure Lark.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM60",
+   "type": "form",
+   "cls": "FM",
+   "title": "Lunar Beacon",
+   "revision": "00",
+   "file": "EXL-FM60-00 Lunar Beacon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM61",
+   "type": "form",
+   "cls": "FM",
+   "title": "Bright Hawk",
+   "revision": "00",
+   "file": "EXL-FM61-00 Bright Hawk.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM62",
+   "type": "form",
+   "cls": "FM",
+   "title": "Sage Glacier",
+   "revision": "01",
+   "file": "EXL-FM62-01 Sage Glacier.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM63",
+   "type": "form",
+   "cls": "FM",
+   "title": "Teal Raven",
+   "revision": "00",
+   "file": "EXL-FM63-00 Teal Raven.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM64",
+   "type": "form",
+   "cls": "FM",
+   "title": "Hazel Prism",
+   "revision": "00",
+   "file": "EXL-FM64-00 Hazel Prism.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM65",
+   "type": "form",
+   "cls": "FM",
+   "title": "Sable Canyon",
+   "revision": "01",
+   "file": "EXL-FM65-01 Sable Canyon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM66",
+   "type": "form",
+   "cls": "FM",
+   "title": "Violet Horizon",
+   "revision": "00",
+   "file": "EXL-FM66-00 Violet Horizon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM67",
+   "type": "form",
+   "cls": "FM",
+   "title": "Violet Badger",
+   "revision": "00",
+   "file": "EXL-FM67-00 Violet Badger.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM71",
+   "type": "form",
+   "cls": "FM",
+   "title": "Frost Beacon",
+   "revision": "00",
+   "file": "EXL-FM71-00 Frost Beacon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM72",
+   "type": "form",
+   "cls": "FM",
+   "title": "Ember Badger",
+   "revision": "00",
+   "file": "EXL-FM72-00 Ember Badger.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM73",
+   "type": "form",
+   "cls": "FM",
+   "title": "Silver Grove",
+   "revision": "00",
+   "file": "EXL-FM73-00 Silver Grove.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM74",
+   "type": "form",
+   "cls": "FM",
+   "title": "Quartz Quill",
+   "revision": "00",
+   "file": "EXL-FM74-00 Quartz Quill.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM75",
+   "type": "form",
+   "cls": "FM",
+   "title": "Opal Glacier",
+   "revision": "00",
+   "file": "EXL-FM75-00 Opal Glacier.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM76",
+   "type": "form",
+   "cls": "FM",
+   "title": "Azure Grove",
+   "revision": "00",
+   "file": "EXL-FM76-00 Azure Grove.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM77",
+   "type": "form",
+   "cls": "FM",
+   "title": "Clear Harbor",
+   "revision": "00",
+   "file": "EXL-FM77-00 Clear Harbor.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM78",
+   "type": "form",
+   "cls": "FM",
+   "title": "Meadow Lantern",
+   "revision": "00",
+   "file": "EXL-FM78-00 Meadow Lantern.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM80",
+   "type": "form",
+   "cls": "FM",
+   "title": "Sage Falcon",
+   "revision": "00",
+   "file": "EXL-FM80-00 Sage Falcon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM81",
+   "type": "form",
+   "cls": "FM",
+   "title": "Coral Cascade",
+   "revision": "00",
+   "file": "EXL-FM81-00 Coral Cascade.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM82",
+   "type": "form",
+   "cls": "FM",
+   "title": "Coral Canyon",
+   "revision": "00",
+   "file": "EXL-FM82-00 Coral Canyon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM83",
+   "type": "form",
+   "cls": "FM",
+   "title": "Iron Atlas",
+   "revision": "00",
+   "file": "EXL-FM83-00 Iron Atlas.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM84",
+   "type": "form",
+   "cls": "FM",
+   "title": "Iron Canyon",
+   "revision": "00",
+   "file": "EXL-FM84-00 Iron Canyon.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-FM86",
+   "type": "form",
+   "cls": "FM",
+   "title": "Jade Badger",
+   "revision": "01",
+   "file": "EXL-FM86-01 Jade Badger.docx",
+   "folder": "documents/Forms",
+   "present": true
+  },
+  {
+   "id": "EXL-AP01",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Marble Compass",
+   "revision": "03",
+   "file": "EXL-AP01-03 Marble Compass.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP02",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Sable Crest",
+   "revision": "02",
+   "file": "EXL-AP02-02 Sable Crest.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP03",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Fern Crane",
+   "revision": "07",
+   "file": "EXL-AP03-07 Fern Crane.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP04",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Slate Mesa",
+   "revision": "05",
+   "file": "EXL-AP04-05 Slate Mesa.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP05",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Copper Pebble",
+   "revision": "03",
+   "file": "EXL-AP05-03 Copper Pebble.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP06",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Maple Ridge",
+   "revision": "03",
+   "file": "EXL-AP06-03 Maple Ridge.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP07",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Rose Falcon",
+   "revision": "01",
+   "file": "EXL-AP07-01 Rose Falcon.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP08",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Swift Field",
+   "revision": "00",
+   "file": "EXL-AP08-00 Swift Field.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP09",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Fern Bridge",
+   "revision": "01",
+   "file": "EXL-AP09-01 Fern Bridge.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP10",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Copper Valley",
+   "revision": "04",
+   "file": "EXL-AP10-04 Copper Valley.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP11",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Willow Falcon",
+   "revision": "03",
+   "file": "EXL-AP11-03 Willow Falcon.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP12",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Misty Pebble",
+   "revision": "01",
+   "file": "EXL-AP12-01 Misty Pebble.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP13",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Stone Sparrow",
+   "revision": "00",
+   "file": "EXL-AP13-00 Stone Sparrow.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP14",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Azure Brook",
+   "revision": "01",
+   "file": "EXL-AP14-01 Azure Brook.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP15",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "River Summit",
+   "revision": "00",
+   "file": "EXL-AP15-00 River Summit.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP16",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Meadow Comet",
+   "revision": "03",
+   "file": "EXL-AP16-03 Meadow Comet.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP17",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Pine Island",
+   "revision": "02",
+   "file": "EXL-AP17-02 Pine Island.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP18",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Silver Beacon",
+   "revision": "01",
+   "file": "EXL-AP18-01 Silver Beacon.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP19",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "North Falcon",
+   "revision": "00",
+   "file": "EXL-AP19-00 North Falcon.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP20",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Quiet Sparrow",
+   "revision": "00",
+   "file": "EXL-AP20-00 Quiet Sparrow.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP21",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Frost Raven",
+   "revision": "01",
+   "file": "EXL-AP21-01 Frost Raven.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP25",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Ruby Compass",
+   "revision": "00",
+   "file": "EXL-AP25-00 Ruby Compass.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-AP26",
+   "type": "analytical procedure",
+   "cls": "AP",
+   "title": "Quartz Wren",
+   "revision": "00",
+   "file": "EXL-AP26-00 Quartz Wren.docx",
+   "folder": "documents/Methods",
+   "present": true
+  },
+  {
+   "id": "EXL-TM16",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM06",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM18",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM19",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM08",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM03",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM24",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM22",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM23",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM20",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-TM25",
+   "cls": "TM",
+   "type": "test method",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": null
+  },
+  {
+   "id": "EXL-SOP28",
+   "cls": "SOP",
+   "type": "standard operating procedure",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": "documents/SOP"
+  },
+  {
+   "id": "EXL-FM24",
+   "cls": "FM",
+   "type": "form",
+   "title": null,
+   "revision": null,
+   "file": null,
+   "present": false,
+   "folder": "documents/Forms"
+  },
+  {
+   "id": "INSTRUMENT:Analytical balance",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Analytical balance",
+   "present": true,
+   "used_by": [
+    "EXL-AP01",
+    "EXL-AP03",
+    "EXL-AP04",
+    "EXL-AP05",
+    "EXL-AP06",
+    "EXL-AP07",
+    "EXL-AP10",
+    "EXL-AP11",
+    "EXL-AP12",
+    "EXL-AP13",
+    "EXL-AP14",
+    "EXL-AP15",
+    "EXL-AP16",
+    "EXL-AP19",
+    "EXL-AP20",
+    "EXL-AP21",
+    "EXL-AP25",
+    "EXL-AP26",
+    "EXL-FM29",
+    "EXL-FM48",
+    "EXL-SOP26",
+    "EXL-SOP29",
+    "EXL-SOP30",
+    "EXL-SOP34",
+    "EXL-SOP39",
+    "EXL-SOP51",
+    "EXL-SOP59"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Autoclave",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Autoclave",
+   "present": true,
+   "used_by": [
+    "EXL-FM04",
+    "EXL-FM56",
+    "EXL-SOP01",
+    "EXL-SOP03",
+    "EXL-SOP08",
+    "EXL-SOP09",
+    "EXL-SOP10",
+    "EXL-SOP11",
+    "EXL-SOP12",
+    "EXL-SOP13",
+    "EXL-SOP17"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Bead beater",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Bead beater",
+   "present": true,
+   "used_by": [
+    "EXL-SOP05"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Biosafety cabinet",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Biosafety cabinet",
+   "present": true,
+   "used_by": [
+    "EXL-SOP04",
+    "EXL-SOP08",
+    "EXL-SOP17"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Centrifuge",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Centrifuge",
+   "present": true,
+   "used_by": [
+    "EXL-AP01",
+    "EXL-AP03",
+    "EXL-AP04",
+    "EXL-AP05",
+    "EXL-AP06",
+    "EXL-AP08",
+    "EXL-AP09",
+    "EXL-AP10",
+    "EXL-AP12",
+    "EXL-AP14",
+    "EXL-AP15",
+    "EXL-AP18",
+    "EXL-AP19",
+    "EXL-AP20",
+    "EXL-FM77",
+    "EXL-SOP05",
+    "EXL-SOP08",
+    "EXL-SOP10",
+    "EXL-SOP23",
+    "EXL-SOP60"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Electronic pipette",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Electronic pipette",
+   "present": true,
+   "used_by": [
+    "EXL-AP01",
+    "EXL-AP03",
+    "EXL-AP05",
+    "EXL-AP06",
+    "EXL-AP14",
+    "EXL-AP15",
+    "EXL-AP19",
+    "EXL-AP20",
+    "EXL-AP21",
+    "EXL-AP25",
+    "EXL-AP26",
+    "EXL-SOP06",
+    "EXL-SOP08",
+    "EXL-SOP11",
+    "EXL-SOP12",
+    "EXL-SOP34"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Freezer",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Freezer",
+   "present": true,
+   "used_by": [
+    "EXL-AP01",
+    "EXL-AP03",
+    "EXL-AP05",
+    "EXL-AP06",
+    "EXL-AP09",
+    "EXL-FM08",
+    "EXL-FM16",
+    "EXL-FM22",
+    "EXL-FM25",
+    "EXL-FM26",
+    "EXL-FM48",
+    "EXL-FM76",
+    "EXL-SOP37"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:GC-MS",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "GC-MS",
+   "present": true,
+   "used_by": [
+    "EXL-AP08",
+    "EXL-AP10",
+    "EXL-AP20",
+    "EXL-SOP21",
+    "EXL-SOP22",
+    "EXL-SOP23",
+    "EXL-SOP46"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Hygrometer",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Hygrometer",
+   "present": true,
+   "used_by": [
+    "EXL-SOP48",
+    "EXL-SOP59"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:ICP-MS",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "ICP-MS",
+   "present": true,
+   "used_by": [
+    "EXL-AP04",
+    "EXL-AP12",
+    "EXL-SOP21",
+    "EXL-SOP22",
+    "EXL-SOP23",
+    "EXL-SOP47"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Incubator",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Incubator",
+   "present": true,
+   "used_by": [
+    "EXL-FM01",
+    "EXL-FM16",
+    "EXL-FM58",
+    "EXL-FM59",
+    "EXL-SOP02",
+    "EXL-SOP08",
+    "EXL-SOP10",
+    "EXL-SOP11",
+    "EXL-SOP12",
+    "EXL-SOP17",
+    "EXL-SOP57"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Karl Fischer titrator",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Karl Fischer titrator",
+   "present": true,
+   "used_by": [
+    "EXL-SOP52"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Micropipettor",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Micropipettor",
+   "present": true,
+   "used_by": [
+    "EXL-AP04",
+    "EXL-AP07",
+    "EXL-AP12",
+    "EXL-FM06",
+    "EXL-SOP08",
+    "EXL-SOP10",
+    "EXL-SOP11",
+    "EXL-SOP12",
+    "EXL-SOP34"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Moisture balance",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Moisture balance",
+   "present": true,
+   "used_by": [
+    "EXL-AP11",
+    "EXL-SOP07"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Refrigerator",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Refrigerator",
+   "present": true,
+   "used_by": [
+    "EXL-AP01",
+    "EXL-FM02",
+    "EXL-FM16",
+    "EXL-FM22",
+    "EXL-FM48",
+    "EXL-SOP08",
+    "EXL-SOP11",
+    "EXL-SOP37"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Colony counter",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Colony counter",
+   "present": true,
+   "used_by": [
+    "EXL-FM07",
+    "EXL-SOP03",
+    "EXL-SOP57"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:TOC analyser",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "TOC analyser",
+   "present": true,
+   "used_by": [
+    "EXL-AP17",
+    "EXL-AP18",
+    "EXL-FM16",
+    "EXL-FM62",
+    "EXL-FM82",
+    "EXL-SOP55"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Thermometer",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Thermometer",
+   "present": true,
+   "used_by": [
+    "EXL-FM16",
+    "EXL-FM48",
+    "EXL-SOP08",
+    "EXL-SOP23",
+    "EXL-SOP37"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:UPLC-PDA",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "UPLC-PDA",
+   "present": true,
+   "used_by": [
+    "EXL-AP01",
+    "EXL-AP03",
+    "EXL-AP05",
+    "EXL-AP06",
+    "EXL-AP07",
+    "EXL-AP09",
+    "EXL-AP10",
+    "EXL-AP13",
+    "EXL-AP14",
+    "EXL-AP15",
+    "EXL-AP19",
+    "EXL-AP21",
+    "EXL-AP25",
+    "EXL-AP26",
+    "EXL-SOP13",
+    "EXL-SOP21",
+    "EXL-SOP22",
+    "EXL-SOP23",
+    "EXL-SOP27"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:UV lamp",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "UV lamp",
+   "present": true,
+   "used_by": [
+    "EXL-AP17",
+    "EXL-AP18",
+    "EXL-FM73",
+    "EXL-SOP04",
+    "EXL-SOP17",
+    "EXL-SOP55"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Water activity meter",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Water activity meter",
+   "present": true,
+   "used_by": [
+    "EXL-FM53",
+    "EXL-FM66",
+    "EXL-FM67",
+    "EXL-FM75",
+    "EXL-SOP41",
+    "EXL-SOP59"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Water bath",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Water bath",
+   "present": true,
+   "used_by": [
+    "EXL-AP09",
+    "EXL-AP13",
+    "EXL-FM03",
+    "EXL-FM16",
+    "EXL-FM48",
+    "EXL-SOP08",
+    "EXL-SOP12"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:Water purification unit",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "Water purification unit",
+   "present": true,
+   "used_by": [
+    "EXL-FM21",
+    "EXL-SOP19"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:pH meter",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "pH meter",
+   "present": true,
+   "used_by": [
+    "EXL-FM16",
+    "EXL-FM30",
+    "EXL-FM71",
+    "EXL-SOP09",
+    "EXL-SOP12",
+    "EXL-SOP36"
+   ]
+  },
+  {
+   "id": "INSTRUMENT:qPCR",
+   "cls": "INSTRUMENT",
+   "type": "instrument",
+   "title": "qPCR",
+   "present": true,
+   "used_by": [
+    "EXL-FM08",
+    "EXL-SOP05",
+    "EXL-SOP10",
+    "EXL-SOP21",
+    "EXL-SOP22",
+    "EXL-SOP23",
+    "EXL-SOP60"
+   ]
+  }
+ ],
+ "links": [
+  {
+   "source": "EXL-SOP01",
+   "target": "EXL-SOP09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP09"
+  },
+  {
+   "source": "EXL-SOP01",
+   "target": "EXL-SOP11",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP11"
+  },
+  {
+   "source": "EXL-SOP01",
+   "target": "EXL-SOP13",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP13"
+  },
+  {
+   "source": "EXL-SOP01",
+   "target": "EXL-FM04",
+   "kind": "attached form",
+   "evidence": "[source text withheld] EXL-FM04"
+  },
+  {
+   "source": "EXL-SOP01",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP02",
+   "target": "EXL-FM01",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM01"
+  },
+  {
+   "source": "EXL-SOP02",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-SOP03",
+   "target": "EXL-FM07",
+   "kind": "attached form",
+   "evidence": "[source text withheld] EXL-FM07"
+  },
+  {
+   "source": "EXL-SOP03",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP03",
+   "target": "INSTRUMENT:Colony counter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Colony counter"
+  },
+  {
+   "source": "EXL-SOP04",
+   "target": "INSTRUMENT:Biosafety cabinet",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Biosafety cabinet"
+  },
+  {
+   "source": "EXL-SOP04",
+   "target": "INSTRUMENT:UV lamp",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UV lamp"
+  },
+  {
+   "source": "EXL-SOP05",
+   "target": "EXL-TM16",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM16"
+  },
+  {
+   "source": "EXL-SOP05",
+   "target": "INSTRUMENT:Bead beater",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Bead beater"
+  },
+  {
+   "source": "EXL-SOP05",
+   "target": "INSTRUMENT:qPCR",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names qPCR"
+  },
+  {
+   "source": "EXL-SOP05",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-SOP06",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-SOP07",
+   "target": "EXL-SOP21",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP21"
+  },
+  {
+   "source": "EXL-SOP07",
+   "target": "EXL-SOP22",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP22"
+  },
+  {
+   "source": "EXL-SOP07",
+   "target": "EXL-SOP16",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP16"
+  },
+  {
+   "source": "EXL-SOP07",
+   "target": "INSTRUMENT:Moisture balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Moisture balance"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "EXL-FM02",
+   "kind": "attached form",
+   "evidence": "[source text withheld] EXL-FM02"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "EXL-FM01",
+   "kind": "attached form",
+   "evidence": "[source text withheld] EXL-FM01"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "EXL-FM03",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM03"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "EXL-FM77",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM77"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Biosafety cabinet",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Biosafety cabinet"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Water bath",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water bath"
+  },
+  {
+   "source": "EXL-SOP08",
+   "target": "INSTRUMENT:Thermometer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Thermometer"
+  },
+  {
+   "source": "EXL-SOP09",
+   "target": "EXL-SOP12",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP12"
+  },
+  {
+   "source": "EXL-SOP09",
+   "target": "EXL-SOP13",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP13"
+  },
+  {
+   "source": "EXL-SOP09",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP09",
+   "target": "INSTRUMENT:pH meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names pH meter"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "EXL-TM06",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM06"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "EXL-TM18",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM18"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "EXL-TM19",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM19"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "EXL-SOP11",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP11"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "EXL-TM08",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-TM08"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "EXL-TM03",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-TM03"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "INSTRUMENT:qPCR",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names qPCR"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-SOP11",
+   "target": "EXL-SOP13",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP13"
+  },
+  {
+   "source": "EXL-SOP11",
+   "target": "EXL-SOP12",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP12"
+  },
+  {
+   "source": "EXL-SOP11",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP11",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-SOP11",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-SOP11",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-SOP11",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-SOP09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP09"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-SOP11",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP11"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM06",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM06"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM18",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM18"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM19",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM19"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM24",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM24"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM22",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM22"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM23",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM23"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM20",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM20"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "EXL-TM25",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM25"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "INSTRUMENT:pH meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names pH meter"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-SOP12",
+   "target": "INSTRUMENT:Water bath",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water bath"
+  },
+  {
+   "source": "EXL-SOP13",
+   "target": "EXL-SOP28",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP28"
+  },
+  {
+   "source": "EXL-SOP13",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP13",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-SOP14",
+   "target": "EXL-FM09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM09"
+  },
+  {
+   "source": "EXL-SOP14",
+   "target": "EXL-FM27",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM27"
+  },
+  {
+   "source": "EXL-SOP14",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP15",
+   "target": "EXL-SOP22",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP22"
+  },
+  {
+   "source": "EXL-SOP16",
+   "target": "EXL-FM28",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM28"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "EXL-SOP01",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP01"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "EXL-FM56",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM56"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "EXL-FM59",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM59"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "EXL-FM04",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM04"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "INSTRUMENT:Biosafety cabinet",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Biosafety cabinet"
+  },
+  {
+   "source": "EXL-SOP17",
+   "target": "INSTRUMENT:UV lamp",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UV lamp"
+  },
+  {
+   "source": "EXL-SOP18",
+   "target": "EXL-FM17",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM17"
+  },
+  {
+   "source": "EXL-SOP18",
+   "target": "EXL-SOP15",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP19",
+   "target": "EXL-FM21",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM21"
+  },
+  {
+   "source": "EXL-SOP19",
+   "target": "INSTRUMENT:Water purification unit",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water purification unit"
+  },
+  {
+   "source": "EXL-SOP20",
+   "target": "EXL-FM11",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM11"
+  },
+  {
+   "source": "EXL-SOP20",
+   "target": "EXL-FM12",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM12"
+  },
+  {
+   "source": "EXL-SOP20",
+   "target": "EXL-FM13",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM13"
+  },
+  {
+   "source": "EXL-SOP20",
+   "target": "EXL-FM14",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM14"
+  },
+  {
+   "source": "EXL-SOP21",
+   "target": "EXL-SOP22",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP22"
+  },
+  {
+   "source": "EXL-SOP21",
+   "target": "EXL-FM34",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM34"
+  },
+  {
+   "source": "EXL-SOP21",
+   "target": "EXL-FM24",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM24"
+  },
+  {
+   "source": "EXL-SOP21",
+   "target": "INSTRUMENT:GC-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names GC-MS"
+  },
+  {
+   "source": "EXL-SOP21",
+   "target": "INSTRUMENT:ICP-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names ICP-MS"
+  },
+  {
+   "source": "EXL-SOP21",
+   "target": "INSTRUMENT:qPCR",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names qPCR"
+  },
+  {
+   "source": "EXL-SOP21",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-SOP22",
+   "target": "EXL-SOP21",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP21"
+  },
+  {
+   "source": "EXL-SOP22",
+   "target": "EXL-FM34",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM34"
+  },
+  {
+   "source": "EXL-SOP22",
+   "target": "INSTRUMENT:GC-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names GC-MS"
+  },
+  {
+   "source": "EXL-SOP22",
+   "target": "INSTRUMENT:ICP-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names ICP-MS"
+  },
+  {
+   "source": "EXL-SOP22",
+   "target": "INSTRUMENT:qPCR",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names qPCR"
+  },
+  {
+   "source": "EXL-SOP22",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "EXL-SOP21",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP21"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "EXL-SOP22",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP22"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "EXL-FM34",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM34"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "INSTRUMENT:GC-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names GC-MS"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "INSTRUMENT:ICP-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names ICP-MS"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "INSTRUMENT:qPCR",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names qPCR"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "INSTRUMENT:Thermometer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Thermometer"
+  },
+  {
+   "source": "EXL-SOP24",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP25",
+   "target": "EXL-FM16",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM16"
+  },
+  {
+   "source": "EXL-SOP26",
+   "target": "EXL-FM05",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM05"
+  },
+  {
+   "source": "EXL-SOP26",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-SOP27",
+   "target": "EXL-FM15",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM15"
+  },
+  {
+   "source": "EXL-SOP27",
+   "target": "EXL-SOP23",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP23"
+  },
+  {
+   "source": "EXL-SOP27",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-SOP29",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-SOP30",
+   "target": "EXL-SOP26",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP26"
+  },
+  {
+   "source": "EXL-SOP30",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-SOP32",
+   "target": "EXL-FM23",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM23"
+  },
+  {
+   "source": "EXL-SOP34",
+   "target": "EXL-FM06",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM06"
+  },
+  {
+   "source": "EXL-SOP34",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-SOP34",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-SOP34",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-SOP35",
+   "target": "EXL-FM29",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM29"
+  },
+  {
+   "source": "EXL-SOP36",
+   "target": "EXL-FM30",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM30"
+  },
+  {
+   "source": "EXL-SOP36",
+   "target": "INSTRUMENT:pH meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names pH meter"
+  },
+  {
+   "source": "EXL-SOP37",
+   "target": "EXL-FM22",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM22"
+  },
+  {
+   "source": "EXL-SOP37",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-SOP37",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-SOP37",
+   "target": "INSTRUMENT:Thermometer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Thermometer"
+  },
+  {
+   "source": "EXL-SOP38",
+   "target": "EXL-SOP41",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP41"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-SOP40",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP40"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-SOP41",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP41"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-FM53",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM53"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-FM09",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM09"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-FM27",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM27"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-FM19",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM19"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-FM20",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM20"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP03",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP03"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP04",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP04"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-TM06",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-TM06"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-TM18",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-TM18"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-TM19",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-TM19"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP10",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP10"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP19",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP19"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP20",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP20"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP05",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP05"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-SOP59",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP59"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP11",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP11"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "EXL-AP16",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP16"
+  },
+  {
+   "source": "EXL-SOP41",
+   "target": "INSTRUMENT:Water activity meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water activity meter"
+  },
+  {
+   "source": "EXL-SOP42",
+   "target": "EXL-SOP40",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP40"
+  },
+  {
+   "source": "EXL-SOP42",
+   "target": "EXL-FM50",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM50"
+  },
+  {
+   "source": "EXL-SOP44",
+   "target": "EXL-SOP17",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP17"
+  },
+  {
+   "source": "EXL-SOP45",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP45",
+   "target": "EXL-SOP24",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP24"
+  },
+  {
+   "source": "EXL-SOP45",
+   "target": "EXL-SOP29",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP29"
+  },
+  {
+   "source": "EXL-SOP45",
+   "target": "EXL-FM10",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM10"
+  },
+  {
+   "source": "EXL-SOP46",
+   "target": "EXL-SOP14",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP14"
+  },
+  {
+   "source": "EXL-SOP46",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP46",
+   "target": "EXL-FM09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM09"
+  },
+  {
+   "source": "EXL-SOP46",
+   "target": "INSTRUMENT:GC-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names GC-MS"
+  },
+  {
+   "source": "EXL-SOP47",
+   "target": "EXL-SOP14",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP14"
+  },
+  {
+   "source": "EXL-SOP47",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP47",
+   "target": "EXL-FM09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM09"
+  },
+  {
+   "source": "EXL-SOP47",
+   "target": "INSTRUMENT:ICP-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names ICP-MS"
+  },
+  {
+   "source": "EXL-SOP48",
+   "target": "EXL-FM42",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM42"
+  },
+  {
+   "source": "EXL-SOP48",
+   "target": "INSTRUMENT:Hygrometer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Hygrometer"
+  },
+  {
+   "source": "EXL-SOP49",
+   "target": "EXL-SOP14",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP14"
+  },
+  {
+   "source": "EXL-SOP49",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP49",
+   "target": "EXL-FM11",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM11"
+  },
+  {
+   "source": "EXL-SOP49",
+   "target": "EXL-FM14",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM14"
+  },
+  {
+   "source": "EXL-SOP50",
+   "target": "EXL-FM47",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM47"
+  },
+  {
+   "source": "EXL-SOP50",
+   "target": "EXL-FM48",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM48"
+  },
+  {
+   "source": "EXL-SOP50",
+   "target": "EXL-FM49",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM49"
+  },
+  {
+   "source": "EXL-SOP51",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-SOP52",
+   "target": "INSTRUMENT:Karl Fischer titrator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Karl Fischer titrator"
+  },
+  {
+   "source": "EXL-SOP53",
+   "target": "EXL-SOP16",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP16"
+  },
+  {
+   "source": "EXL-SOP53",
+   "target": "EXL-SOP32",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP32"
+  },
+  {
+   "source": "EXL-SOP53",
+   "target": "EXL-FM51",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM51"
+  },
+  {
+   "source": "EXL-SOP54",
+   "target": "EXL-FM20",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM20"
+  },
+  {
+   "source": "EXL-SOP54",
+   "target": "EXL-FM53",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM53"
+  },
+  {
+   "source": "EXL-SOP54",
+   "target": "EXL-SOP24",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP24"
+  },
+  {
+   "source": "EXL-SOP54",
+   "target": "EXL-SOP15",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "EXL-SOP14",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP14"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "EXL-FM09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM09"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "EXL-SOP21",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP21"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "EXL-SOP22",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP22"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "EXL-SOP23",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP23"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "INSTRUMENT:TOC analyser",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names TOC analyser"
+  },
+  {
+   "source": "EXL-SOP55",
+   "target": "INSTRUMENT:UV lamp",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UV lamp"
+  },
+  {
+   "source": "EXL-SOP56",
+   "target": "EXL-FM38",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM38"
+  },
+  {
+   "source": "EXL-SOP56",
+   "target": "EXL-FM37",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM37"
+  },
+  {
+   "source": "EXL-SOP56",
+   "target": "EXL-SOP13",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP13"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "EXL-SOP09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP09"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "EXL-SOP11",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP11"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "EXL-SOP12",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP12"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "EXL-SOP13",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP13"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "EXL-SOP53",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP53"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "EXL-FM58",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-FM58"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-SOP57",
+   "target": "INSTRUMENT:Colony counter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Colony counter"
+  },
+  {
+   "source": "EXL-SOP58",
+   "target": "EXL-FM60",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM60"
+  },
+  {
+   "source": "EXL-SOP58",
+   "target": "EXL-FM61",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM61"
+  },
+  {
+   "source": "EXL-SOP59",
+   "target": "EXL-SOP21",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP21"
+  },
+  {
+   "source": "EXL-SOP59",
+   "target": "EXL-FM66",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM66"
+  },
+  {
+   "source": "EXL-SOP59",
+   "target": "EXL-FM67",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM67"
+  },
+  {
+   "source": "EXL-SOP59",
+   "target": "EXL-SOP26",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP26"
+  },
+  {
+   "source": "EXL-SOP59",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-SOP59",
+   "target": "INSTRUMENT:Water activity meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water activity meter"
+  },
+  {
+   "source": "EXL-SOP59",
+   "target": "INSTRUMENT:Hygrometer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Hygrometer"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "EXL-TM19",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-TM19"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "EXL-SOP14",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP14"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "EXL-SOP15",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "EXL-FM09",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-FM09"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "EXL-SOP21",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP21"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "EXL-SOP22",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP22"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "EXL-SOP23",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP23"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "INSTRUMENT:qPCR",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names qPCR"
+  },
+  {
+   "source": "EXL-SOP60",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-FM01",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-FM02",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-FM03",
+   "target": "INSTRUMENT:Water bath",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water bath"
+  },
+  {
+   "source": "EXL-FM04",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-FM06",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-FM07",
+   "target": "EXL-SOP03",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP03"
+  },
+  {
+   "source": "EXL-FM07",
+   "target": "INSTRUMENT:Colony counter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Colony counter"
+  },
+  {
+   "source": "EXL-FM08",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-FM08",
+   "target": "INSTRUMENT:qPCR",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names qPCR"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "INSTRUMENT:pH meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names pH meter"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "INSTRUMENT:TOC analyser",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names TOC analyser"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "INSTRUMENT:Water bath",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water bath"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "INSTRUMENT:Thermometer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Thermometer"
+  },
+  {
+   "source": "EXL-FM17",
+   "target": "EXL-SOP15",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP15"
+  },
+  {
+   "source": "EXL-FM21",
+   "target": "INSTRUMENT:Water purification unit",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water purification unit"
+  },
+  {
+   "source": "EXL-FM22",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-FM22",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-FM25",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-FM26",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-FM29",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-FM30",
+   "target": "INSTRUMENT:pH meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names pH meter"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "INSTRUMENT:Water bath",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water bath"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "INSTRUMENT:Thermometer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Thermometer"
+  },
+  {
+   "source": "EXL-FM53",
+   "target": "INSTRUMENT:Water activity meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water activity meter"
+  },
+  {
+   "source": "EXL-FM56",
+   "target": "EXL-SOP17",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP17"
+  },
+  {
+   "source": "EXL-FM56",
+   "target": "INSTRUMENT:Autoclave",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Autoclave"
+  },
+  {
+   "source": "EXL-FM58",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-FM59",
+   "target": "EXL-SOP17",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP17"
+  },
+  {
+   "source": "EXL-FM59",
+   "target": "INSTRUMENT:Incubator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Incubator"
+  },
+  {
+   "source": "EXL-FM62",
+   "target": "INSTRUMENT:TOC analyser",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names TOC analyser"
+  },
+  {
+   "source": "EXL-FM66",
+   "target": "INSTRUMENT:Water activity meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water activity meter"
+  },
+  {
+   "source": "EXL-FM67",
+   "target": "INSTRUMENT:Water activity meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water activity meter"
+  },
+  {
+   "source": "EXL-FM71",
+   "target": "EXL-SOP36",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP36"
+  },
+  {
+   "source": "EXL-FM71",
+   "target": "INSTRUMENT:pH meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names pH meter"
+  },
+  {
+   "source": "EXL-FM73",
+   "target": "INSTRUMENT:UV lamp",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UV lamp"
+  },
+  {
+   "source": "EXL-FM75",
+   "target": "INSTRUMENT:Water activity meter",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water activity meter"
+  },
+  {
+   "source": "EXL-FM76",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-FM77",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-FM82",
+   "target": "INSTRUMENT:TOC analyser",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names TOC analyser"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "INSTRUMENT:Refrigerator",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Refrigerator"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP03",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP03",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP03",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-AP03",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP03",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP04",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP04",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-AP04",
+   "target": "INSTRUMENT:ICP-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names ICP-MS"
+  },
+  {
+   "source": "EXL-AP04",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP05",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP05",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP05",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-AP05",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP05",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP06",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP06",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP06",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-AP06",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP06",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP07",
+   "target": "EXL-AP09",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP09"
+  },
+  {
+   "source": "EXL-AP07",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP07",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-AP07",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP08",
+   "target": "EXL-SOP46",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP46"
+  },
+  {
+   "source": "EXL-AP08",
+   "target": "INSTRUMENT:GC-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names GC-MS"
+  },
+  {
+   "source": "EXL-AP08",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP09",
+   "target": "EXL-AP07",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP07"
+  },
+  {
+   "source": "EXL-AP09",
+   "target": "INSTRUMENT:Freezer",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Freezer"
+  },
+  {
+   "source": "EXL-AP09",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP09",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP09",
+   "target": "INSTRUMENT:Water bath",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water bath"
+  },
+  {
+   "source": "EXL-AP10",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP10",
+   "target": "INSTRUMENT:GC-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names GC-MS"
+  },
+  {
+   "source": "EXL-AP10",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP10",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "EXL-SOP21",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP21"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "EXL-SOP16",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP16"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "EXL-SOP22",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP22"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "EXL-SOP07",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP07"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "INSTRUMENT:Moisture balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Moisture balance"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP12",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP12",
+   "target": "INSTRUMENT:Micropipettor",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Micropipettor"
+  },
+  {
+   "source": "EXL-AP12",
+   "target": "INSTRUMENT:ICP-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names ICP-MS"
+  },
+  {
+   "source": "EXL-AP12",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP13",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP13",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP13",
+   "target": "INSTRUMENT:Water bath",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Water bath"
+  },
+  {
+   "source": "EXL-AP14",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP14",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP14",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP14",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP15",
+   "target": "EXL-AP14",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP14"
+  },
+  {
+   "source": "EXL-AP15",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP15",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP15",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP15",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP16",
+   "target": "EXL-AP09",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-AP09"
+  },
+  {
+   "source": "EXL-AP16",
+   "target": "EXL-TM06",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-TM06"
+  },
+  {
+   "source": "EXL-AP16",
+   "target": "EXL-SOP35",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP35"
+  },
+  {
+   "source": "EXL-AP16",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP17",
+   "target": "EXL-SOP55",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP55"
+  },
+  {
+   "source": "EXL-AP17",
+   "target": "EXL-AP18",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-AP18"
+  },
+  {
+   "source": "EXL-AP17",
+   "target": "INSTRUMENT:TOC analyser",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names TOC analyser"
+  },
+  {
+   "source": "EXL-AP17",
+   "target": "INSTRUMENT:UV lamp",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UV lamp"
+  },
+  {
+   "source": "EXL-AP18",
+   "target": "EXL-SOP55",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-SOP55"
+  },
+  {
+   "source": "EXL-AP18",
+   "target": "EXL-AP17",
+   "kind": "declared",
+   "evidence": "[source text withheld] EXL-AP17"
+  },
+  {
+   "source": "EXL-AP18",
+   "target": "INSTRUMENT:TOC analyser",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names TOC analyser"
+  },
+  {
+   "source": "EXL-AP18",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP18",
+   "target": "INSTRUMENT:UV lamp",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UV lamp"
+  },
+  {
+   "source": "EXL-AP19",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP19",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP19",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP19",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP20",
+   "target": "EXL-SOP46",
+   "kind": "mentioned",
+   "evidence": "[source text withheld] EXL-SOP46"
+  },
+  {
+   "source": "EXL-AP20",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP20",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP20",
+   "target": "INSTRUMENT:GC-MS",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names GC-MS"
+  },
+  {
+   "source": "EXL-AP20",
+   "target": "INSTRUMENT:Centrifuge",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Centrifuge"
+  },
+  {
+   "source": "EXL-AP21",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP21",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP21",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP25",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP25",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP25",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-AP26",
+   "target": "INSTRUMENT:Electronic pipette",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Electronic pipette"
+  },
+  {
+   "source": "EXL-AP26",
+   "target": "INSTRUMENT:Analytical balance",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names Analytical balance"
+  },
+  {
+   "source": "EXL-AP26",
+   "target": "INSTRUMENT:UPLC-PDA",
+   "kind": "equipment",
+   "evidence": "[source text withheld] names UPLC-PDA"
+  },
+  {
+   "source": "EXL-SOP10",
+   "target": "EXL-SOP13",
+   "kind": "title",
+   "evidence": "[source text withheld] Fern Arrow"
+  },
+  {
+   "source": "EXL-SOP14",
+   "target": "EXL-SOP45",
+   "kind": "title",
+   "evidence": "[source text withheld] Velvet Anchor"
+  },
+  {
+   "source": "EXL-SOP14",
+   "target": "EXL-FM36",
+   "kind": "title",
+   "evidence": "[source text withheld] Sable Finch"
+  },
+  {
+   "source": "EXL-SOP15",
+   "target": "EXL-SOP18",
+   "kind": "title",
+   "evidence": "[source text withheld] River Brook"
+  },
+  {
+   "source": "EXL-SOP15",
+   "target": "EXL-SOP25",
+   "kind": "title",
+   "evidence": "[source text withheld] Granite Cascade"
+  },
+  {
+   "source": "EXL-SOP15",
+   "target": "EXL-SOP58",
+   "kind": "title",
+   "evidence": "[source text withheld] Solar Orbit"
+  },
+  {
+   "source": "EXL-SOP15",
+   "target": "EXL-FM17",
+   "kind": "title",
+   "evidence": "[source text withheld] Marble Island"
+  },
+  {
+   "source": "EXL-SOP15",
+   "target": "EXL-FM36",
+   "kind": "title",
+   "evidence": "[source text withheld] Sable Finch"
+  },
+  {
+   "source": "EXL-SOP16",
+   "target": "EXL-SOP32",
+   "kind": "title",
+   "evidence": "[source text withheld] Quiet Crane"
+  },
+  {
+   "source": "EXL-SOP23",
+   "target": "EXL-SOP58",
+   "kind": "title",
+   "evidence": "[source text withheld] Solar Orbit"
+  },
+  {
+   "source": "EXL-SOP24",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-SOP25",
+   "target": "EXL-SOP15",
+   "kind": "title",
+   "evidence": "[source text withheld] Iron Arrow"
+  },
+  {
+   "source": "EXL-SOP25",
+   "target": "EXL-FM36",
+   "kind": "title",
+   "evidence": "[source text withheld] Sable Finch"
+  },
+  {
+   "source": "EXL-SOP27",
+   "target": "EXL-AP03",
+   "kind": "title",
+   "evidence": "[source text withheld] Fern Crane"
+  },
+  {
+   "source": "EXL-SOP29",
+   "target": "EXL-SOP24",
+   "kind": "title",
+   "evidence": "[source text withheld] Sable Wren"
+  },
+  {
+   "source": "EXL-SOP29",
+   "target": "EXL-SOP45",
+   "kind": "title",
+   "evidence": "[source text withheld] Velvet Anchor"
+  },
+  {
+   "source": "EXL-SOP36",
+   "target": "EXL-FM71",
+   "kind": "title",
+   "evidence": "[source text withheld] Frost Beacon"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-SOP15",
+   "kind": "title",
+   "evidence": "[source text withheld] Iron Arrow"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-SOP25",
+   "kind": "title",
+   "evidence": "[source text withheld] Granite Cascade"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-SOP42",
+   "kind": "title",
+   "evidence": "[source text withheld] Jade Quill"
+  },
+  {
+   "source": "EXL-SOP39",
+   "target": "EXL-SOP45",
+   "kind": "title",
+   "evidence": "[source text withheld] Velvet Anchor"
+  },
+  {
+   "source": "EXL-SOP50",
+   "target": "EXL-SOP13",
+   "kind": "title",
+   "evidence": "[source text withheld] Fern Arrow"
+  },
+  {
+   "source": "EXL-SOP51",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "EXL-SOP25",
+   "kind": "title",
+   "evidence": "[source text withheld] Granite Cascade"
+  },
+  {
+   "source": "EXL-FM16",
+   "target": "EXL-FM36",
+   "kind": "title",
+   "evidence": "[source text withheld] Sable Finch"
+  },
+  {
+   "source": "EXL-FM17",
+   "target": "EXL-SOP18",
+   "kind": "title",
+   "evidence": "[source text withheld] River Brook"
+  },
+  {
+   "source": "EXL-FM23",
+   "target": "EXL-SOP32",
+   "kind": "title",
+   "evidence": "[source text withheld] Quiet Crane"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "EXL-SOP18",
+   "kind": "title",
+   "evidence": "[source text withheld] River Brook"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "EXL-SOP25",
+   "kind": "title",
+   "evidence": "[source text withheld] Granite Cascade"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "EXL-SOP45",
+   "kind": "title",
+   "evidence": "[source text withheld] Velvet Anchor"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "EXL-FM17",
+   "kind": "title",
+   "evidence": "[source text withheld] Marble Island"
+  },
+  {
+   "source": "EXL-FM48",
+   "target": "EXL-FM36",
+   "kind": "title",
+   "evidence": "[source text withheld] Sable Finch"
+  },
+  {
+   "source": "EXL-FM53",
+   "target": "EXL-SOP54",
+   "kind": "title",
+   "evidence": "[source text withheld] North Ledge"
+  },
+  {
+   "source": "EXL-FM53",
+   "target": "EXL-AP11",
+   "kind": "title",
+   "evidence": "[source text withheld] Willow Falcon"
+  },
+  {
+   "source": "EXL-FM58",
+   "target": "EXL-SOP57",
+   "kind": "title",
+   "evidence": "[source text withheld] Harbor Orbit"
+  },
+  {
+   "source": "EXL-FM60",
+   "target": "EXL-SOP58",
+   "kind": "title",
+   "evidence": "[source text withheld] Solar Orbit"
+  },
+  {
+   "source": "EXL-FM61",
+   "target": "EXL-SOP58",
+   "kind": "title",
+   "evidence": "[source text withheld] Solar Orbit"
+  },
+  {
+   "source": "EXL-FM63",
+   "target": "EXL-AP11",
+   "kind": "title",
+   "evidence": "[source text withheld] Willow Falcon"
+  },
+  {
+   "source": "EXL-FM71",
+   "target": "EXL-FM30",
+   "kind": "title",
+   "evidence": "[source text withheld] Tidal Crane"
+  },
+  {
+   "source": "EXL-FM75",
+   "target": "EXL-AP03",
+   "kind": "title",
+   "evidence": "[source text withheld] Fern Crane"
+  },
+  {
+   "source": "EXL-FM75",
+   "target": "EXL-AP11",
+   "kind": "title",
+   "evidence": "[source text withheld] Willow Falcon"
+  },
+  {
+   "source": "EXL-FM81",
+   "target": "EXL-SOP14",
+   "kind": "title",
+   "evidence": "[source text withheld] Velvet Raven"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP01",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP03",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP03",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP04",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP05",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP05",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP06",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP06",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP09",
+   "target": "EXL-AP03",
+   "kind": "title",
+   "evidence": "[source text withheld] Fern Crane"
+  },
+  {
+   "source": "EXL-AP10",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP10",
+   "target": "EXL-AP11",
+   "kind": "title",
+   "evidence": "[source text withheld] Willow Falcon"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP11",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP12",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP14",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP14",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP14",
+   "target": "EXL-AP15",
+   "kind": "title",
+   "evidence": "[source text withheld] River Summit"
+  },
+  {
+   "source": "EXL-AP15",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP15",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP16",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP16",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP18",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP19",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP19",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP20",
+   "target": "EXL-SOP38",
+   "kind": "title",
+   "evidence": "[source text withheld] Clear Brook"
+  },
+  {
+   "source": "EXL-AP20",
+   "target": "EXL-SOP43",
+   "kind": "title",
+   "evidence": "[source text withheld] Maple Crane"
+  },
+  {
+   "source": "EXL-AP26",
+   "target": "EXL-AP21",
+   "kind": "title",
+   "evidence": "[source text withheld] Frost Raven"
+  }
+ ],
+ "skipped": [
+  [
+   "EXL-SOP28-00 Withheld.docx",
+   "zero bytes"
+  ],
+  [
+   "EXL-SOP31-00 Withheld.docx",
+   "zero bytes"
+  ]
+ ]
+}

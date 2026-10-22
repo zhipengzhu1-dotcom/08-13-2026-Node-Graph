@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Example Labs — Document Graph</title>
+<style>
+  :root {
+    --bg: #0b0e14; --panel: #11151d; --line: #222a38; --ink: #e6edf3;
+    --dim: #8b949e; --accent: #58a6ff;
+    --sop: #58a6ff; --form: #3fb950; --ap: #d29922; --tm: #f85149; --inst: #bc8cff;
+    --web: #2e8b8b;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f6f9; --panel: #ffffff; --line: #d6dce4; --ink: #1f2328;
+      --dim: #656d76; --accent: #0969da;
+      --sop: #0969da; --form: #1a7f37; --ap: #9a6700; --tm: #cf222e; --inst: #8250df;
+      --web: #6aa9a9;
+    }
+  }
+  /* Obsidian style brings its own palette: a near-black ground, a teal web,
+     and fluorescent nodes. It overrides the light theme too - this look only
+     works dark, so it stays dark whatever the operating system says. */
+  :root[data-style="obsidian"] {
+    --bg: #0e1014; --panel: #14171d; --line: #232833; --ink: #e9eef7;
+    --dim: #78838f; --accent: #ffd93d;
+    --sop:  #ffd93d;   /* fluorescent yellow - the backbone procedures */
+    --form: #8ea9ff;   /* periwinkle - the numerous small records */
+    --ap:   #4ff0d0;   /* aqua */
+    --tm:   #ff5c7a;   /* neon red - documents that do not exist */
+    --inst: #ff6ec7;   /* hot magenta - the instruments */
+    --web:  #2fb8a8;   /* the teal web */
+  }
+  /* The accent is now fluorescent yellow, so anything sitting on it needs
+     dark ink rather than white. */
+  :root[data-style="obsidian"] .seg button.on,
+  :root[data-style="obsidian"] button.primary,
+  :root[data-style="obsidian"] .pill { color: #0e1014; }
+  :root[data-style="obsidian"] button.primary:hover { color: #0e1014; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    display: grid; grid-template-columns: 246px 1fr 330px; overflow: hidden;
+  }
+  aside { background: var(--panel); overflow-y: auto; padding: 16px; }
+  aside.left { border-right: 1px solid var(--line); }
+  aside.right { border-left: 1px solid var(--line); }
+  h1 { font-size: 14px; margin: 0 0 2px; }
+  .sub { color: var(--dim); font-size: 11px; }
+  h2 { font-size: 10px; text-transform: uppercase; letter-spacing: .09em;
+       color: var(--dim); margin: 20px 0 8px; font-weight: 600; }
+  input[type=search] {
+    width: 100%; padding: 7px 9px; background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 6px; font: inherit; margin-top: 14px;
+  }
+  input[type=search]:focus { outline: none; border-color: var(--accent); }
+  label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
+  label:hover { color: var(--accent); }
+  .swatch { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .count { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; font-size: 11px; }
+  .edgekey { width: 20px; border-top: 2px solid var(--dim); flex: none; }
+  .edgekey.dash { border-top-style: dashed; }
+  .hit { padding: 5px 7px; border-radius: 5px; cursor: pointer; }
+  .hit:hover { background: var(--bg); }
+  .hit b { display: block; font-weight: 600; }
+  .hit span { color: var(--dim); font-size: 11px; }
+  main { position: relative; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+  canvas.grabbing { cursor: grabbing; }
+  #hud { position: absolute; left: 14px; bottom: 12px; color: var(--dim);
+         font-size: 11px; font-variant-numeric: tabular-nums; pointer-events: none; }
+  #hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 12px;
+          color: var(--dim); font-size: 11px; pointer-events: none; white-space: nowrap; }
+  #play {
+    position: absolute; right: 14px; bottom: 12px; width: 38px; height: 38px;
+    border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
+    color: var(--ink); cursor: pointer; display: grid; place-items: center; padding: 0;
+  }
+  #play:hover { border-color: var(--accent); color: var(--accent); }
+  #play svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* Test panel: a bar at the top right that collapses to its icon. */
+  #lab {
+    position: absolute; top: 12px; right: 12px; display: flex; align-items: stretch;
+    background: color-mix(in srgb, var(--panel) 92%, transparent);
+    border: 1px solid var(--line); border-radius: 9px; overflow: hidden;
+    backdrop-filter: blur(6px); max-width: calc(100% - 24px);
+  }
+  #labToggle {
+    width: 34px; height: 34px; flex: none; border: 0; border-radius: 0; padding: 0;
+    background: transparent; color: var(--dim); display: grid; place-items: center; cursor: pointer;
+  }
+  #labToggle:hover { color: var(--accent); background: var(--bg); }
+  #labToggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+  #labBody {
+    display: flex; align-items: center; gap: 14px; padding: 0 14px 0 4px;
+    white-space: nowrap; overflow-x: auto;
+  }
+  #lab.collapsed #labBody { display: none; }
+  #labBody .grp { display: flex; align-items: center; gap: 7px; }
+  #labBody .grp > span { color: var(--dim); font-size: 10px;
+                         text-transform: uppercase; letter-spacing: .07em; }
+  #labBody .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  #labBody .seg button {
+    width: auto; border: 0; border-radius: 0; padding: 4px 9px;
+    background: transparent; color: var(--dim); font-size: 11px;
+  }
+  #labBody .seg button.on { background: var(--accent); color: #fff; }
+  #labBody .seg button:hover:not(.on) { color: var(--accent); background: var(--bg); }
+  #labBody input[type=range] { width: 78px; }
+  #labBody label { padding: 0; font-size: 11px; }
+  button {
+    font: inherit; padding: 7px 11px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%;
+  }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { opacity: .9; color: #fff; }
+  .pill { display: inline-block; padding: 2px 7px; border-radius: 20px;
+          font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  .detail h3 { margin: 4px 0 2px; font-size: 15px; line-height: 1.3; }
+  .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--dim); }
+  .meta { margin: 14px 0; }
+  .meta div { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid var(--line); }
+  .meta dt { color: var(--dim); width: 74px; flex: none; }
+  .meta dd { margin: 0; word-break: break-word; }
+  .nb { display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 5px; cursor: pointer; }
+  .nb:hover { background: var(--bg); }
+  .nb small { color: var(--dim); margin-left: auto; font-size: 10px; flex: none; }
+  .empty { color: var(--dim); padding-top: 40px; text-align: center; }
+  .warn { background: color-mix(in srgb, var(--tm) 14%, transparent);
+          border: 1px solid var(--tm); border-radius: 6px; padding: 9px; margin: 12px 0; font-size: 12px; }
+  .slider { width: 100%; }
+</style>
+</head>
+<body>
+
+<aside class="left">
+  <h1>Example Labs</h1>
+  <div class="sub">Document graph — prototype</div>
+
+  <input type="search" id="q" placeholder="Search title or number…" autocomplete="off">
+  <div id="results"></div>
+
+  <h2>Node types</h2>
+  <div id="types"></div>
+
+  <h2>Link kinds</h2>
+  <div id="kinds"></div>
+
+  <h2>Clusters</h2>
+  <label><input type="checkbox" id="affinity" checked> Group by shared neighbours</label>
+  <label><input type="checkbox" id="bycluster"> Colour by cluster</label>
+  <div id="clusterList"></div>
+
+  <h2>View</h2>
+  <label><input type="checkbox" id="spin" checked> Rotate slowly</label>
+  <label><input type="checkbox" id="flat"> Flatten to 2D</label>
+  <label><input type="checkbox" id="labels" checked> Show labels</label>
+  <label><input type="checkbox" id="onlyLinked"> Hide isolated nodes</label>
+  <h2>Link opacity</h2>
+  <input type="range" class="slider" id="alpha" min="4" max="60" value="20">
+  <div style="margin-top:14px"><button id="reset">Reset view</button></div>
+</aside>
+
+<main>
+  <canvas id="c"></canvas>
+  <div id="hud"></div>
+  <div id="hint">drag a node to move it · drag the background to rotate · shift-drag to pan · double-click to focus</div>
+  <button id="play" title="Pause rotation (space)"></button>
+
+  <div id="lab" class="collapsed">
+    <button id="labToggle" title="Test controls">
+      <svg viewBox="0 0 16 16"><path d="M1 4h14M1 8h14M1 12h14"/>
+        <circle cx="5" cy="4" r="1.9" fill="currentColor" stroke="none"/>
+        <circle cx="10.5" cy="8" r="1.9" fill="currentColor" stroke="none"/>
+        <circle cx="6.5" cy="12" r="1.9" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <div id="labBody">
+      <div class="grp"><span>Shell</span>
+        <div class="seg" id="shellSeg">
+          <button data-shell="none">Off</button>
+          <button data-shell="sphere" class="on">Sphere</button>
+          <button data-shell="bipyramid">Bipyramid</button>
+          <button data-shell="cylinder">Cylinder</button>
+        </div>
+      </div>
+      <div class="grp"><span>Size</span>
+        <input type="range" id="shellSize" min="220" max="620" value="400">
+      </div>
+      <div class="grp"><span>Style</span>
+        <div class="seg" id="styleSeg">
+          <button data-style="labelled" class="on">Labelled</button>
+          <button data-style="obsidian">Obsidian</button>
+        </div>
+      </div>
+      <div class="grp">
+        <label><input type="checkbox" id="confine" checked> Confine</label>
+        <label><input type="checkbox" id="axes" checked> Axes</label>
+      </div>
+    </div>
+  </div>
+</main>
+
+<aside class="right"><div id="detail" class="empty">Select a node.</div></aside>
+
+<script>
+const GRAPH = /*__GRAPH__*/null;
+
+const TYPE = {
+  "standard operating procedure": { key: "SOP",  css: "--sop",  r: 5.5 },
+  "form":                         { key: "Form", css: "--form", r: 4.0 },
+  "analytical procedure":         { key: "AP",   css: "--ap",   r: 5.0 },
+  "test method":                  { key: "TM",   css: "--tm",   r: 4.5 },
+  "instrument":                   { key: "Instrument", css: "--inst", r: 6.5 },
+};
+/* `mag` is how strongly this kind of evidence binds two documents.
+   A declared dependency in the RELATED PROCEDURES section is the laboratory
+   stating the relationship. A shared thermometer is barely a relationship at
+   all. The layout answers to this, so strongly bound documents sit together. */
+const KIND = {
+  declared:        { label: "Declared (RELATED section)", dash: false, mag: 1.00 },
+  "attached form": { label: "Form attached to the SOP",   dash: false, mag: 1.00 },
+  mentioned:       { label: "Mentioned in the body",      dash: false, mag: 0.65 },
+  title:           { label: "Named by title, no number",  dash: false, mag: 0.55 },
+  equipment:       { label: "Uses this instrument",       dash: false, mag: 0.28 },
+  asserted:        { label: "Added by hand",              dash: true,  mag: 1.00 },
+};
+const ORDER = ["declared", "attached form", "mentioned", "title", "equipment"];
+
+/* Resolve CSS custom properties once so canvas can use real colour values. */
+const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const nodeColor = n => colourBy === "cluster" ? clusterColor(n.id) : COLOR[TYPE[n.type].css];
+let COLOR = {};
+const readColors = () => {
+  COLOR = {};
+  for (const s of Object.values(TYPE)) COLOR[s.css] = cssVar(s.css);
+  COLOR.ink = cssVar("--ink"); COLOR.bg = cssVar("--bg"); COLOR.dim = cssVar("--dim");
+  COLOR.web = cssVar("--web");
+};
+readColors();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
+
+const nodes = GRAPH.nodes.map(n => ({ ...n, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }));
+const byId = new Map(nodes.map(n => [n.id, n]));
+
+/* One line per pair of documents. The line shows the strongest kind of
+   evidence, but its magnitude ACCUMULATES every kind found. Two documents
+   that declare each other, cite each other in the body, and share an
+   instrument are bound three times over, and the layout should say so. */
+const pairs = new Map();
+for (const l of GRAPH.links) {
+  if (!byId.has(l.source) || !byId.has(l.target)) continue;
+  const k = [l.source, l.target].sort().join("|");
+  const cur = pairs.get(k);
+  if (!cur) {
+    pairs.set(k, { ...l, s: byId.get(l.source), t: byId.get(l.target),
+                   kinds: [l.kind], mag: KIND[l.kind].mag });
+  } else {
+    if (!cur.kinds.includes(l.kind)) {
+      cur.kinds.push(l.kind);
+      cur.mag += KIND[l.kind].mag;
+      if (ORDER.indexOf(l.kind) < ORDER.indexOf(cur.kind)) cur.kind = l.kind;
+    }
+  }
+}
+const edges = [...pairs.values()];
+const MAXMAG = Math.max(...edges.map(e => e.mag), 1);
+
+const deg = new Map(nodes.map(n => [n.id, 0]));
+for (const e of edges) { deg.set(e.source, deg.get(e.source) + 1); deg.set(e.target, deg.get(e.target) + 1); }
+nodes.forEach(n => n.deg = deg.get(n.id));
+const nbrs = new Map(nodes.map(n => [n.id, new Set()]));
+for (const e of edges) { nbrs.get(e.source).add(e.target); nbrs.get(e.target).add(e.source); }
+
+/* Affinity: two documents that share many neighbours belong together even if
+   neither one names the other. EXL-SOP26 and EXL-SOP30 both hang off the
+   balance, the weighing forms and the calibration SOPs; nothing links them
+   directly. These pull weakly, so they shape clusters without inventing
+   visible links. They are never drawn — only the layout feels them. */
+const affinity = [];
+{
+  const ids = nodes.filter(n => n.deg >= 2).map(n => n.id);
+  const direct = new Set(edges.map(e => [e.source, e.target].sort().join("|")));
+  for (let i = 0; i < ids.length; i++) {
+    const A = nbrs.get(ids[i]);
+    for (let j = i + 1; j < ids.length; j++) {
+      const key = [ids[i], ids[j]].sort().join("|");
+      if (direct.has(key)) continue;
+      const B = nbrs.get(ids[j]);
+      let shared = 0;
+      for (const x of A) if (B.has(x)) shared++;
+      if (shared < 3) continue;
+      const jaccard = shared / (A.size + B.size - shared);
+      if (jaccard < 0.30) continue;
+      affinity.push({ s: byId.get(ids[i]), t: byId.get(ids[j]), mag: jaccard * 0.9 });
+    }
+  }
+  affinity.sort((a, b) => b.mag - a.mag);
+  affinity.length = Math.min(affinity.length, 400);   // keep the layout honest
+}
+
+/* Clusters, by weighted label propagation. Each node repeatedly takes the
+   label its neighbours hold most strongly. It settles into communities that
+   match how the laboratory actually works, not how the folders are named. */
+const cluster = new Map(nodes.map(n => [n.id, n.id]));
+{
+  const pull = new Map(nodes.map(n => [n.id, []]));
+  for (const e of edges) {
+    pull.get(e.source).push([e.target, e.mag]);
+    pull.get(e.target).push([e.source, e.mag]);
+  }
+  for (const a of affinity) {
+    pull.get(a.s.id).push([a.t.id, a.mag]);
+    pull.get(a.t.id).push([a.s.id, a.mag]);
+  }
+  const order = nodes.map(n => n.id).sort();
+  for (let pass = 0; pass < 14; pass++) {
+    let changed = 0;
+    for (const id of order) {
+      const score = new Map();
+      for (const [other, w] of pull.get(id))
+        score.set(cluster.get(other), (score.get(cluster.get(other)) || 0) + w);
+      if (!score.size) continue;
+      let best = cluster.get(id), bestV = -1;
+      for (const [lab, v] of [...score].sort((a, b) => a[0] < b[0] ? -1 : 1))
+        if (v > bestV) { bestV = v; best = lab; }
+      if (best !== cluster.get(id)) { cluster.set(id, best); changed++; }
+    }
+    if (!changed) break;
+  }
+}
+const clusterSizes = new Map();
+for (const l of cluster.values()) clusterSizes.set(l, (clusterSizes.get(l) || 0) + 1);
+const bigClusters = [...clusterSizes.entries()].filter(([, n]) => n >= 3)
+  .sort((a, b) => b[1] - a[1]).map(([l]) => l);
+const clusterIndex = new Map(bigClusters.map((l, i) => [l, i]));
+const CLUSTER_HUES = [200, 140, 40, 350, 275, 175, 15, 310, 95, 240, 60, 325];
+const clusterColor = id => {
+  const i = clusterIndex.get(cluster.get(id));
+  return i === undefined ? cssVar("--dim") : `hsl(${CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)`;
+};
+
+/* ---------- state ---------- */
+const activeTypes = new Set(Object.keys(TYPE));
+const activeKinds = new Set(Object.keys(KIND));
+let showLabels = true, hideIsolated = false, flat = false, spin = true;
+let selected = null, focus = null, edgeAlpha = 0.20;
+let useAffinity = true, colourBy = "type";
+let shellShape = "sphere", shellR = 400, confine = true, showAxes = true;
+let style = "labelled", hovered = null;
+let heldNode = null, holdDepth = 0, coastFrames = 0;
+const obs = () => style === "obsidian";
+
+let yaw = 0.6, pitch = -0.35, dist = 1350, zoom = 1, panX = 0, panY = 0;
+const FOCAL = 900;
+
+/* ---------- filters ---------- */
+function buildFilters() {
+  const t = document.getElementById("types");
+  for (const [name, spec] of Object.entries(TYPE)) {
+    const n = nodes.filter(x => x.type === name).length;
+    if (!n) continue;
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" checked>
+      <span class="swatch" style="background:var(${spec.css})"></span>${spec.key}
+      <span class="count">${n}</span>`;
+    el.querySelector("input").onchange = e => {
+      e.target.checked ? activeTypes.add(name) : activeTypes.delete(name);
+      settle();
+    };
+    t.appendChild(el);
+  }
+  const k = document.getElementById("kinds");
+  for (const [name, spec] of Object.entries(KIND)) {
+    const n = edges.filter(x => x.kind === name).length;
+    if (!n && name !== "asserted") continue;
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" ${n ? "checked" : "disabled"}>
+      <span class="edgekey ${spec.dash ? "dash" : ""}"></span>${spec.label}
+      <span class="count">${n}</span>`;
+    if (!n) activeKinds.delete(name);
+    el.querySelector("input").onchange = e => {
+      e.target.checked ? activeKinds.add(name) : activeKinds.delete(name);
+      settle();
+    };
+    k.appendChild(el);
+  }
+}
+
+let VN = [], VE = [], VA = [];
+function recompute() {
+  VE = edges.filter(e => activeKinds.has(e.kind) && activeTypes.has(e.s.type) && activeTypes.has(e.t.type)
+    && (!focus || e.source === focus || e.target === focus));
+  const linked = new Set(VE.flatMap(e => [e.source, e.target]));
+  VN = nodes.filter(n => {
+    if (!activeTypes.has(n.type)) return false;
+    if (focus) return n.id === focus || nbrs.get(focus).has(n.id);
+    if (hideIsolated && !linked.has(n.id)) return false;
+    return true;
+  });
+  const set = new Set(VN.map(n => n.id));
+  VE = VE.filter(e => set.has(e.source) && set.has(e.target));
+  VA = affinity.filter(a => set.has(a.s.id) && set.has(a.t.id));
+}
+
+/* ---------- the outer shell ----------
+   The shell is not decoration. It is the volume the graph is allowed to
+   occupy, so the shape changes how the clusters arrange themselves. A sphere
+   spreads them evenly; a bipyramid forces a waist and two poles; a cylinder
+   gives a column with flat ends.
+
+   Each shape provides `inside(x, y, z)`: how far out the point is, as a
+   fraction of the boundary. Below 1 is inside. */
+const SHELL = {
+  sphere: {
+    depth: (x, y, z, R) => Math.hypot(x, y, z) / R,
+    wire(R) {
+      const rings = [];
+      for (let i = 1; i <= 5; i++) {                       // lines of latitude
+        const phi = (i / 6) * Math.PI, r = R * Math.sin(phi), y = R * Math.cos(phi);
+        rings.push(circle(r, y, 48));
+      }
+      for (let i = 0; i < 6; i++) {                        // lines of longitude
+        const a = (i / 6) * Math.PI, pts = [];
+        for (let k = 0; k <= 48; k++) {
+          const t = (k / 48) * Math.PI * 2;
+          pts.push([R * Math.sin(t) * Math.cos(a), R * Math.cos(t), R * Math.sin(t) * Math.sin(a)]);
+        }
+        rings.push(pts);
+      }
+      return rings;
+    },
+  },
+  bipyramid: {
+    // Hexagonal equator at radius R, apexes at plus and minus 1.35 R on Y.
+    depth: (x, y, z, R) => Math.hypot(x, z) / R + Math.abs(y) / (R * 1.35),
+    wire(R) {
+      const H = R * 1.35, n = 6, eq = [], out = [];
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2;
+        eq.push([R * Math.cos(a), 0, R * Math.sin(a)]);
+      }
+      out.push([...eq, eq[0]]);
+      for (const p of eq) { out.push([[0, -H, 0], p]); out.push([p, [0, H, 0]]); }
+      return out;
+    },
+  },
+  cylinder: {
+    depth: (x, y, z, R) => Math.max(Math.hypot(x, z) / R, Math.abs(y) / (R * 0.95)),
+    wire(R) {
+      const H = R * 0.95, out = [circle(R, -H, 48), circle(R, H, 48), circle(R, 0, 48)];
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2, x = R * Math.cos(a), z = R * Math.sin(a);
+        out.push([[x, -H, z], [x, H, z]]);
+      }
+      return out;
+    },
+  },
+};
+function circle(r, y, seg) {
+  const pts = [];
+  for (let i = 0; i <= seg; i++) {
+    const a = (i / seg) * Math.PI * 2;
+    pts.push([r * Math.cos(a), y, r * Math.sin(a)]);
+  }
+  return pts;
+}
+
+/* Push a node back inside the shell. Applied every iteration, so the shape
+   is a real constraint on the layout rather than a line drawn afterwards. */
+function confineNode(n) {
+  if (shellShape === "none" || !confine) return;
+  const d = SHELL[shellShape].depth(n.x, n.y, n.z, shellR);
+  if (d <= 1) return;
+  const k = 1 / d;
+  n.x *= k; n.y *= k; n.z *= k;
+  n.vx *= 0.6; n.vy *= 0.6; n.vz *= 0.6;
+}
+
+/* ---------- 3D force layout ---------- */
+function spring(e, mag, scale) {
+  const dx = e.t.x - e.s.x, dy = e.t.y - e.s.y, dz = e.t.z - e.s.z;
+  const d = Math.hypot(dx, dy, dz) || 0.01;
+  const m = Math.min(mag, 3);
+  let rest = 210 / (0.75 + m) + (e.s.deg + e.t.deg) * 0.5;
+  let k = (0.010 + 0.013 * m) * scale;
+  if (obs()) {
+    // A node with one or two links is a leaf. Pull it in tight against its
+    // hub. Global repulsion then spreads the siblings sideways, and the fan
+    // that gives this style its look falls out of the two forces together.
+    const leaf = Math.min(e.s.deg, e.t.deg);
+    if (leaf <= 2) { rest *= 0.42; k *= 2.2; }
+  }
+  // A node being dragged grips its neighbours, so they travel with it instead
+  // of stretching their links and snapping back afterwards.
+  if (heldNode && (e.s === heldNode || e.t === heldNode)) { k *= 3.2; rest *= 0.8; }
+  const f = (d - rest) * k;
+  const fx = dx / d * f, fy = dy / d * f, fz = dz / d * f;
+  e.s.vx += fx; e.s.vy += fy; e.s.vz += fz;
+  e.t.vx -= fx; e.t.vy -= fy; e.t.vz -= fz;
+}
+
+/* Give a position to nodes that do not have one yet.
+
+   A node arriving because its type was switched on is dropped beside the
+   neighbours it already has, not thrown onto the shell. That way switching
+   forms on adds forms around the SOPs instead of rearranging the SOPs. */
+function seedUnplaced(fresh, visible) {
+  fresh.forEach((n, i) => {
+    const anchors = [...nbrs.get(n.id)]
+      .map(id => byId.get(id))
+      .filter(m => m && m.placed && visible.has(m.id));
+    if (anchors.length) {
+      let x = 0, y = 0, z = 0;
+      for (const a of anchors) { x += a.x; y += a.y; z += a.z; }
+      const k = anchors.length, j = 34;
+      n.x = x / k + (Math.random() - .5) * j;
+      n.y = y / k + (Math.random() - .5) * j;
+      n.z = flat ? 0 : z / k + (Math.random() - .5) * j;
+    } else {
+      // Nothing to hang off: an even point on the shell surface.
+      const t = (i + 0.5) / Math.max(1, fresh.length);
+      const phi = Math.acos(1 - 2 * t), theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      const R = shellR * 0.82;
+      n.x = R * Math.sin(phi) * Math.cos(theta);
+      n.y = R * Math.sin(phi) * Math.sin(theta);
+      n.z = flat ? 0 : R * Math.cos(phi);
+    }
+    n.vx = n.vy = n.vz = 0;
+    n.placed = true;
+  });
+}
+
+/* `moving` limits which nodes may change position. Everything still exerts
+   force, so new nodes feel the ones already on screen — but the ones already
+   on screen do not drift while you are looking at them. */
+function layout(iterations, moving) {
+  if (!VN.length) return;
+  const visible = new Set(VN.map(n => n.id));
+  seedUnplaced(VN.filter(n => !n.placed), visible);
+  for (let i = 0; i < iterations; i++) step(moving, 1 - i / iterations);
+}
+
+/* One relaxation pass. `cool` scales how far anything actually moves, so the
+   same code serves a cooling solve and a live drag at constant temperature. */
+function step(moving, cool) {
+  {
+    for (let i = 0; i < VN.length; i++) {
+      const a = VN[i];
+      for (let j = i + 1; j < VN.length; j++) {
+        const b = VN[j];
+        const dx = b.x - a.x, dy = b.y - a.y, dz = b.z - a.z;
+        const d2 = dx * dx + dy * dy + dz * dz || 0.01;
+        if (d2 > 250000) continue;
+        const d = Math.sqrt(d2), f = 9000 / d2;
+        const fx = dx / d * f, fy = dy / d * f, fz = dz / d * f;
+        a.vx -= fx; a.vy -= fy; a.vz -= fz;
+        b.vx += fx; b.vy += fy; b.vz += fz;
+      }
+    }
+    // Springs answer to magnitude: a heavier bond rests shorter and pulls
+    // harder, so closeness on screen means strength of association.
+    for (const e of VE) spring(e, e.mag, 1);
+    if (useAffinity) for (const a of VA) spring(a, a.mag, 0.55);
+    for (const n of VN) {
+      if (moving && !moving.has(n.id)) { n.vx = n.vy = n.vz = 0; continue; }
+      n.vx -= n.x * 0.0030; n.vy -= n.y * 0.0030; n.vz -= n.z * 0.0030;
+      n.x += n.vx * cool; n.y += n.vy * cool;
+      n.z = flat ? 0 : n.z + n.vz * cool;
+      n.vx *= 0.84; n.vy *= 0.84; n.vz *= 0.84;
+      confineNode(n);
+    }
+  }
+}
+
+/* ---------- camera ---------- */
+let W = 0, H = 0, DPR = 1;
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+/* Obsidian's look comes from contrast, not from size: leaves are almost
+   points and hubs are large. sqrt(degree) gives that spread without the
+   biggest node swamping the view. */
+function radiusOf(n) {
+  if (obs()) return 1.5 + 2.5 * Math.sqrt(n.deg);
+  return TYPE[n.type].r + Math.min(6, n.deg * 0.30);
+}
+
+function project(n) {
+  const cy = Math.cos(yaw), sy = Math.sin(yaw);
+  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const x1 = n.x * cy + n.z * sy;
+  const z1 = -n.x * sy + n.z * cy;
+  const y2 = n.y * cp - z1 * sp;
+  const z2 = n.y * sp + z1 * cp + dist;
+  const k = FOCAL / Math.max(60, z2) * zoom;
+  return { sx: W / 2 + x1 * k + panX, sy: H / 2 + y2 * k + panY, k, depth: z2 };
+}
+
+/* The cursor gives two numbers; a node needs three. Hold the node's camera
+   depth fixed and invert the projection for the other two, so the node slides
+   in the plane facing the viewer. Rotate the graph and dragging works in a
+   different plane, which is how you reach every direction. */
+function unproject(sx, sy, depth) {
+  const k = FOCAL / Math.max(60, depth) * zoom;
+  const x1 = (sx - W / 2 - panX) / k;
+  const y2 = (sy - H / 2 - panY) / k;
+  const zc = depth - dist;
+  const cy = Math.cos(yaw), sy_ = Math.sin(yaw);
+  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const y = y2 * cp + zc * sp;
+  const z1 = -y2 * sp + zc * cp;
+  return { x: x1 * cy - z1 * sy_, y, z: x1 * sy_ + z1 * cy };
+}
+
+function resize() {
+  DPR = window.devicePixelRatio || 1;
+  W = canvas.clientWidth; H = canvas.clientHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+
+/* ---------- drawing ---------- */
+const AXES = [
+  { v: [1, 0, 0], label: "X", hue: 4 },
+  { v: [0, -1, 0], label: "Y", hue: 140 },
+  { v: [0, 0, 1], label: "Z", hue: 215 },
+];
+
+function drawShellAndAxes() {
+  const p3 = (x, y, z) => project({ x, y, z });
+
+  if (shellShape !== "none") {
+    ctx.strokeStyle = COLOR.dim;
+    ctx.lineWidth = 1;
+    for (const line of SHELL[shellShape].wire(shellR)) {
+      ctx.beginPath();
+      line.forEach(([x, y, z], i) => {
+        const q = p3(x, y, z);
+        i ? ctx.lineTo(q.sx, q.sy) : ctx.moveTo(q.sx, q.sy);
+      });
+      // Fade the whole line by its average depth so the far side recedes.
+      const mid = line[Math.floor(line.length / 2)];
+      const q = p3(mid[0], mid[1], mid[2]);
+      ctx.globalAlpha = q.depth > dist ? 0.055 : 0.16;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  if (showAxes) {
+    ctx.lineWidth = 1.4;
+    for (const ax of AXES) {
+      // Each shell depth() is linear in position, so the distance from the
+      // origin to the surface along a unit direction is exactly 1/depth(v).
+      // The Y axis therefore reaches the bipyramid's apex while X and Z stop
+      // at its equator, instead of all three running to one shared length.
+      const L = shellShape === "none"
+        ? 420
+        : 1 / SHELL[shellShape].depth(ax.v[0], ax.v[1], ax.v[2], shellR);
+      const o = p3(0, 0, 0), e = p3(ax.v[0] * L, ax.v[1] * L, ax.v[2] * L);
+      const n = p3(-ax.v[0] * L, -ax.v[1] * L, -ax.v[2] * L);
+      ctx.strokeStyle = `hsl(${ax.hue} 70% 58%)`;
+      ctx.globalAlpha = 0.20;
+      ctx.beginPath(); ctx.moveTo(n.sx, n.sy); ctx.lineTo(o.sx, o.sy); ctx.stroke();
+      ctx.globalAlpha = 0.65;
+      ctx.beginPath(); ctx.moveTo(o.sx, o.sy); ctx.lineTo(e.sx, e.sy); ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = `hsl(${ax.hue} 70% 58%)`;
+      ctx.font = "600 11px -apple-system, system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(ax.label, e.sx, e.sy - 5);
+    }
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  const near = selected ? new Set([selected, ...nbrs.get(selected)]) : null;
+
+  drawShellAndAxes();
+
+  for (const n of VN) n.p = project(n);
+
+  // Painter's algorithm: far things first, so near things sit on top.
+  const drawn = [...VN].sort((a, b) => b.p.depth - a.p.depth);
+  const zs = VN.map(n => n.p.depth);
+  const zNear = Math.min(...zs), zFar = Math.max(...zs), span = Math.max(1, zFar - zNear);
+
+  ctx.shadowBlur = 0;
+  for (const e of VE) {
+    const a = e.s.p, b = e.t.p;
+    if (!a || !b) continue;
+    const lit = !near || (near.has(e.source) && near.has(e.target));
+    const mid = ((a.depth + b.depth) / 2 - zNear) / span;   // 0 near, 1 far
+    // Magnitude shows twice: a stronger bond draws thicker and brighter.
+    const m = Math.min(e.mag, MAXMAG) / MAXMAG;
+    if (obs()) {
+      // One hue, hairline, barely there. The web reads as texture behind the
+      // nodes rather than as a set of lines to be traced individually.
+      ctx.globalAlpha = (lit ? edgeAlpha * 0.85 : edgeAlpha * 0.10) * (1 - mid * 0.55);
+      ctx.strokeStyle = near && lit ? cssVar("--accent") : COLOR.web;
+      ctx.lineWidth = (near && lit ? 1.3 : 0.7) * Math.min(1.3, a.k);
+    } else {
+      ctx.globalAlpha = (lit ? edgeAlpha * (0.35 + 1.5 * m) : edgeAlpha * 0.12) * (1 - mid * 0.65);
+      ctx.strokeStyle = near && lit ? cssVar("--accent") : COLOR.dim;
+      ctx.lineWidth = (0.5 + 2.2 * m) * (lit && near ? 1.5 : 1) * Math.min(1.4, a.k);
+    }
+    if (KIND[e.kind].dash) ctx.setLineDash([5, 4]); else ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+
+  const labels = [];
+  for (const n of drawn) {
+    const p = n.p, spec = TYPE[n.type];
+    const t = (p.depth - zNear) / span;
+    const r = radiusOf(n) * p.k;
+    const lit = !near || near.has(n.id);
+    ctx.globalAlpha = (lit ? 1 : 0.10) * (1 - t * 0.55);
+
+    const col = nodeColor(n);
+    // The bloom is what makes a node look lit rather than painted. It grows
+    // with degree, so hubs glow and leaves stay as points.
+    if (obs()) {
+      ctx.shadowColor = col;
+      ctx.shadowBlur = (4 + Math.min(16, n.deg * 0.9)) * Math.min(1.6, p.k)
+                       * (lit ? 1 : 0.3) * (1 - t * 0.5);
+    }
+    ctx.beginPath();
+    ctx.arc(p.sx, p.sy, Math.max(1.2, r), 0, 6.2832);
+    if (n.present === false) {
+      ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.setLineDash([2.5, 2.5]);
+      ctx.stroke(); ctx.setLineDash([]);
+    } else {
+      ctx.fillStyle = col; ctx.fill();
+      if (obs()) {
+        // A second, tighter pass so the centre reads solid through the bloom.
+        ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(p.sx, p.sy, Math.max(0.8, r * 0.62), 0, 6.2832);
+        ctx.fillStyle = "#fff"; ctx.globalAlpha *= 0.55; ctx.fill();
+        ctx.globalAlpha /= 0.55;
+      } else {
+        ctx.strokeStyle = COLOR.bg; ctx.lineWidth = 1.5 * p.k; ctx.stroke();
+      }
+    }
+    ctx.shadowBlur = 0;
+    if (n.id === selected) {
+      ctx.strokeStyle = cssVar("--accent"); ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 5, 0, 6.2832); ctx.stroke();
+    }
+    /* Two ways a label appears.
+
+       Standing labels are what the "Show labels" checkbox controls. The
+       Obsidian style keeps them sparse - hubs only until you zoom in - so the
+       field of dots survives, but the checkbox still does something visible,
+       which it did not before.
+
+       On-demand labels are selection and hover. Those are an explicit request
+       for one name, so they ignore the checkbox entirely. */
+    const standing = showLabels && (obs()
+      ? (n.deg >= 8 || zoom > 1.5 || (focus && VN.length < 40))
+      : (n.deg > 4 || (focus && VN.length < 40)));
+    const onDemand = n.id === selected || n.id === hovered;
+    if (lit && (standing || onDemand)) labels.push({ n, p, t, r, lead: onDemand });
+  }
+
+  // Labels last, nearest first, so the closest text wins any overlap.
+  ctx.globalAlpha = 1;
+  ctx.textAlign = "center";
+  const taken = [];
+  // Selected and hovered names are claimed first, so a nearer standing label
+  // can never push aside the one the user actually asked for.
+  labels.sort((a, b) => (b.lead - a.lead) || (a.t - b.t));
+  for (const L of labels) {
+    const text = (L.n.title || L.n.id).slice(0, 34);
+    const size = Math.max(8, Math.min(13, 11 * L.p.k));
+    ctx.font = `${L.lead ? "600 " : ""}${size}px -apple-system, system-ui, sans-serif`;
+    const w = ctx.measureText(text).width, x = L.p.sx, y = L.p.sy - L.r - 5;
+    if (taken.some(b => Math.abs(b.x - x) < (b.w + w) / 2 && Math.abs(b.y - y) < 12)) continue;
+    taken.push({ x, y, w });
+    ctx.globalAlpha = L.lead ? 1 : 1 - L.t * 0.6;
+    ctx.lineWidth = 3; ctx.strokeStyle = COLOR.bg; ctx.strokeText(text, x, y);
+    ctx.fillStyle = COLOR.ink; ctx.fillText(text, x, y);
+  }
+  ctx.globalAlpha = 1;
+
+  document.getElementById("hud").textContent =
+    `${VN.length} nodes · ${VE.length} links${focus ? " · focused" : ""}${flat ? " · 2D" : ""}`;
+}
+
+/* Everything the held node is not connected to gets shoved out of the way,
+   with the push falling off to nothing at the edge of the wake. Neighbours are
+   exempt: they are being pulled in by their springs at the same moment, and
+   pushing them too would just fight that. */
+function wake(D) {
+  const near = nbrs.get(D.id);
+  const R = 210, R2 = R * R;
+  for (const n of VN) {
+    if (n === D || near.has(n.id)) continue;
+    const dx = n.x - D.x, dy = n.y - D.y, dz = n.z - D.z;
+    const d2 = dx * dx + dy * dy + dz * dz || 0.01;
+    if (d2 > R2) continue;
+    const d = Math.sqrt(d2);
+    const f = 26 * (1 - d / R);
+    n.vx += dx / d * f; n.vy += dy / d * f; n.vz += dz / d * f;
+  }
+}
+
+function physicsFrame() {
+  if (heldNode) {
+    const moving = new Set(VN.filter(n => n !== heldNode).map(n => n.id));
+    wake(heldNode);
+    step(moving, 0.6);            // constant temperature while held
+    step(moving, 0.6);
+    confineNode(heldNode);
+    return true;
+  }
+  if (coastFrames > 0) {
+    // Let the graph settle after release instead of freezing mid-motion.
+    coastFrames--;
+    step(null, 0.5 * (coastFrames / 45));
+    return true;
+  }
+  return false;
+}
+
+/* ---------- animation ---------- */
+let raf = null;
+function tick() {
+  const busy = physicsFrame();
+  if (spin && !dragging && !heldNode && !flat) yaw += 0.0016;
+  if (busy || (spin && !dragging && !heldNode && !flat)) draw();
+  raf = requestAnimationFrame(tick);
+}
+
+/* ---------- interaction ---------- */
+let dragging = false, last = null, moved = 0;
+
+canvas.addEventListener("mousedown", ev => {
+  moved = 0;
+  const hit = ev.shiftKey ? null : pick(ev);
+  if (hit) {
+    // Pressing a node selects it and grabs it. Pressing anywhere else still
+    // rotates the view, so both gestures stay available without a modifier.
+    heldNode = hit;
+    holdDepth = hit.p ? hit.p.depth : dist;
+    if (selected !== hit.id) select(hit.id);
+    setSpin(false);
+    canvas.style.cursor = "grabbing";
+    return;
+  }
+  dragging = true;
+  last = { x: ev.clientX, y: ev.clientY, shift: ev.shiftKey };
+  canvas.classList.add("grabbing");
+});
+canvas.addEventListener("mousemove", ev => {
+  if (dragging || heldNode) return;
+  const h = pick(ev);
+  const id = h ? h.id : null;
+  if (id !== hovered) { hovered = id; canvas.style.cursor = id ? "pointer" : "grab"; draw(); }
+});
+canvas.addEventListener("mouseleave", () => { if (hovered) { hovered = null; draw(); } });
+
+window.addEventListener("mousemove", ev => {
+  if (heldNode) {
+    moved += 6;
+    const b = canvas.getBoundingClientRect();
+    const q = unproject(ev.clientX - b.left, ev.clientY - b.top, holdDepth);
+    heldNode.x = q.x; heldNode.y = q.y; heldNode.z = flat ? 0 : q.z;
+    heldNode.vx = heldNode.vy = heldNode.vz = 0;
+    return;                       // the physics frame redraws
+  }
+  if (!dragging) return;
+  const dx = ev.clientX - last.x, dy = ev.clientY - last.y;
+  moved += Math.abs(dx) + Math.abs(dy);
+  if (last.shift) { panX += dx; panY += dy; }
+  else {
+    yaw += dx * 0.006;
+    pitch = Math.max(-1.45, Math.min(1.45, pitch + dy * 0.006));
+  }
+  last.x = ev.clientX; last.y = ev.clientY;
+  draw();
+});
+window.addEventListener("mouseup", () => {
+  if (heldNode) { heldNode = null; coastFrames = 45; canvas.style.cursor = "grab"; }
+  dragging = false;
+  canvas.classList.remove("grabbing");
+});
+
+canvas.addEventListener("wheel", ev => {
+  ev.preventDefault();
+  zoom = Math.min(8, Math.max(0.25, zoom * Math.exp(-ev.deltaY * 0.0014)));
+  draw();
+}, { passive: false });
+
+function pick(ev) {
+  const b = canvas.getBoundingClientRect();
+  const mx = ev.clientX - b.left, my = ev.clientY - b.top;
+  let best = null, bestD = 18;
+  for (const n of VN) {
+    if (!n.p) continue;
+    const d = Math.hypot(n.p.sx - mx, n.p.sy - my);
+    const r = Math.max(6, radiusOf(n) * n.p.k);
+    if (d < Math.max(bestD, r) && (!best || n.p.depth < best.p.depth)) { best = n; }
+  }
+  return best;
+}
+
+/* Rotation is owned in one place, so the canvas, the button and the checkbox
+   can never disagree about whether the graph is spinning. */
+const PLAY = '<svg viewBox="0 0 16 16"><path d="M4 2.5l9 5.5-9 5.5z"/></svg>';
+const PAUSE = '<svg viewBox="0 0 16 16"><path d="M4 2.5h3.2v11H4zM8.8 2.5H12v11H8.8z"/></svg>';
+const playBtn = document.getElementById("play");
+const spinBox = document.getElementById("spin");
+
+function setSpin(on) {
+  spin = on;
+  spinBox.checked = on;
+  playBtn.innerHTML = on ? PAUSE : PLAY;
+  playBtn.title = on ? "Pause rotation (space)" : "Resume rotation (space)";
+}
+
+canvas.addEventListener("click", ev => {
+  if (moved > 5) return;               // a rotate is not a click
+  const n = pick(ev);
+  select(n ? n.id : null);
+  // Selecting something means you want to read it. Rotation fights that.
+  // Clicking empty space is how you say you are done reading.
+  setSpin(!n);
+});
+playBtn.onclick = () => setSpin(!spin);
+window.addEventListener("keydown", ev => {
+  if (ev.code === "Space" && ev.target.tagName !== "INPUT") { ev.preventDefault(); setSpin(!spin); }
+});
+canvas.addEventListener("dblclick", ev => {
+  const n = pick(ev);
+  focus = n && focus !== n.id ? n.id : null;
+  resolve();   // focus is a different view, so it is laid out afresh
+});
+
+/* ---------- detail panel ---------- */
+function select(id) {
+  selected = id;
+  if (id) setSpin(false);   // reading beats spinning, whichever route you came by
+  draw();
+  const el = document.getElementById("detail");
+  if (!id) { el.className = "empty"; el.textContent = "Select a node."; return; }
+  const n = byId.get(id), spec = TYPE[n.type];
+  const mine = edges.filter(e => e.source === id || e.target === id)
+    .map(e => ({ other: byId.get(e.source === id ? e.target : e.source),
+                 kind: e.kind, kinds: e.kinds, mag: e.mag }))
+    .sort((a, b) => b.mag - a.mag);   // strongest association first
+
+  el.className = "detail";
+  el.innerHTML = `
+    <span class="pill" style="background:var(${spec.css});color:#fff">${spec.key}</span>
+    <h3>${n.title || n.id}</h3>
+    <div class="id">${n.id}${n.revision ? " rev " + n.revision : ""}</div>
+    ${n.present === false ? `<div class="warn"><b>Not in any folder.</b>
+      ${mine.length} document${mine.length === 1 ? "" : "s"} reference this, but no file exists.</div>` : ""}
+    ${n.cls !== "INSTRUMENT" && n.present !== false ? `
+    <div class="meta">
+      <div><dt>File</dt><dd>${n.file || "—"}</dd></div>
+      <div><dt>Revision</dt><dd>${n.revision || "—"}</dd></div>
+      <div><dt>Links</dt><dd>${mine.length}</dd></div>
+    </div>
+    <button class="primary" id="openbtn">Open in Word</button>` : ""}
+    <h2>Connected to ${mine.length}</h2>
+    ${mine.map(m => `<div class="nb" data-go="${m.other.id}">
+      <span class="swatch" style="background:var(${TYPE[m.other.type].css})"></span>
+      <span>${m.other.title || m.other.id}</span>
+      <small>${"\u25CF".repeat(Math.max(1, Math.round(m.mag)))} ${m.kinds.join(", ")}</small>
+      </div>`).join("") || '<div class="sub">Nothing.</div>'}`;
+
+  el.querySelectorAll("[data-go]").forEach(d => d.onclick = () => select(d.dataset.go));
+  const btn = el.querySelector("#openbtn");
+  // The real viewer asks the operating system to open the file. A browser
+  // blocks that, so this only proves where the button belongs. Ticket #9.
+  if (btn) btn.onclick = () => n.path && window.open("file://" + encodeURI(n.path));
+}
+
+/* ---------- controls ---------- */
+document.getElementById("q").addEventListener("input", ev => {
+  const q = ev.target.value.trim().toLowerCase();
+  const box = document.getElementById("results");
+  if (!q) { box.innerHTML = ""; return; }
+  const hits = nodes.filter(n => (n.title || "").toLowerCase().includes(q) || n.id.toLowerCase().includes(q))
+    .sort((a, b) => b.deg - a.deg).slice(0, 12);
+  box.innerHTML = hits.map(n => `<div class="hit" data-go="${n.id}">
+    <b>${n.title || n.id}</b><span>${n.id} · ${TYPE[n.type].key} · ${n.deg} links</span></div>`).join("")
+    || '<div class="sub" style="padding:6px">No match.</div>';
+  box.querySelectorAll("[data-go]").forEach(d => d.onclick = () => select(d.dataset.go));
+});
+
+/* Two kinds of update, deliberately different.
+
+   `settle` is for changing WHAT IS SHOWN. Nodes already on screen keep their
+   positions exactly; only nodes arriving for the first time move. Switching a
+   type off and on again therefore returns it to where it was.
+
+   `resolve` is for changing THE RULES OF THE SPACE - the shell, 2D, the
+   affinity forces - where every position has to be worked out again. */
+function settle(iterations = 320) {
+  recompute();
+  // Only nodes that have NEVER held a position may move. A type switched off
+  // and back on keeps its coordinates, so it returns exactly where it was.
+  const fresh = new Set(VN.filter(n => !n.placed).map(n => n.id));
+  layout(fresh.size ? iterations : 0, fresh);
+  draw();
+}
+
+function resolve(iterations = 500) {
+  nodes.forEach(n => n.placed = false);
+  recompute();
+  layout(iterations, null);
+  draw();
+}
+
+
+spinBox.onchange = e => setSpin(e.target.checked);
+document.getElementById("labels").onchange = e => { showLabels = e.target.checked; draw(); };
+document.getElementById("flat").onchange   = e => { flat = e.target.checked; pitch = flat ? 0 : -0.35; yaw = flat ? 0 : 0.6; resolve(); };
+document.getElementById("onlyLinked").onchange = e => { hideIsolated = e.target.checked; settle(); };
+document.getElementById("alpha").oninput   = e => { edgeAlpha = e.target.value / 100; draw(); };
+document.getElementById("affinity").onchange = e => { useAffinity = e.target.checked; resolve(); };
+
+const lab = document.getElementById("lab");
+document.getElementById("labToggle").onclick = () => lab.classList.toggle("collapsed");
+document.getElementById("shellSeg").onclick = ev => {
+  const b = ev.target.closest("[data-shell]");
+  if (!b) return;
+  shellShape = b.dataset.shell;
+  [...b.parentNode.children].forEach(x => x.classList.toggle("on", x === b));
+  resolve();
+};
+document.getElementById("shellSize").oninput = e => { shellR = +e.target.value; resolve(240); };
+document.getElementById("styleSeg").onclick = ev => {
+  const b = ev.target.closest("[data-style]");
+  if (!b) return;
+  style = b.dataset.style;
+  [...b.parentNode.children].forEach(x => x.classList.toggle("on", x === b));
+  document.documentElement.dataset.style = style;
+  readColors();
+  // Obsidian's web only reads at low opacity; the labelled style needs more.
+  const a = document.getElementById("alpha");
+  a.value = obs() ? 14 : 20;
+  edgeAlpha = a.value / 100;
+  resolve();   // the spring rules changed, so the layout must be re-solved
+};
+document.getElementById("confine").onchange = e => { confine = e.target.checked; resolve(); };
+document.getElementById("axes").onchange = e => { showAxes = e.target.checked; draw(); };
+document.getElementById("bycluster").onchange = e => { colourBy = e.target.checked ? "cluster" : "type"; draw(); };
+
+/* The cluster legend names each community by its heaviest member, which is
+   almost always the document the rest of the group hangs off. */
+function buildClusterList() {
+  const box = document.getElementById("clusterList");
+  box.innerHTML = bigClusters.slice(0, 10).map(lab => {
+    const members = nodes.filter(n => cluster.get(n.id) === lab);
+    const lead = members.slice().sort((a, b) => b.deg - a.deg)[0];
+    const i = clusterIndex.get(lab);
+    return `<div class="hit" data-go="${lead.id}" title="${members.length} documents">
+      <b style="font-size:12px"><span class="swatch" style="display:inline-block;background:hsl(${
+        CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)"></span> ${
+        (lead.title || lead.id).slice(0, 26)}</b>
+      <span>${members.length} documents</span></div>`;
+  }).join("");
+  box.querySelectorAll("[data-go]").forEach(d => d.onclick = () => select(d.dataset.go));
+}
+document.getElementById("reset").onclick = () => {
+  focus = null; selected = null; zoom = 1; panX = panY = 0;
+  yaw = 0.6; pitch = flat ? 0 : -0.35; dist = 1350;
+  select(null); resolve();
+};
+
+buildFilters();
+buildClusterList();
+setSpin(spin);
+window.addEventListener("resize", () => { resize(); draw(); });
+resize();
+recompute();
+layout(700, null);
+draw();
+tick();
+</script>
+</body>
+</html>
