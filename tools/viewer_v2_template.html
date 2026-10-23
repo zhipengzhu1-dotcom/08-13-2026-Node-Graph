@@ -2,217 +2,356 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Example Labs — Five Spaces</title>
+<!-- Optional web fonts. Offline, the page falls back to system faces and still reads right. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* Paper and ink. The tokens are the Lab Report Pipeline's, so the two pages
+     read as siblings: warm paper, ink line work, watercolour washes of blue,
+     sage and lavender. The five node types take a wash each, and each type
+     also has its own shape on the canvas, so type never rests on hue alone. */
   :root {
-    --bg: #0b0e14; --panel: #11151d; --line: #222a38; --ink: #e6edf3;
-    --dim: #8b949e; --accent: #58a6ff;
-    --sop: #58a6ff; --form: #3fb950; --ap: #d29922; --tm: #f85149; --inst: #bc8cff;
-    --web: #2e8b8b;
+    --paper: #fbf8f1; --card: #fffdf8; --ink: #23262e; --ink-2: #464b57; --muted: #6a6f7b;
+    --line: #ddd6c6; --line-soft: #ebe5d7; --input: #ffffff;
+    --w-blue: #b7d0ea; --w-sage: #c5dbb3; --w-lav: #d3cbec; --w-blue-deep: #3d6c9c;
+    --over: #a8322f; --focus: #3d6c9c; --accent: #3d6c9c;
+    /* node washes: hue AND lightness differ, so they part under colour blindness too */
+    --sop: #8fb4de;    /* blue wash      - circle   */
+    --form: #c6ddb2;   /* sage wash      - square   */
+    --ap: #ecc983;     /* ochre wash     - diamond  */
+    --tm: #e5a49b;     /* rose wash      - triangle */
+    --inst: #bcb0e6;   /* lavender wash  - hexagon  */
+    --web: #464b57;    /* links are ink */
+    --grain: .06;
+    --script: "Allura", "Snell Roundhand", "Segoe Script", "Apple Chancery", cursive;
+    --ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    /* motion: strong custom curves, never ease-in */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    color-scheme: light dark;
   }
-  @media (prefers-color-scheme: light) {
+  /* Dark paper, light ink. Same washes, deepened so they hold on a dark ground. */
+  @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #f4f6f9; --panel: #ffffff; --line: #d6dce4; --ink: #1f2328;
-      --dim: #656d76; --accent: #0969da;
-      --sop: #0969da; --form: #1a7f37; --ap: #9a6700; --tm: #cf222e; --inst: #8250df;
-      --web: #6aa9a9;
+      --paper: #18191d; --card: #1f2025; --ink: #ece8de; --ink-2: #c9c4b8; --muted: #9a958a;
+      --line: #3a3a40; --line-soft: #2c2d33; --input: #16171b;
+      --w-blue: #34506e; --w-sage: #3e5536; --w-lav: #4a4268; --w-blue-deep: #9cc1e6;
+      --over: #ff8f88; --focus: #9cc1e6; --accent: #9cc1e6;
+      --sop: #3f6690; --form: #4c6a3f; --ap: #7a6431; --tm: #84463f; --inst: #5c5288;
+      --web: #c9c4b8; --grain: .08;
     }
   }
-  /* Obsidian style brings its own palette: a near-black ground, a teal web,
-     and fluorescent nodes. It overrides the light theme too - this look only
-     works dark, so it stays dark whatever the operating system says. */
+  /* Obsidian brings its own palette: a near-black ground, a teal web and
+     fluorescent nodes. It overrides both themes - this look only works dark. */
   :root[data-style="obsidian"] {
-    --bg: #0e1014; --panel: #14171d; --line: #232833; --ink: #e9eef7;
-    --dim: #78838f; --accent: #ffd93d;
+    --paper: #0e1014; --card: #14171d; --line: #232833; --line-soft: #1b1f27; --input: #0e1014;
+    --ink: #e9eef7; --ink-2: #c3cad6; --muted: #78838f; --accent: #ffd93d; --focus: #ffd93d;
+    --w-blue: #1e2a3d; --w-sage: #1d3029; --w-lav: #2a2540; --w-blue-deep: #ffd93d;
     --sop:  #ffd93d;   /* fluorescent yellow - the backbone procedures */
     --form: #8ea9ff;   /* periwinkle - the numerous small records */
     --ap:   #4ff0d0;   /* aqua */
     --tm:   #ff5c7a;   /* neon red - documents that do not exist */
     --inst: #ff6ec7;   /* hot magenta - the instruments */
     --web:  #2fb8a8;   /* the teal web */
+    --grain: 0;
+    color-scheme: dark;
   }
-  :root[data-style="obsidian"] .seg button.on,
-  :root[data-style="obsidian"] button.primary,
-  :root[data-style="obsidian"] .pill { color: #0e1014; }
-  :root[data-style="obsidian"] button.primary:hover { color: #0e1014; }
+
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
+  html { background: var(--paper); -webkit-text-size-adjust: 100%; }
   body {
-    background: var(--bg); color: var(--ink);
-    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    display: grid; grid-template-columns: 262px 1fr 330px; overflow: hidden;
+    background: var(--paper); color: var(--ink);
+    font: 14px/1.5 var(--ui);
+    display: grid; grid-template-columns: 284px minmax(0, 1fr) 340px; overflow: hidden;
   }
-  aside { background: var(--panel); overflow-y: auto; padding: 16px; }
+  [hidden] { display: none !important; }
+  aside { background: var(--card); overflow-y: auto; padding: 18px 18px 24px; }
   aside.left { border-right: 1px solid var(--line); }
   aside.right { border-left: 1px solid var(--line); }
-  h1 { font-size: 14px; margin: 0 0 2px; }
-  .sub { color: var(--dim); font-size: 11px; }
-  h2 { font-size: 10px; text-transform: uppercase; letter-spacing: .09em;
-       color: var(--dim); margin: 20px 0 8px; font-weight: 600; }
-  input[type=search] {
-    width: 100%; padding: 7px 9px; background: var(--bg); color: var(--ink);
-    border: 1px solid var(--line); border-radius: 6px; font: inherit; margin-top: 14px;
+
+  /* ---------- masthead: the one place the script face is used ---------- */
+  .brand { position: relative; padding-right: 40px; }
+  .brand h1 { font-family: var(--script); font-weight: 400; font-size: 38px; line-height: 1.05;
+              margin: 4px 0 4px; letter-spacing: .01em; white-space: nowrap; }
+  .brand svg { position: absolute; right: -4px; top: -2px; width: 40px; height: 46px; overflow: visible; }
+  .ink { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .ink.faint { opacity: .35; }
+  .sub { color: var(--muted); font-size: 12.5px; }
+
+  /* ---------- section heads carry the sibling's step badges ---------- */
+  h2 { font-size: 14px; font-weight: 700; color: var(--ink); margin: 22px 0 9px;
+       display: flex; align-items: center; gap: 9px; }
+  .badge {
+    display: inline-grid; place-items: center; width: 28px; height: 24px; flex: none;
+    font: 600 11px var(--mono); color: var(--ink);
+    border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%;
   }
-  input[type=search]:focus { outline: none; border-color: var(--accent); }
-  label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
-  label:hover { color: var(--accent); }
-  .swatch { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .count { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; font-size: 11px; }
-  .edgekey { width: 20px; border-top: 2px solid var(--dim); flex: none; }
+  .b-blue { background: var(--w-blue); } .b-sage { background: var(--w-sage); } .b-lav { background: var(--w-lav); }
+  .detail h2 { font-size: 13px; margin: 20px 0 6px; }
+
+  input[type=search] {
+    width: 100%; padding: 8px 11px; background: var(--input); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; font: 14px/1.4 var(--ui); margin-top: 14px;
+  }
+  input[type=search]:focus-visible, button:focus-visible, input[type=checkbox]:focus-visible,
+  input[type=range]:focus-visible, .nm:focus-visible {
+    outline: 2px solid var(--focus); outline-offset: 1px;
+  }
+  input[type=checkbox], input[type=range] { accent-color: var(--w-blue-deep); }
+  input[type=checkbox] { margin: 0; flex: none; }
+  label { display: flex; align-items: center; gap: 9px; padding: 3px 0; cursor: pointer; color: var(--ink-2); }
+  .swatch { width: 11px; height: 11px; flex: none; border: 1px solid var(--ink); border-radius: 50%; }
+  /* the swatch takes the node's shape, so the legend teaches the canvas */
+  .sh-form { border-radius: 2px; }
+  .sh-ap { border-radius: 1px; transform: rotate(45deg) scale(.86); }
+  .sh-tm { border: 0; border-radius: 0; clip-path: polygon(50% 4%, 98% 92%, 2% 92%); }
+  .sh-inst { border: 0; border-radius: 0; clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); }
+  .count { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .edgekey { width: 20px; border-top: 1.5px solid var(--ink-2); flex: none; }
   .edgekey.dash { border-top-style: dashed; }
-  .hit { padding: 5px 7px; border-radius: 5px; cursor: pointer; }
-  .hit:hover { background: var(--bg); }
-  .hit b { display: block; font-weight: 600; }
-  .hit span { color: var(--dim); font-size: 11px; }
+  .hit { padding: 6px 8px; border-radius: 8px; cursor: pointer; transition: background-color 120ms ease; }
+  .hit b { display: block; font-weight: 600; color: var(--ink); }
+  .hit span { color: var(--muted); font-size: 12px; }
 
   /* One row per space. The name is a button: it centres the view on that
      space. The checkbox shows and hides the whole space. */
-  .space { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 5px; }
-  .space:hover { background: var(--bg); }
-  .space .nm { font-weight: 600; cursor: pointer; }
-  .space .nm:hover { color: var(--accent); }
-  .space .ct { margin-left: auto; color: var(--dim); font-size: 11px;
+  .space { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 9px;
+           transition: background-color 150ms ease, opacity 150ms ease; }
+  .space .nm { font-weight: 600; cursor: pointer; color: var(--ink); background: none; border: 0;
+               padding: 0; font: 600 14px var(--ui); width: auto; border-radius: 4px; }
+  .space .ct { margin-left: auto; color: var(--muted); font-size: 12px;
                font-variant-numeric: tabular-nums; white-space: nowrap; }
   .space.off { opacity: .45; }
-  .space.open { background: color-mix(in srgb, var(--accent) 16%, transparent); }
-  .space.open .nm { color: var(--accent); }
-  .legend { color: var(--dim); font-size: 10px; padding: 2px 6px 6px; display: flex; }
+  .space.open { background: color-mix(in srgb, var(--w-blue) 55%, transparent); }
+  .legend { color: var(--muted); font-size: 11.5px; padding: 2px 8px 6px; display: flex; }
   .legend span { margin-left: auto; }
-  .waiting { color: var(--dim); font-size: 11px; padding: 8px 6px 0; line-height: 1.45; }
+  .waiting { color: var(--muted); font-size: 12.5px; padding: 8px 8px 0; line-height: 1.45; }
   .waiting b { color: var(--ink); font-variant-numeric: tabular-nums; }
 
-  main { position: relative; overflow: hidden; }
-  canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+  /* ---------- canvas on paper ---------- */
+  main { position: relative; overflow: hidden; background:
+           radial-gradient(55% 45% at 12% 8%, color-mix(in srgb, var(--w-blue) 26%, transparent), transparent 72%),
+           radial-gradient(50% 42% at 92% 96%, color-mix(in srgb, var(--w-sage) 24%, transparent), transparent 72%),
+           radial-gradient(40% 36% at 88% 6%, color-mix(in srgb, var(--w-lav) 20%, transparent), transparent 70%),
+           var(--paper); }
+  /* Paper grain: an inline SVG noise, so it needs no network. */
+  main::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--grain);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .14 0 0 0 0 .15 0 0 0 0 .18 0 0 0 1.4 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  :root[data-style="obsidian"] main { background: var(--paper); }
+  canvas { position: relative; display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
   canvas.grabbing { cursor: grabbing; }
-  #hud { position: absolute; left: 14px; bottom: 12px; color: var(--dim);
-         font-size: 11px; font-variant-numeric: tabular-nums; pointer-events: none; }
-  #hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 34px;
-          color: var(--dim); font-size: 11px; pointer-events: none; white-space: nowrap;
-          transition: opacity .35s ease; }
-  @media (prefers-reduced-motion: reduce) { #hint { transition: none; } }
-  #play {
-    position: absolute; right: 14px; bottom: 12px; width: 38px; height: 38px;
-    border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
-    color: var(--ink); cursor: pointer; display: grid; place-items: center; padding: 0;
-  }
-  #play:hover { border-color: var(--accent); color: var(--accent); }
-  #play svg { width: 14px; height: 14px; fill: currentColor; }
+  #hud { position: absolute; left: 16px; bottom: 14px; color: var(--muted);
+         font-size: 12px; font-variant-numeric: tabular-nums; pointer-events: none; }
+  #hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 38px;
+          color: var(--muted); font-size: 12.5px; pointer-events: none; white-space: nowrap;
+          transition: opacity 200ms var(--ease-out); }
 
-  /* Test controls: an icon at the top right that opens a panel below itself.
-     A row across the top of the canvas ran out of width at the fourth control
-     and began to scroll sideways. A column does not run out, and it has room
-     for a name and a reading on every row. */
-  #lab { position: absolute; top: 12px; right: 12px; width: 34px; }
-  #labToggle {
-    width: 34px; height: 34px; padding: 0; cursor: pointer;
-    border: 1px solid var(--line); border-radius: 9px;
-    background: color-mix(in srgb, var(--panel) 92%, transparent);
-    backdrop-filter: blur(6px); color: var(--dim); display: grid; place-items: center;
+  /* ---------- buttons: the sibling's pill and wash styles ---------- */
+  button {
+    font: 600 14px/1.2 var(--ui); color: var(--ink); cursor: pointer; width: 100%;
+    padding: 9px 16px; border-radius: 999px; border: 1px solid var(--ink); background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 160ms var(--ease-out), background-color 150ms ease,
+                border-color 150ms ease, color 150ms ease;
   }
-  #labToggle:hover, #lab:not(.closed) #labToggle { color: var(--accent); border-color: var(--accent); }
-  #labToggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+  /* press feedback: every pressable thing gives a little */
+  button:active, .hit:active, .nb:active { transform: scale(.97); }
+  button.wash-blue { background: var(--w-blue); border-color: color-mix(in srgb, var(--ink) 70%, var(--w-blue)); }
+  button.ghost { background: transparent; border-color: var(--line); }
+  .round {
+    position: absolute; width: 40px; height: 40px; padding: 0; border-radius: 50%;
+    display: grid; place-items: center; color: var(--ink);
+    background: color-mix(in srgb, var(--card) 88%, transparent); border-color: var(--line);
+  }
+  .round svg { width: 15px; height: 15px; }
+  #play { right: 16px; bottom: 14px; border-color: var(--ink); }
+  #play svg { fill: currentColor; }
+  #navBtn { left: 12px; top: 12px; display: none; }
+  #navBtn svg, #labToggle svg { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+  /* Hover only where there is a real pointer: a tap must not leave a hover behind. */
+  @media (hover: hover) and (pointer: fine) {
+    .hit:hover, .nb:hover { background: color-mix(in srgb, var(--w-blue) 32%, transparent); }
+    .space:hover:not(.open) { background: color-mix(in srgb, var(--w-lav) 30%, transparent); }
+    .space .nm:hover, label:hover { color: var(--w-blue-deep); }
+    button.ghost:hover, .round:hover { background: color-mix(in srgb, var(--w-lav) 45%, var(--card)); }
+    button.wash-blue:hover { background: color-mix(in srgb, var(--w-blue) 80%, var(--ink)); }
+    .seg button:hover:not(.on) { background: color-mix(in srgb, var(--w-lav) 40%, transparent); }
+  }
+
+  /* ---------- test controls: a popover that grows from its own button ---------- */
+  #lab { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; }
+  #labToggle { top: 0; right: 0; }
+  #lab:not(.closed) #labToggle { background: var(--w-lav); border-color: var(--ink); }
   #labPanel {
-    position: absolute; top: 40px; right: 0; width: 282px; padding: 12px;
-    background: color-mix(in srgb, var(--panel) 96%, transparent);
-    border: 1px solid var(--line); border-radius: 10px;
-    backdrop-filter: blur(8px); display: grid; gap: 13px;
-    box-shadow: 0 12px 34px rgb(0 0 0 / .28);
+    position: absolute; top: 48px; right: 0; width: 292px; padding: 14px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    display: grid; gap: 14px; box-shadow: 0 14px 34px rgb(35 38 46 / .14);
+    transform-origin: top right;
+    /* exit is quicker than entry */
+    transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out), visibility 0s 120ms;
   }
-  #lab.closed #labPanel { display: none; }
-  .labhead { display: flex; align-items: center; font-size: 10px; font-weight: 600;
-             text-transform: uppercase; letter-spacing: .09em; color: var(--dim); }
-  .labhead button { width: auto; margin-left: auto; padding: 0 3px; border: 0;
-                    background: none; color: var(--dim); font-size: 14px; line-height: 1; }
-  .labhead button:hover { color: var(--accent); }
+  #lab:not(.closed) #labPanel {
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out), visibility 0s;
+  }
+  #lab.closed #labPanel { opacity: 0; transform: scale(.96); visibility: hidden; pointer-events: none; }
+  .labhead { display: flex; align-items: center; font-size: 14px; font-weight: 700; gap: 9px; }
+  .labhead button { width: 28px; height: 28px; margin-left: auto; padding: 0; border: 0;
+                    background: none; color: var(--muted); font-size: 15px; line-height: 1; border-radius: 50%; }
   .labrow { display: grid; gap: 6px; }
-  .labrow > span { display: flex; font-size: 10px; color: var(--dim);
-                   text-transform: uppercase; letter-spacing: .07em; }
-  .labrow > span b { margin-left: auto; color: var(--ink); font-weight: 600;
-                     letter-spacing: 0; text-transform: none;
-                     font-variant-numeric: tabular-nums; }
-  .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  .seg button { flex: 1; width: auto; border: 0; border-radius: 0; padding: 5px 3px;
-                background: transparent; color: var(--dim); font-size: 11px; }
-  .seg button.on { background: var(--accent); color: #fff; }
-  .seg button:hover:not(.on) { color: var(--accent); background: var(--bg); }
+  .labrow > span { display: flex; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+  .labrow > span b { margin-left: auto; color: var(--ink); font-weight: 600; font-family: var(--mono);
+                     font-size: 12px; font-variant-numeric: tabular-nums; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; padding: 2px; gap: 2px; }
+  .seg button { flex: 1; width: auto; border: 0; border-radius: 999px; padding: 5px 4px;
+                background: transparent; color: var(--ink-2); font-size: 12.5px; }
+  .seg button.on { background: var(--w-blue); color: var(--ink); }
+  :root[data-style="obsidian"] .seg button.on { background: var(--accent); color: #0e1014; }
   #labPanel input[type=range] { width: 100%; }
   .labchecks { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; }
-  .labchecks label { padding: 0; font-size: 11px; }
-  button {
-    font: inherit; padding: 7px 11px; border-radius: 6px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%;
-  }
-  button:hover { border-color: var(--accent); color: var(--accent); }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  button.primary:hover { opacity: .9; color: #fff; }
-  .pill { display: inline-block; padding: 2px 7px; border-radius: 20px;
-          font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-  .detail h3 { margin: 4px 0 2px; font-size: 15px; line-height: 1.3; }
-  .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--dim); }
-  .meta { margin: 14px 0; }
-  .meta div { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid var(--line); }
-  .meta dt { color: var(--dim); width: 74px; flex: none; }
+  .labchecks label { padding: 0; font-size: 13px; }
+
+  /* ---------- detail panel ---------- */
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; color: var(--ink);
+          font-size: 11.5px; font-weight: 700; letter-spacing: .03em; border: 1px solid var(--ink); }
+  :root[data-style="obsidian"] .pill { color: #0e1014; border-color: transparent; }
+  .detail h3 { margin: 8px 0 2px; font-size: 19px; line-height: 1.25; font-weight: 700; }
+  .id { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .meta { margin: 14px 0; padding: 4px 12px; border: 1px solid var(--line-soft); border-radius: 10px;
+          background: var(--paper); }
+  .meta div { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line-soft); }
+  .meta div:last-child { border-bottom: 0; }
+  .meta dt { color: var(--muted); width: 74px; flex: none; }
   .meta dd { margin: 0; word-break: break-word; }
-  .nb { display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 5px; cursor: pointer; }
-  .nb:hover { background: var(--bg); }
-  .nb small { color: var(--dim); margin-left: auto; font-size: 10px; flex: none; }
-  .nb.out { opacity: .72; }
-  .empty { color: var(--dim); padding-top: 40px; text-align: center; }
-  .warn { background: color-mix(in srgb, var(--tm) 14%, transparent);
-          border: 1px solid var(--tm); border-radius: 6px; padding: 9px; margin: 12px 0; font-size: 12px; }
-  .hold { border: 1px dashed var(--line); border-radius: 6px; padding: 8px 9px;
-          margin: 10px 0 4px; color: var(--dim); font-size: 11px; line-height: 1.45; }
+  .nb { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; cursor: pointer;
+        transition: background-color 120ms ease, transform 160ms var(--ease-out); }
+  .nb small { color: var(--muted); margin-left: auto; font-size: 11px; flex: none; text-align: right; }
+  .nb.out { opacity: .78; }
+  .empty { color: var(--muted); padding-top: 40px; text-align: center; }
+  .empty svg { display: block; margin: 0 auto 12px; width: 64px; height: 64px; }
+  .warn { background: color-mix(in srgb, var(--over) 10%, transparent); color: var(--ink);
+          border: 1px solid color-mix(in srgb, var(--over) 60%, transparent); border-radius: 10px;
+          padding: 10px 12px; margin: 12px 0; font-size: 13px; }
+  .hold { border: 1px dashed var(--line); border-radius: 10px; padding: 9px 11px;
+          margin: 8px 0 6px; color: var(--muted); font-size: 12.5px; line-height: 1.45;
+          background: color-mix(in srgb, var(--w-lav) 16%, transparent); }
   .slider { width: 100%; }
+  #sheetClose { display: none; }
+  #scrim { display: none; }
+
+  /* ---------- narrower screens ---------- */
+  @media (max-width: 1100px) {
+    body { grid-template-columns: 248px minmax(0, 1fr) 300px; }
+  }
+  /* Phone: the canvas takes the screen. The filters become a drawer from the
+     left and the detail panel a sheet from the bottom. */
+  @media (max-width: 760px) {
+    body { grid-template-columns: minmax(0, 1fr); height: 100dvh; }
+    #navBtn { display: grid; }
+    #hint, #hud { display: none; }
+    aside.left {
+      position: fixed; z-index: 20; top: 0; bottom: 0; left: 0; width: min(86vw, 320px);
+      box-shadow: 0 0 40px rgb(35 38 46 / .18);
+      transform: translateX(-104%);
+      transition: transform 200ms var(--ease-drawer);
+    }
+    body.nav-open aside.left { transform: none; transition-duration: 280ms; }
+    #scrim { display: block; position: fixed; inset: 0; z-index: 15; background: rgb(24 25 29 / .28);
+             opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
+    body.nav-open #scrim { opacity: 1; pointer-events: auto; }
+    aside.right {
+      position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; max-height: 58dvh;
+      border: 1px solid var(--line); border-radius: 18px 18px 0 0; padding-top: 10px;
+      box-shadow: 0 -10px 30px rgb(35 38 46 / .12);
+      transform: translateY(104%);
+      transition: transform 200ms var(--ease-drawer);
+    }
+    body.has-sel aside.right { transform: none; transition-duration: 280ms; }
+    #sheetClose { display: grid; position: sticky; top: 0; margin-left: auto; width: 32px; height: 32px;
+                  padding: 0; border-color: var(--line); float: right; font-size: 14px; place-items: center; }
+    #lab { top: 12px; }
+    #labPanel { width: min(292px, calc(100vw - 24px)); }
+    input[type=search] { font-size: 16px; }   /* no zoom on focus in iOS */
+  }
+
+  /* Reduced motion: keep the fades that explain a change, drop every movement. */
+  @media (prefers-reduced-motion: reduce) {
+    button:active, .hit:active, .nb:active { transform: none; }
+    #lab.closed #labPanel { transform: none; }
+    aside.left, aside.right { transition-property: opacity, visibility !important; }
+    @media (max-width: 760px) {
+      aside.left, aside.right { transform: none !important; }
+      body:not(.nav-open) aside.left, body:not(.has-sel) aside.right { opacity: 0; visibility: hidden; }
+    }
+  }
 </style>
 </head>
 <body>
 
-<aside class="left">
-  <h1>Example Labs</h1>
-  <div class="sub">Five spaces — prototype v2</div>
+<aside class="left" id="nav">
+  <div class="brand">
+    <h1>Example Labs</h1>
+    <div class="sub">Document graph · five spaces</div>
+    <svg viewBox="0 0 50 56" aria-hidden="true" focusable="false">
+      <path class="ink" d="M18 6h12M20 6v14L9 44a4 4 0 0 0 3.6 6h22.8A4 4 0 0 0 39 44L28 20V6"/>
+      <path d="M13.5 37h21L38 44.5a3 3 0 0 1-2.7 4.3H12.7A3 3 0 0 1 10 44.5z" fill="var(--w-blue)" opacity=".85"/>
+      <path class="ink faint" d="M44 10l4 2.3v4.6L44 19.2l-4-2.3v-4.6z"/>
+    </svg>
+  </div>
 
-  <input type="search" id="q" placeholder="Search title or number…" autocomplete="off">
+  <input type="search" id="q" placeholder="Search title or number…" autocomplete="off" aria-label="Search">
   <div id="results"></div>
 
-  <h2>Spaces</h2>
+  <h2><span class="badge b-blue">01</span>Spaces</h2>
   <div id="spaces"></div>
-  <div class="legend">click a name to centre it<span>nodes · links</span></div>
+  <div class="legend">click a name to open it<span>nodes · links</span></div>
   <div class="waiting" id="waiting"></div>
 
-  <h2>Link kinds</h2>
+  <h2><span class="badge b-lav">02</span>Link kinds</h2>
   <div id="kinds"></div>
 
-  <h2>Clusters</h2>
+  <h2><span class="badge b-sage">03</span>Clusters</h2>
   <label><input type="checkbox" id="affinity" checked> Group by shared neighbours</label>
   <label><input type="checkbox" id="bycluster"> Colour by cluster</label>
   <div id="clusterList"></div>
 
-  <h2>View</h2>
+  <h2><span class="badge b-blue">04</span>View</h2>
   <label><input type="checkbox" id="spin" checked> Rotate slowly</label>
   <label><input type="checkbox" id="flat"> Flatten to 2D</label>
   <label><input type="checkbox" id="labels" checked> Show labels</label>
   <label><input type="checkbox" id="onlyLinked"> Hide nodes with no link here</label>
-  <h2>Link opacity</h2>
-  <input type="range" class="slider" id="alpha" min="4" max="60" value="26">
-  <div style="margin-top:14px"><button id="reset">Reset view</button></div>
+  <h2><span class="badge b-lav">05</span>Link opacity</h2>
+  <input type="range" class="slider" id="alpha" min="4" max="60" value="30" aria-label="Link opacity">
+  <div style="margin-top:16px"><button class="ghost" id="reset">Reset view</button></div>
 </aside>
+<div id="scrim"></div>
 
 <main>
   <canvas id="c"></canvas>
   <div id="hud"></div>
   <div id="hint">click a space, or any node in it, to open that space · click the background to come back</div>
-  <button id="play" title="Pause rotation (space)"></button>
+  <button id="play" class="round" title="Pause rotation (space)" aria-label="Pause rotation"></button>
+  <button id="navBtn" class="round" title="Filters" aria-label="Filters">
+    <svg viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+  </button>
 
   <div id="lab" class="closed">
-    <button id="labToggle" title="Test controls">
+    <button id="labToggle" class="round" title="Test controls" aria-label="Test controls">
       <svg viewBox="0 0 16 16"><path d="M1 4h14M1 8h14M1 12h14"/>
-        <circle cx="5" cy="4" r="1.9" fill="currentColor" stroke="none"/>
-        <circle cx="10.5" cy="8" r="1.9" fill="currentColor" stroke="none"/>
-        <circle cx="6.5" cy="12" r="1.9" fill="currentColor" stroke="none"/></svg>
+        <circle cx="5" cy="4" r="1.9" fill="var(--card)"/>
+        <circle cx="10.5" cy="8" r="1.9" fill="var(--card)"/>
+        <circle cx="6.5" cy="12" r="1.9" fill="var(--card)"/></svg>
     </button>
     <div id="labPanel">
-      <div class="labhead"><span>Test controls</span><button id="labClose" title="Close">✕</button></div>
+      <div class="labhead"><span>Test controls</span><button id="labClose" title="Close" aria-label="Close">✕</button></div>
 
       <div class="labrow"><span>Shell</span>
         <div class="seg" id="shellSeg">
@@ -225,17 +364,17 @@
 
       <div class="labrow"><span>Style</span>
         <div class="seg" id="styleSeg">
-          <button data-style="labelled" class="on">Labelled</button>
+          <button data-style="paper" class="on">Paper</button>
           <button data-style="obsidian">Obsidian</button>
         </div>
       </div>
 
       <div class="labrow"><span>Space size <b id="spaceSizeVal">100%</b></span>
-        <input type="range" id="spaceSize" min="60" max="170" value="100">
+        <input type="range" id="spaceSize" min="60" max="170" value="100" aria-label="Space size">
       </div>
 
       <div class="labrow"><span>Spacing <b id="ringSizeVal">560</b></span>
-        <input type="range" id="ringSize" min="360" max="900" value="560">
+        <input type="range" id="ringSize" min="360" max="900" value="560" aria-label="Spacing">
       </div>
 
       <div class="labrow"><span>Show</span>
@@ -249,18 +388,22 @@
   </div>
 </main>
 
-<aside class="right"><div id="detail" class="empty">Select a node.</div></aside>
+<aside class="right" id="sheet"><button id="sheetClose" class="round" title="Close" aria-label="Close">✕</button><div id="detail" class="empty"></div></aside>
 
 <script>
 const GRAPH = /*__GRAPH__*/null;
 
 const TYPE = {
-  "standard operating procedure": { key: "SOP",  css: "--sop",  r: 5.5 },
-  "form":                         { key: "Form", css: "--form", r: 4.0 },
-  "analytical procedure":         { key: "AP",   css: "--ap",   r: 5.0 },
-  "test method":                  { key: "TM",   css: "--tm",   r: 4.5 },
-  "instrument":                   { key: "Instrument", css: "--inst", r: 6.5 },
+  "standard operating procedure": { key: "SOP",  css: "--sop",  r: 5.5, shape: "circle" },
+  "form":                         { key: "Form", css: "--form", r: 4.0, shape: "square" },
+  "analytical procedure":         { key: "AP",   css: "--ap",   r: 5.0, shape: "diamond" },
+  "test method":                  { key: "TM",   css: "--tm",   r: 4.5, shape: "triangle" },
+  "instrument":                   { key: "Instrument", css: "--inst", r: 6.5, shape: "hexagon" },
 };
+/* The legend swatch takes the same shape as the node it stands for. */
+const SH = { circle: "", square: "sh-form", diamond: "sh-ap", triangle: "sh-tm", hexagon: "sh-inst" };
+const swatch = (type, extra = "") =>
+  `<span class="swatch ${SH[TYPE[type].shape]}" style="background:var(${TYPE[type].css})${extra}"></span>`;
 /* `mag` is how strongly this kind of evidence binds two documents.
    A declared dependency in the RELATED PROCEDURES section is the laboratory
    stating the relationship. A shared thermometer is barely a relationship at
@@ -279,14 +422,59 @@ const ORDER = ["declared", "attached form", "mentioned", "title", "equipment"];
 const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 const nodeColor = n => colourBy === "cluster" ? clusterColor(n.id) : COLOR[TYPE[n.type].css];
 let COLOR = {};
+const DARK = matchMedia("(prefers-color-scheme: dark)");
+const UI_FONT = '"Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 const readColors = () => {
   COLOR = {};
   for (const s of Object.values(TYPE)) COLOR[s.css] = cssVar(s.css);
-  COLOR.ink = cssVar("--ink"); COLOR.bg = cssVar("--bg"); COLOR.dim = cssVar("--dim");
-  COLOR.web = cssVar("--web");
+  COLOR.ink = cssVar("--ink"); COLOR.ink2 = cssVar("--ink-2");
+  COLOR.bg = cssVar("--paper"); COLOR.dim = cssVar("--muted");
+  COLOR.web = cssVar("--web"); COLOR.accent = cssVar("--accent");
+  COLOR.mode = document.documentElement.dataset.style === "obsidian" ? "obsidian"
+             : DARK.matches ? "dark" : "light";
 };
 readColors();
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
+DARK.addEventListener("change", () => { readColors(); buildClusterList(); draw(); });
+
+/* ---------- motion ----------
+   Every moving thing on the canvas is driven by elapsed time, not by frames,
+   so it runs at the same speed on a 60 Hz and a 120 Hz screen.
+
+   Camera moves and travelling spaces use a critically damped spring (no
+   bounce, about half a second to settle). A spring keeps its velocity when it
+   is given a new target, so clicking another space mid-flight bends the move
+   towards it instead of stopping and starting again. Fades use an exponential
+   approach, which is an ease-out that can also be retargeted at any moment. */
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)");
+const PHONE = matchMedia("(max-width: 760px)");
+let reduced = !!REDUCED.matches;
+REDUCED.addEventListener("change", e => { reduced = e.matches; if (reduced) setSpin(false); });
+const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
+const SPRING_S = 0.5;                          // perceptual duration, seconds
+const OMEGA = 2 * Math.PI / SPRING_S;
+const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+/* Exact step of a critically damped spring, so a long frame cannot overshoot. */
+function springStep(x, v, target, dt) {
+  const d = x - target, c = v + OMEGA * d, e = Math.exp(-OMEGA * dt);
+  return [target + (d + c * dt) * e, (v - OMEGA * c * dt) * e];
+}
+/* Ease-out towards a target: `ms` is the time to cover about 98% of the way. */
+const approach = (cur, target, dt, ms) => {
+  const next = target + (cur - target) * Math.exp(-dt * 4000 / ms);
+  return Math.abs(next - target) < 0.004 ? target : next;
+};
+/* The strong ease-out curve, for things that run on a fixed clock. */
+const easeOut = p => 1 - Math.pow(1 - Math.min(1, Math.max(0, p)), 4);
+/* Fade an element in after its content changed. Movement is dropped when the
+   user asks for reduced motion; the fade stays, because it explains the change. */
+function fadeIn(el, ms = 180) {
+  if (!el.animate) return;
+  el.getAnimations?.().forEach(a => a.cancel());
+  el.animate(reduced
+    ? [{ opacity: 0 }, { opacity: 1 }]
+    : [{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }],
+    { duration: ms, easing: EASE_OUT });
+}
 
 const nodes = GRAPH.nodes.map(n => ({ ...n, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }));
 const byId = new Map(nodes.map(n => [n.id, n]));
@@ -354,6 +542,8 @@ SPACE_ORDER.forEach((type, i) => {
     members,
     r: 0, cx: 0, cy: 0, cz: 0, rep: 900,
     tx: 0, ty: 0, tz: 0,        // where this space is travelling to
+    vx: 0, vy: 0, vz: 0,        // how fast it is travelling
+    fade: 1,                    // 1 open or overview, dimmed when out of the way
   };
 });
 
@@ -389,21 +579,30 @@ function spaceTargets() {
 
    The nodes travel by the same offset as their centre, so a space that moves
    keeps its shape exactly. Nothing is solved again, and nothing inside a space
-   is disturbed by another space getting out of the way. */
-function moveSpaces(k) {
+   is disturbed by another space getting out of the way.
+
+   With `dt` the space rides the spring. Without it, it is put there at once. */
+function moveSpaces(dt) {
   let moving = false;
   for (const s of Object.values(SPACES)) {
-    let dx = (s.tx - s.cx) * k, dy = (s.ty - s.cy) * k, dz = (s.tz - s.cz) * k;
-    if (Math.abs(dx) + Math.abs(dy) + Math.abs(dz) < 0.35) {
-      dx = s.tx - s.cx; dy = s.ty - s.cy; dz = s.tz - s.cz;
-      if (!dx && !dy && !dz) continue;
-    } else moving = true;
-    s.cx += dx; s.cy += dy; s.cz += dz;
+    let nx = s.tx, ny = s.ty, nz = s.tz;
+    if (dt) {
+      [nx, s.vx] = springStep(s.cx, s.vx, s.tx, dt);
+      [ny, s.vy] = springStep(s.cy, s.vy, s.ty, dt);
+      [nz, s.vz] = springStep(s.cz, s.vz, s.tz, dt);
+      const rest = Math.abs(nx - s.tx) + Math.abs(ny - s.ty) + Math.abs(nz - s.tz) < 0.35
+                && Math.abs(s.vx) + Math.abs(s.vy) + Math.abs(s.vz) < 2;
+      if (rest) { nx = s.tx; ny = s.ty; nz = s.tz; } else moving = true;
+    }
+    if (!dt || nx === s.tx && ny === s.ty && nz === s.tz) s.vx = s.vy = s.vz = 0;
+    const dx = nx - s.cx, dy = ny - s.cy, dz = nz - s.cz;
+    if (!dx && !dy && !dz) continue;
+    s.cx = nx; s.cy = ny; s.cz = nz;
     for (const n of s.members) { n.x += dx; n.y += dy; n.z += dz; }
   }
   return moving;
 }
-function placeSpaces() { spaceTargets(); moveSpaces(1); }
+function placeSpaces() { spaceTargets(); moveSpaces(0); }
 
 /* Affinity: two documents that share many neighbours belong together even if
    neither one names the other. EXL-SOP26 and EXL-SOP30 both hang off the
@@ -477,20 +676,27 @@ const bigClusters = [...clusterSizes.entries()].filter(([, n]) => n >= 3)
   .sort((a, b) => b[1] - a[1]).map(([l]) => l);
 const clusterIndex = new Map(bigClusters.map((l, i) => [l, i]));
 const CLUSTER_HUES = [200, 140, 40, 350, 275, 175, 15, 310, 95, 240, 60, 325];
+/* Cluster colours follow the ground: soft washes on paper, deeper washes on
+   dark paper, and the original fluorescent set in Obsidian. */
+const clusterHue = i => {
+  const h = CLUSTER_HUES[i % CLUSTER_HUES.length];
+  return COLOR.mode === "obsidian" ? `hsl(${h} 62% 58%)`
+       : COLOR.mode === "dark" ? `hsl(${h} 30% 40%)` : `hsl(${h} 48% 72%)`;
+};
 const clusterColor = id => {
   const i = clusterIndex.get(cluster.get(id));
-  return i === undefined ? cssVar("--dim") : `hsl(${CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)`;
+  return i === undefined ? COLOR.dim : clusterHue(i);
 };
 
 /* ---------- state ---------- */
 const activeSpaces = new Set(Object.keys(TYPE));
 const activeKinds = new Set(Object.keys(KIND));
-let showLabels = true, hideIsolated = false, flat = false, spin = true;
-let selected = null, edgeAlpha = 0.26;
+let showLabels = true, hideIsolated = false, flat = false, spin = !reduced;
+let selected = null, edgeAlpha = 0.30, selectedAt = 0;
 let stage = null;                    // the space that is open, or null for all five
 let useAffinity = true, colourBy = "type";
 let shellShape = "sphere", confine = true, showShells = true, showAxes = true;
-let style = "labelled", hovered = null;
+let style = "paper", hovered = null;
 let heldNode = null, holdDepth = 0, coastFrames = 0;
 const obs = () => style === "obsidian";
 
@@ -502,6 +708,8 @@ let yaw = 0.6, pitch = PITCH0, dist = DIST0, zoom = 1, panX = 0, panY = 0;
 let look = { x: 0, y: 0, z: 0 };     // the point the camera holds in the middle
 let camLook = { x: 0, y: 0, z: 0 };  // where it is going
 let camZoom = 1;
+let lookV = { x: 0, y: 0, z: 0 }, zoomV = 0;
+let camPan = { x: 0, y: 0 }, panV = { x: 0, y: 0 };   // spring velocities (zoom in log space)
 const FOCAL = 900;
 
 placeSpaces();
@@ -515,9 +723,9 @@ function buildSpaceList() {
     const s = SPACES[type];
     const el = document.createElement("div");
     el.className = "space";
-    el.innerHTML = `<input type="checkbox" checked>
-      <span class="swatch" style="background:var(${s.css})"></span>
-      <span class="nm" title="Centre the view on this space">${s.key}</span>
+    el.innerHTML = `<input type="checkbox" checked aria-label="Show ${s.key}">
+      ${swatch(type)}
+      <button class="nm" title="Open this space">${s.key}</button>
       <span class="ct">${s.n} · ${s.inside}</span>`;
     el.querySelector("input").onchange = e => {
       e.target.checked ? activeSpaces.add(type) : activeSpaces.delete(type);
@@ -541,7 +749,7 @@ function buildSpaceList() {
     el.title = held ? `${held} more of this kind cross between spaces` : "";
     el.innerHTML = `<input type="checkbox" ${n ? "checked" : "disabled"}>
       <span class="edgekey ${spec.dash ? "dash" : ""}"></span>${spec.label}
-      <span class="count">${n}${held ? ` <span style="opacity:.55">+${held}</span>` : ""}</span>`;
+      <span class="count">${n}${held ? ` <span style="opacity:.6">+${held}</span>` : ""}</span>`;
     if (!n) activeKinds.delete(name);
     el.querySelector("input").onchange = e => {
       e.target.checked ? activeKinds.add(name) : activeKinds.delete(name);
@@ -822,18 +1030,76 @@ const AXES = [
    point in the world. A point above the shell in world coordinates lands on
    top of the cloud as soon as the camera looks down on the ring. */
 let spaceLabels = [];
-function drawSpaces() {
+let lastDraw = 0, animating = false;
+
+/* A watercolour wash is three soft pools of one colour, a little off-centre
+   from each other, so the edge looks bled rather than drawn with a compass. */
+const WASH = [[-0.07, -0.05, 1.14, 0.22], [0.09, 0.07, 1.0, 0.18], [0.02, -0.10, 0.78, 0.14]];
+const rgba = (hex, a) => {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || "");
+  return m ? `rgba(${parseInt(m[1], 16)},${parseInt(m[2], 16)},${parseInt(m[3], 16)},${a})` : hex;
+};
+/* How far a thing in space `s` is dimmed while another space is open. The
+   space's own fade runs 1 -> 0.4, and `lo` is what 0.4 maps to. */
+const dimOf = (s, lo) => lo + (1 - lo) * (s.fade - 0.4) / 0.6;
+
+/* Each type has its own shape, so type is never carried by colour alone. */
+function shapePath(shape, x, y, r) {
+  ctx.beginPath();
+  if (shape === "square") { const h = r * 0.88; ctx.rect(x - h, y - h, 2 * h, 2 * h); return; }
+  if (shape === "diamond") {
+    const h = r * 1.22;
+    ctx.moveTo(x, y - h); ctx.lineTo(x + h, y); ctx.lineTo(x, y + h); ctx.lineTo(x - h, y); ctx.closePath(); return;
+  }
+  if (shape === "triangle") {
+    const h = r * 1.3;
+    ctx.moveTo(x, y - h); ctx.lineTo(x + h * 0.866, y + h * 0.5); ctx.lineTo(x - h * 0.866, y + h * 0.5);
+    ctx.closePath(); return;
+  }
+  if (shape === "hexagon") {
+    const h = r * 1.08;
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 3 * i;
+      i ? ctx.lineTo(x + h * Math.cos(a), y + h * Math.sin(a)) : ctx.moveTo(x + h, y);
+    }
+    ctx.closePath(); return;
+  }
+  ctx.arc(x, y, r, 0, 6.2832);
+}
+
+function drawSpaces(dt) {
   spaceLabels = [];
+  const paper = !obs();
   for (const type of SPACE_ORDER) {
     if (!activeSpaces.has(type)) continue;
     const s = SPACES[type];
     const p3 = (x, y, z) => project({ x: s.cx + x, y: s.cy + y, z: s.cz + z });
     const col = COLOR[s.css];
-    const off = stage && type !== stage ? 0.4 : 1;   // a space that is out of the way
+    // A space that is out of the way dims. It dims a little faster than it
+    // comes back, because leaving is the system answering and returning is
+    // something you watch.
+    const want = stage && type !== stage ? 0.4 : 1;
+    s.fade = approach(s.fade, want, dt, want < s.fade ? 180 : 260);
+    if (s.fade !== want) animating = true;
+    const off = s.fade;
+    const c = p3(0, 0, 0);
+
+    if (paper && showShells) {
+      const R = s.r * c.k, wa = COLOR.mode === "dark" ? 1.5 : 1;
+      for (const [ox, oy, rk, a] of WASH) {
+        const x = c.sx + ox * R, y = c.sy + oy * R, rr = Math.max(4, R * rk);
+        const g = ctx.createRadialGradient(x, y, rr * 0.1, x, y, rr);
+        g.addColorStop(0, rgba(col, a * wa * off));
+        g.addColorStop(0.65, rgba(col, a * wa * 0.8 * off));
+        g.addColorStop(1, rgba(col, 0));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(x, y, rr, 0, 6.2832); ctx.fill();
+      }
+    }
 
     if (showShells && shellShape !== "none") {
-      ctx.strokeStyle = col;
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = paper ? COLOR.ink : col;
+      ctx.lineWidth = paper ? 0.8 : 1;
       for (const line of SHELL[shellShape].wire(s.r)) {
         ctx.beginPath();
         line.forEach(([x, y, z], i) => {
@@ -843,16 +1109,16 @@ function drawSpaces() {
         // Fade the whole line by its average depth so the far side recedes.
         const mid = line[Math.floor(line.length / 2)];
         const q = p3(mid[0], mid[1], mid[2]);
-        ctx.globalAlpha = (q.depth > dist ? 0.05 : 0.13) * off;
+        ctx.globalAlpha = (q.depth > dist ? 0.05 : (paper ? 0.16 : 0.13)) * off;
         ctx.stroke();
       }
       ctx.globalAlpha = 1;
     }
 
     if (showAxes) {
-      ctx.lineWidth = 1.3;
+      ctx.lineWidth = paper ? 1 : 1.3;
       ctx.textAlign = "center";
-      ctx.font = "600 10px -apple-system, system-ui, sans-serif";
+      ctx.font = `600 11px ${UI_FONT}`;
       for (const ax of AXES) {
         // Each shell depth() is linear in position, so the distance from the
         // centre to the surface along a unit direction is exactly 1/depth(v).
@@ -864,43 +1130,57 @@ function drawSpaces() {
         const o = p3(0, 0, 0);
         const e = p3(ax.v[0] * L, ax.v[1] * L, ax.v[2] * L);
         const w = p3(-ax.v[0] * L, -ax.v[1] * L, -ax.v[2] * L);
-        ctx.strokeStyle = ctx.fillStyle = `hsl(${ax.hue} 70% 58%)`;
-        ctx.globalAlpha = 0.16 * off;
+        ctx.strokeStyle = ctx.fillStyle = paper ? COLOR.ink2 : `hsl(${ax.hue} 70% 58%)`;
+        ctx.globalAlpha = (paper ? 0.12 : 0.16) * off;
+        if (paper) ctx.setLineDash([3, 3]);
         ctx.beginPath(); ctx.moveTo(w.sx, w.sy); ctx.lineTo(o.sx, o.sy); ctx.stroke();
-        ctx.globalAlpha = 0.5 * off;
+        ctx.setLineDash([]);
+        ctx.globalAlpha = (paper ? 0.38 : 0.5) * off;
         ctx.beginPath(); ctx.moveTo(o.sx, o.sy); ctx.lineTo(e.sx, e.sy); ctx.stroke();
-        ctx.globalAlpha = 0.85 * off;
+        ctx.globalAlpha = (paper ? 0.7 : 0.85) * off;
         ctx.fillText(ax.label, e.sx, e.sy - 4);
       }
       ctx.globalAlpha = 1;
     }
 
-    const c = p3(0, 0, 0);
     const x = c.sx, y = c.sy - s.r * c.k - 30;
     const sub = `${s.n} nodes · ${s.inside} links · ${s.crossing} waiting`;
     ctx.textAlign = "center";
     ctx.globalAlpha = Math.max(0.35, 1 - Math.max(0, c.depth - dist) / 1600) * off;
+    ctx.font = `700 15px ${UI_FONT}`;
+    const w = ctx.measureText(s.key).width;
+    if (paper) {
+      // The sibling's underline: a rounded band of the space's wash.
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x - w / 2 - 6, y - 1, w + 12, 7, 4); else ctx.rect(x - w / 2 - 6, y - 1, w + 12, 7);
+      ctx.fill();
+    }
     ctx.lineWidth = 3; ctx.strokeStyle = COLOR.bg;
-    ctx.font = "600 13px -apple-system, system-ui, sans-serif";
-    ctx.strokeText(s.key, x, y);
-    ctx.fillStyle = col;
+    if (!paper) ctx.strokeText(s.key, x, y);
+    ctx.fillStyle = paper ? COLOR.ink : col;
     ctx.fillText(s.key, x, y);
-    spaceLabels.push({ x, y, w: ctx.measureText(s.key).width });
-    ctx.font = "11px -apple-system, system-ui, sans-serif";
-    ctx.strokeText(sub, x, y + 15);
+    spaceLabels.push({ x, y, w });
+    ctx.font = `12px ${UI_FONT}`;
+    ctx.strokeText(sub, x, y + 16);
     ctx.fillStyle = COLOR.dim;
-    ctx.fillText(sub, x, y + 15);
-    spaceLabels.push({ x, y: y + 15, w: ctx.measureText(sub).width });
+    ctx.fillText(sub, x, y + 16);
+    spaceLabels.push({ x, y: y + 16, w: ctx.measureText(sub).width });
     ctx.globalAlpha = 1;
   }
 }
 
 function draw() {
+  // Fades run on elapsed time, whoever asks for the frame.
+  const t0 = now();
+  const dt = lastDraw ? Math.min(0.05, (t0 - lastDraw) / 1000) : 0;
+  lastDraw = t0;
+  animating = false;
   ctx.clearRect(0, 0, W, H);
   // Selection marks one document. It does not hide anything and it does not
   // single out what that document links to.
 
-  drawSpaces();
+  drawSpaces(dt);
 
   for (const n of VN) n.p = project(n);
 
@@ -910,22 +1190,24 @@ function draw() {
   const zNear = Math.min(...zs), zFar = Math.max(...zs), span = Math.max(1, zFar - zNear);
 
   ctx.shadowBlur = 0;
+  ctx.lineCap = "round";
   for (const e of VE) {
     const a = e.s.p, b = e.t.p;
     if (!a || !b) continue;
     const lit = selected !== null && (e.source === selected || e.target === selected);
     const mid = ((a.depth + b.depth) / 2 - zNear) / span;   // 0 near, 1 far
-    const off = stage && e.s.type !== stage ? 0.14 : 1;
-    // Magnitude shows twice: a stronger bond draws thicker and brighter.
+    const off = dimOf(SPACES[e.s.type], 0.14);
+    // Magnitude shows twice: a stronger bond draws thicker and darker.
     const m = Math.min(e.mag, MAXMAG) / MAXMAG;
     if (obs()) {
       ctx.globalAlpha = edgeAlpha * (lit ? 2.2 : 0.85) * (1 - mid * 0.55) * off;
-      ctx.strokeStyle = lit ? cssVar("--accent") : COLOR.web;
+      ctx.strokeStyle = lit ? COLOR.accent : COLOR.web;
       ctx.lineWidth = (lit ? 1.4 : 0.7) * Math.min(1.3, a.k);
     } else {
-      ctx.globalAlpha = edgeAlpha * (0.35 + 1.5 * m) * (lit ? 2.4 : 1) * (1 - mid * 0.65) * off;
-      ctx.strokeStyle = lit ? cssVar("--accent") : COLOR.dim;
-      ctx.lineWidth = (0.5 + 2.2 * m) * (lit ? 1.6 : 1) * Math.min(1.4, a.k);
+      // Ink on paper: thin, and lighter with distance.
+      ctx.globalAlpha = Math.min(1, edgeAlpha * (0.5 + 1.3 * m) * (lit ? 2.4 : 1) * (1 - mid * 0.6) * off);
+      ctx.strokeStyle = lit ? COLOR.accent : COLOR.web;
+      ctx.lineWidth = (0.6 + 1.3 * m) * (lit ? 1.5 : 1) * Math.min(1.4, a.k);
     }
     if (KIND[e.kind].dash) ctx.setLineDash([5, 4]); else ctx.setLineDash([]);
     ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
@@ -938,57 +1220,83 @@ function draw() {
     const p = n.p;
     const t = (p.depth - zNear) / span;
     const r = radiusOf(n) * p.k;
-    const off = stage && n.type !== stage ? 0.30 : 1;
-    ctx.globalAlpha = (1 - t * 0.55) * off;
+    const off = dimOf(SPACES[n.type], 0.30);
+    const base = (1 - t * 0.55) * off;
+    ctx.globalAlpha = base;
 
     const col = nodeColor(n);
-    // The bloom is what makes a node look lit rather than painted. It grows
-    // with degree, so hubs glow and leaves stay as points. The selected node
-    // burns a little brighter, which is the only thing selection changes.
     if (obs()) {
+      // The bloom is what makes a node look lit rather than painted. It grows
+      // with degree, so hubs glow and leaves stay as points. The selected node
+      // burns a little brighter, which is the only thing selection changes.
       ctx.shadowColor = col;
       ctx.shadowBlur = (4 + Math.min(16, n.deg * 0.9)) * Math.min(1.6, p.k)
                        * (n.id === selected ? 1.4 : 1) * (1 - t * 0.5);
-    }
-    ctx.beginPath();
-    ctx.arc(p.sx, p.sy, Math.max(1.2, r), 0, 6.2832);
-    if (n.present === false) {
-      ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.setLineDash([2.5, 2.5]);
-      ctx.stroke(); ctx.setLineDash([]);
-    } else {
-      ctx.fillStyle = col; ctx.fill();
-      if (obs()) {
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, Math.max(1.2, r), 0, 6.2832);
+      if (n.present === false) {
+        ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.setLineDash([2.5, 2.5]);
+        ctx.stroke(); ctx.setLineDash([]);
+      } else {
+        ctx.fillStyle = col; ctx.fill();
         // A second, tighter pass so the centre reads solid through the bloom.
         ctx.shadowBlur = 0;
         ctx.beginPath(); ctx.arc(p.sx, p.sy, Math.max(0.8, r * 0.62), 0, 6.2832);
         ctx.fillStyle = "#fff"; ctx.globalAlpha *= 0.55; ctx.fill();
         ctx.globalAlpha /= 0.55;
+      }
+      ctx.shadowBlur = 0;
+    } else {
+      // Ink outline, watercolour fill, and a shape for the type.
+      shapePath(TYPE[n.type].shape, p.sx, p.sy, Math.max(1.8, r));
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = COLOR.ink;
+      ctx.lineWidth = Math.max(0.7, Math.min(1.4, 0.6 + 0.45 * p.k));
+      if (n.present === false) {
+        // A document that is referenced but does not exist: an empty outline.
+        ctx.fillStyle = rgba(col, 0.25); ctx.fill();
+        ctx.setLineDash([2.2, 2.2]); ctx.stroke(); ctx.setLineDash([]);
       } else {
-        ctx.strokeStyle = COLOR.bg; ctx.lineWidth = 1.5 * p.k; ctx.stroke();
+        ctx.fillStyle = col; ctx.fill(); ctx.stroke();
+      }
+      if (n.id === hovered && n.id !== selected) {
+        // Hover happens dozens of times a minute: it answers at once, no motion.
+        ctx.globalAlpha = 0.5 * base;
+        ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 4, 0, 6.2832); ctx.stroke();
       }
     }
-    ctx.shadowBlur = 0;
     if (n.id === selected) {
-      ctx.strokeStyle = cssVar("--accent"); ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 5, 0, 6.2832); ctx.stroke();
+      // The ring closes in on the node and fades up: 200 ms, strong ease-out.
+      // With reduced motion it only fades.
+      const since = t0 - selectedAt;
+      const k = reduced ? 1 : easeOut(since / 200), a = easeOut(since / 160);
+      if (since < 200) animating = true;
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = COLOR.accent; ctx.lineWidth = obs() ? 2.5 : 2;
+      ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 5 + 6 * (1 - k), 0, 6.2832); ctx.stroke();
     }
     /* Two ways a label appears.
 
        Standing labels are what the "Show labels" checkbox controls. They go by
        full degree, not by degree inside the space: in a space where nothing is
-       drawn, the name is the only information a node carries.
+       drawn, the name is the only information a node carries. They fade in
+       and out as a space opens or the zoom crosses the threshold.
 
        On-demand labels are selection and hover. Those are an explicit request
-       for one name, so they ignore the checkbox entirely. */
+       for one name, so they ignore the checkbox entirely, and appear at once. */
     const standing = showLabels && !(stage && n.type !== stage) &&
       (obs() ? (n.deg >= 8 || zoom > 1.5) : (n.deg > 4 || zoom > 1.6));
+    const want = standing ? 1 : 0;
+    n.la = n.la === undefined ? want : approach(n.la, want, dt, want ? 240 : 140);
+    if (n.la !== want) animating = true;
     const onDemand = n.id === selected || n.id === hovered;
-    if (standing || onDemand) labels.push({ n, p, t, r, lead: onDemand });
+    if (onDemand || n.la > 0.01) labels.push({ n, p, t, r, lead: onDemand, la: onDemand ? 1 : n.la });
   }
 
   // Labels last, nearest first, so the closest text wins any overlap.
   ctx.globalAlpha = 1;
   ctx.textAlign = "center";
+  ctx.lineJoin = "round";
   // The name of a space is claimed before any node name, so a document label
   // can never sit on top of the word that says which space you are in.
   const taken = [...spaceLabels];
@@ -997,13 +1305,13 @@ function draw() {
   labels.sort((a, b) => (b.lead - a.lead) || (a.t - b.t));
   for (const L of labels) {
     const text = (L.n.title || L.n.id).slice(0, 34);
-    const size = Math.max(8, Math.min(13, 11 * L.p.k));
-    ctx.font = `${L.lead ? "600 " : ""}${size}px -apple-system, system-ui, sans-serif`;
-    const w = ctx.measureText(text).width, x = L.p.sx, y = L.p.sy - L.r - 5;
+    const size = Math.max(9, Math.min(14, 12 * L.p.k));
+    ctx.font = `${L.lead ? "700" : "500"} ${size}px ${UI_FONT}`;
+    const w = ctx.measureText(text).width, x = L.p.sx, y = L.p.sy - L.r - 6;
     if (taken.some(b => Math.abs(b.x - x) < (b.w + w) / 2 && Math.abs(b.y - y) < 12)) continue;
     taken.push({ x, y, w });
-    ctx.globalAlpha = L.lead ? 1 : 1 - L.t * 0.6;
-    ctx.lineWidth = 3; ctx.strokeStyle = COLOR.bg; ctx.strokeText(text, x, y);
+    ctx.globalAlpha = L.lead ? 1 : (1 - L.t * 0.6) * L.la;
+    ctx.lineWidth = 3.5; ctx.strokeStyle = COLOR.bg; ctx.strokeText(text, x, y);
     ctx.fillStyle = COLOR.ink; ctx.fillText(text, x, y);
   }
   ctx.globalAlpha = 1;
@@ -1062,35 +1370,68 @@ function physicsFrame() {
 }
 
 /* ---------- animation ---------- */
-let raf = null;
+let raf = null, lastTick = 0, spinRate = 0;
+const SPIN = 0.096;                  // radians a second: constant, so linear
 
 /* Carry the camera and the spaces towards wherever the last click sent them.
    Opening a space is a move, not a jump: you can see where the space you left
-   has gone, so you know how to get back to it. */
-function easeCamera() {
-  const k = 0.16;
-  let moving = moveSpaces(k);
+   has gone, so you know how to get back to it. Everything rides the same
+   spring, so the space, the look point and the zoom arrive together. */
+function easeCamera(dt = 1 / 60) {
+  let moving = moveSpaces(dt);
   for (const ax of ["x", "y", "z"]) {
-    const d = camLook[ax] - look[ax];
-    if (Math.abs(d) > 0.4) { look[ax] += d * k; moving = true; } else look[ax] = camLook[ax];
+    const [nx, nv] = springStep(look[ax], lookV[ax], camLook[ax], dt);
+    if (Math.abs(nx - camLook[ax]) < 0.4 && Math.abs(nv) < 2) { look[ax] = camLook[ax]; lookV[ax] = 0; }
+    else { look[ax] = nx; lookV[ax] = nv; moving = true; }
   }
-  const dz = camZoom - zoom;
-  if (Math.abs(dz) > 0.004) { zoom += dz * k; moving = true; } else zoom = camZoom;
+  for (const ax of ["x", "y"]) {
+    const cur = ax === "x" ? panX : panY;
+    let [np, nv] = springStep(cur, panV[ax], camPan[ax], dt);
+    if (Math.abs(np - camPan[ax]) < 0.3 && Math.abs(nv) < 2) { np = camPan[ax]; nv = 0; } else moving = true;
+    panV[ax] = nv;
+    if (ax === "x") panX = np; else panY = np;
+  }
+  // Zoom rides the spring in log space, so zooming in and out feel alike.
+  const lz = Math.log(zoom), tz = Math.log(camZoom);
+  const [nz, nzv] = springStep(lz, zoomV, tz, dt);
+  if (Math.abs(nz - tz) < 0.002 && Math.abs(nzv) < 0.02) { zoom = camZoom; zoomV = 0; }
+  else { zoom = Math.exp(nz); zoomV = nzv; moving = true; }
   return moving;
+}
+/* Arrive at once. Used for keyboard actions and for reduced motion. */
+function snapCamera() {
+  look = { ...camLook }; lookV = { x: 0, y: 0, z: 0 };
+  zoom = camZoom; zoomV = 0;
+  panX = camPan.x; panY = camPan.y; panV = { x: 0, y: 0 };
+  moveSpaces(0);
+}
+/* A cut with a short fade, so a reduced-motion jump does not feel broken. */
+function cut(fade) {
+  snapCamera();
+  if (fade && canvas.animate) canvas.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 200, easing: EASE_OUT });
 }
 
 function tick() {
+  const t = now();
+  const dt = lastTick ? Math.min(0.05, (t - lastTick) / 1000) : 1 / 60;
+  lastTick = t;
   const busy = physicsFrame();
-  const gliding = easeCamera();
-  if (spin && !dragging && !heldNode && !flat) yaw += 0.0016;
-  if (busy || gliding || (spin && !dragging && !heldNode && !flat)) draw();
+  const gliding = easeCamera(dt);
+  const turning = spin && !dragging && !heldNode && !flat;
+  // Idle rotation is constant motion, so it is linear. It ramps up from rest
+  // over about 600 ms so it does not lurch, and stops at once when asked.
+  spinRate = turning ? approach(spinRate, SPIN, dt, 600) : 0;
+  if (turning) yaw += spinRate * dt;
+  if (busy || gliding || turning || animating) draw();
   raf = requestAnimationFrame(tick);
 }
 
 /* ---------- interaction ---------- */
 let dragging = false, last = null, moved = 0;
 
-canvas.addEventListener("mousedown", ev => {
+/* Pointer events, so a finger rotates and drags just as a mouse does. */
+canvas.addEventListener("pointerdown", ev => {
+  if (dragging || heldNode) return;    // a second finger does not take over
   moved = 0;
   const hit = ev.shiftKey ? null : pick(ev);
   if (hit) {
@@ -1104,18 +1445,18 @@ canvas.addEventListener("mousedown", ev => {
     return;
   }
   dragging = true;
-  last = { x: ev.clientX, y: ev.clientY, shift: ev.shiftKey };
+  last = { x: ev.clientX, y: ev.clientY, shift: ev.shiftKey, id: ev.pointerId };
   canvas.classList.add("grabbing");
 });
-canvas.addEventListener("mousemove", ev => {
-  if (dragging || heldNode) return;
+canvas.addEventListener("pointermove", ev => {
+  if (dragging || heldNode || ev.pointerType === "touch") return;
   const h = pick(ev);
   const id = h ? h.id : null;
   if (id !== hovered) { hovered = id; canvas.style.cursor = id ? "pointer" : "grab"; draw(); }
 });
-canvas.addEventListener("mouseleave", () => { if (hovered) { hovered = null; draw(); } });
+canvas.addEventListener("pointerleave", () => { if (hovered) { hovered = null; draw(); } });
 
-window.addEventListener("mousemove", ev => {
+window.addEventListener("pointermove", ev => {
   if (heldNode) {
     moved += 6;
     const b = canvas.getBoundingClientRect();
@@ -1126,26 +1467,32 @@ window.addEventListener("mousemove", ev => {
     confineNode(heldNode);        // a node cannot be dragged out of its space
     return;                       // the physics frame redraws
   }
-  if (!dragging) return;
+  if (!dragging || ev.pointerId !== last.id) return;
   const dx = ev.clientX - last.x, dy = ev.clientY - last.y;
   moved += Math.abs(dx) + Math.abs(dy);
-  if (last.shift) { panX += dx; panY += dy; }
-  else {
+  if (last.shift) {
+    // Direct manipulation: the pan follows the hand, and any glide stops.
+    panX += dx; panY += dy; camPan = { x: panX, y: panY }; panV = { x: 0, y: 0 };
+  } else {
     yaw += dx * 0.006;
     pitch = Math.max(-1.45, Math.min(1.45, pitch + dy * 0.006));
   }
   last.x = ev.clientX; last.y = ev.clientY;
   draw();
 });
-window.addEventListener("mouseup", () => {
+const release = () => {
   if (heldNode) { heldNode = null; coastFrames = 45; canvas.style.cursor = "grab"; }
   dragging = false;
   canvas.classList.remove("grabbing");
-});
+};
+window.addEventListener("pointerup", release);
+window.addEventListener("pointercancel", release);
 
 canvas.addEventListener("wheel", ev => {
   ev.preventDefault();
+  // The wheel is direct manipulation: the zoom follows it with no easing.
   zoom = camZoom = Math.min(8, Math.max(0.25, zoom * Math.exp(-ev.deltaY * 0.0014)));
+  zoomV = 0;
   draw();
 }, { passive: false });
 
@@ -1191,19 +1538,24 @@ function fitZoom(R) {
 function markStage() {
   for (const [type, el] of spaceRows) el.classList.toggle("open", type === stage);
   document.getElementById("hint").style.opacity = stage ? "0" : "1";
+  document.body && document.body.classList.remove("nav-open");
 }
 
 /* Open a space. It travels to the middle, the other four go out of the way,
-   and it keeps turning, because a space is a thing you look around. */
-function openSpace(type) {
+   and it keeps turning, because a space is a thing you look around.
+
+   `how` is "key" for a keyboard action. Those arrive at once: a key is a
+   command, and an animation would only make it feel slow. */
+function openSpace(type, how) {
   if (stage === type) select(null);   // already here: step back out to the whole space
   stage = type;
   spaceTargets();
   camLook = { x: 0, y: 0, z: 0 };
   camZoom = fitZoom(SPACES[type].r * 1.06);
-  panX = panY = 0;
-  setSpin(true);
+  camPan = { x: 0, y: 0 };
+  if (!reduced) setSpin(true);
   markStage();
+  if (how === "key" || reduced) cut(how !== "key");
   draw();
 }
 
@@ -1217,15 +1569,16 @@ function openNode(n) {
 }
 
 /* Back out to the five spaces. */
-function leaveStage() {
+function leaveStage(how) {
   stage = null;
   select(null);
   spaceTargets();
   camLook = { x: 0, y: 0, z: 0 };
   camZoom = 1;
-  panX = panY = 0;
-  setSpin(true);
+  camPan = { x: 0, y: 0 };
+  if (!reduced) setSpin(true);
   markStage();
+  if (how === "key" || reduced) cut(how !== "key");
   draw();
 }
 
@@ -1241,6 +1594,7 @@ function setSpin(on) {
   spinBox.checked = on;
   playBtn.innerHTML = on ? PAUSE : PLAY;
   playBtn.title = on ? "Pause rotation (space)" : "Resume rotation (space)";
+  playBtn.setAttribute && playBtn.setAttribute("aria-label", on ? "Pause rotation" : "Resume rotation");
 }
 
 /* The whole mechanism is here. A click means one of three things, and which
@@ -1260,19 +1614,40 @@ canvas.addEventListener("click", ev => {
 playBtn.onclick = () => setSpin(!spin);
 window.addEventListener("keydown", ev => {
   if (ev.target.tagName === "INPUT") return;
-  if (ev.code === "Space") { ev.preventDefault(); setSpin(!spin); }
-  if (ev.code === "Escape") leaveStage();
+  if (ev.code === "Space" && ev.target.tagName !== "BUTTON") { ev.preventDefault(); setSpin(!spin); }
+  if (ev.code === "Escape") {
+    if (!lab.classList.contains("closed")) { lab.classList.add("closed"); return; }
+    if (document.body.classList.contains("nav-open")) { document.body.classList.remove("nav-open"); return; }
+    leaveStage("key");
+  }
 });
 
 /* ---------- detail panel ---------- */
+const EMPTY = `<svg viewBox="0 0 64 64" aria-hidden="true">
+    <circle cx="32" cy="32" r="24" fill="var(--w-blue)" opacity=".5"/>
+    <path class="ink" d="M18 40l14-16 14 10M32 24v-6"/>
+    <circle class="ink" cx="18" cy="40" r="4.5" fill="var(--sop)"/>
+    <rect class="ink" x="28" y="20" width="8" height="8" fill="var(--form)"/>
+    <path class="ink" d="M46 28.5l5.5 5.5-5.5 5.5-5.5-5.5z" fill="var(--ap)"/>
+    <circle class="ink faint" cx="32" cy="15" r="3"/></svg>Select a node.`;
+
 function select(id) {
   // Rotation is not touched here. Clicking a node does what clicking its shell
   // does, and the space keeps turning until you stop it with the button or the
   // space bar.
+  const changed = id !== selected;
+  if (changed) selectedAt = now();
   selected = id;
+  document.body && document.body.classList.toggle("has-sel", !!id);
+  // On a phone the detail sheet covers the lower half of the canvas, so the
+  // open space rides the camera spring up into the half that is still visible.
+  if (PHONE.matches && stage) {
+    camPan = { x: camPan.x, y: id ? -H * 0.22 : 0 };
+    if (reduced) snapCamera();
+  }
   draw();
   const el = document.getElementById("detail");
-  if (!id) { el.className = "empty"; el.textContent = "Select a node."; return; }
+  if (!id) { el.className = "empty"; el.innerHTML = EMPTY; return; }
   const n = byId.get(id), spec = TYPE[n.type];
   const all = edges.filter(e => e.source === id || e.target === id)
     .map(e => ({ other: byId.get(e.source === id ? e.target : e.source),
@@ -1282,14 +1657,14 @@ function select(id) {
   const away = all.filter(m => m.other.type !== n.type);
 
   const row = (m, out) => `<div class="nb ${out ? "out" : ""}" data-go="${m.other.id}">
-      <span class="swatch" style="background:var(${TYPE[m.other.type].css})"></span>
+      ${swatch(m.other.type)}
       <span>${m.other.title || m.other.id}</span>
       <small>${out ? TYPE[m.other.type].key + " · " : ""}${m.kinds.join(", ")}</small>
       </div>`;
 
   el.className = "detail";
   el.innerHTML = `
-    <span class="pill" style="background:var(${spec.css});color:#fff">${spec.key}</span>
+    <span class="pill" style="background:var(${spec.css})">${spec.key}</span>
     <h3>${n.title || n.id}</h3>
     <div class="id">${n.id}${n.revision ? " rev " + n.revision : ""}</div>
     ${n.present === false ? `<div class="warn"><b>Not in any folder.</b>
@@ -1301,14 +1676,16 @@ function select(id) {
       <div><dt>Space</dt><dd>${spec.key}</dd></div>
       <div><dt>Links</dt><dd>${here.length} here · ${away.length} away</dd></div>
     </div>
-    <button class="primary" id="openbtn">Open in Word</button>` : ""}
-    <h2>In the ${spec.key} space — ${here.length}</h2>
-    ${here.map(m => row(m, false)).join("") || '<div class="sub" style="padding:0 7px">Nothing.</div>'}
-    <h2>Waiting — ${away.length}</h2>
+    <button class="wash-blue" id="openbtn">Open in Word</button>` : ""}
+    <h2><span class="badge b-blue">${String(here.length).padStart(2, "0")}</span>In the ${spec.key} space</h2>
+    ${here.map(m => row(m, false)).join("") || '<div class="sub" style="padding:0 8px">Nothing.</div>'}
+    <h2><span class="badge b-lav">${String(away.length).padStart(2, "0")}</span>Waiting</h2>
     ${away.length ? `<div class="hold">These links leave the ${spec.key} space.
       This version does not draw them yet. Click one to jump to it.</div>` : ""}
-    ${away.map(m => row(m, true)).join("") || '<div class="sub" style="padding:0 7px">Nothing.</div>'}`;
+    ${away.map(m => row(m, true)).join("") || '<div class="sub" style="padding:0 8px">Nothing.</div>'}`;
 
+  // New content fades up into place: 180 ms, strong ease-out.
+  if (changed) { fadeIn(el); el.parentNode && (el.parentNode.scrollTop = 0); }
   el.querySelectorAll("[data-go]").forEach(d => d.onclick = () => openNode(byId.get(d.dataset.go)));
   const btn = el.querySelector("#openbtn");
   // The real viewer asks the operating system to open the file. A browser
@@ -1360,9 +1737,15 @@ document.getElementById("onlyLinked").onchange = e => { hideIsolated = e.target.
 document.getElementById("alpha").oninput   = e => { edgeAlpha = e.target.value / 100; draw(); };
 document.getElementById("affinity").onchange = e => { useAffinity = e.target.checked; resolve(); };
 
+/* The test controls are a popover: CSS transitions carry it in and out, so a
+   second click mid-animation reverses it from where it is. */
 const lab = document.getElementById("lab");
 document.getElementById("labToggle").onclick = () => lab.classList.toggle("closed");
 document.getElementById("labClose").onclick = () => lab.classList.add("closed");
+/* Phone: the filters drawer and the detail sheet. */
+document.getElementById("navBtn").onclick = () => document.body.classList.toggle("nav-open");
+document.getElementById("scrim").onclick = () => document.body.classList.remove("nav-open");
+document.getElementById("sheetClose").onclick = () => select(null);
 document.getElementById("shellSeg").onclick = ev => {
   const b = ev.target.closest("[data-shell]");
   if (!b) return;
@@ -1387,9 +1770,10 @@ document.getElementById("styleSeg").onclick = ev => {
   [...b.parentNode.children].forEach(x => x.classList.toggle("on", x === b));
   document.documentElement.dataset.style = style;
   readColors();
-  // Obsidian's web only reads at low opacity; the labelled style needs more.
+  buildClusterList();
+  // Obsidian's web only reads at low opacity; ink on paper needs more.
   const a = document.getElementById("alpha");
-  a.value = obs() ? 18 : 26;
+  a.value = obs() ? 18 : 30;
   edgeAlpha = a.value / 100;
   resolve();   // the spring rules changed, so the layout must be re-solved
 };
@@ -1409,9 +1793,8 @@ function buildClusterList() {
     const spaces = new Set(members.map(m => TYPE[m.type].key)).size;
     const i = clusterIndex.get(lab);
     return `<div class="hit" data-go="${lead.id}" title="${members.length} documents in ${spaces} space(s)">
-      <b style="font-size:12px"><span class="swatch" style="display:inline-block;background:hsl(${
-        CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)"></span> ${
-        (lead.title || lead.id).slice(0, 26)}</b>
+      <b style="font-size:13px"><span class="swatch" style="display:inline-block;background:${
+        clusterHue(i)}"></span> ${(lead.title || lead.id).slice(0, 26)}</b>
       <span>${members.length} documents · ${spaces} space${spaces === 1 ? "" : "s"}</span></div>`;
   }).join("");
   box.querySelectorAll("[data-go]").forEach(d => d.onclick = () => openNode(byId.get(d.dataset.go)));
@@ -1419,6 +1802,7 @@ function buildClusterList() {
 document.getElementById("reset").onclick = () => {
   stage = null; selected = null; zoom = camZoom = 1; panX = panY = 0;
   look = { x: 0, y: 0, z: 0 }; camLook = { x: 0, y: 0, z: 0 };
+  camPan = { x: 0, y: 0 }; snapCamera();
   yaw = 0.6; pitch = flat ? 0 : PITCH0; dist = DIST0;
   markStage(); select(null); resolve();
 };
@@ -1426,11 +1810,13 @@ document.getElementById("reset").onclick = () => {
 buildSpaceList();
 buildClusterList();
 setSpin(spin);
+// The web fonts are optional. When they arrive, the canvas text is redrawn in them.
+document.fonts && document.fonts.ready.then(() => draw());
 window.addEventListener("resize", () => { resize(); draw(); });
 resize();
 recompute();
 layout(700, null);
-draw();
+select(null);
 tick();
 </script>
 </body>

@@ -15,6 +15,8 @@ No install and no server. The viewers are single HTML files with the graph embed
 
 `viewer.html` is the earlier single-space prototype. It opens the same way.
 
+The pages load three web fonts from Google Fonts when a network is available. Offline they fall back to system fonts and work the same. They follow the operating system's light or dark setting, and they reduce motion when the system asks for it.
+
 ## The two viewers
 
 | File | What it shows |
@@ -28,18 +30,30 @@ No install and no server. The viewers are single HTML files with the graph embed
 
 The page opens on five spaces: **SOP**, **Form**, **AP** (analytical procedure), **TM** (test method) and **Instrument**. Each label shows its node count, the links drawn inside it and the links "waiting" to other spaces.
 
+Each node type has its own colour and its own shape:
+
+| Type | Shape | Colour |
+|---|---|---|
+| SOP | circle | blue |
+| Form | square | sage green |
+| AP | diamond | ochre |
+| TM | triangle | rose |
+| Instrument | hexagon | lavender |
+
+A node drawn as a dashed outline is referenced by other documents but has no file.
+
 - **Drag the background** to rotate.
 - **Shift-drag** to pan.
 - **Scroll** to zoom.
-- **Space bar** or the ▶ / ❚❚ button at the bottom right pauses the slow rotation.
+- **Space bar** or the ▶ / ❚❚ button at the bottom right pauses the slow rotation. When the system asks for reduced motion, the rotation starts paused.
 
 ### 2. Open a space
 
-Click a sphere, or click its name under **Spaces** in the left panel, to open that space. It fills the view, and its documents are labelled.
+Click a sphere, or click its name under **Spaces** in the left panel, to open that space. It moves to the middle and fills the view, and its documents are labelled. If you click another space before the move ends, the view turns towards the new space.
 
 ![An open space](docs/screenshots/02-open-space.png)
 
-Click the background or press **Esc** to return to the overview.
+Click the background or press **Esc** to return to the overview. **Esc** returns at once, with no animation.
 
 ### 3. Select a document
 
@@ -83,10 +97,10 @@ The left panel controls what is drawn:
 
 ### 6. Test controls and the Obsidian style
 
-The ☰ button at the top right of the canvas opens **Test controls**:
+The sliders button at the top right of the canvas opens **Test controls**:
 
 - **Shell**: the shape drawn around each space (off, sphere, bipyramid, cylinder).
-- **Style**: *Labelled* (light) or *Obsidian* (dark, fluorescent).
+- **Style**: *Paper* (the default: ink lines and watercolour fills on paper, dark paper when the system is in dark mode) or *Obsidian* (dark, fluorescent).
 - **Space size** and **Spacing**: the size of each space and the distance between them.
 - **Show**: shells, X-Y axes, and whether nodes are confined to their space.
 
@@ -98,8 +112,17 @@ Every node and link sits in one sphere. The controls are the same, and in additi
 
 - **drag a node** to move it
 - **double-click** to focus on a node
+- selecting a node dims the documents it does not link to
+
+The test controls have **Shell**, **Style**, **Shell size**, **Axes** and **Confine**.
 
 ![Single-space viewer](docs/screenshots/06-single-space.png)
+
+## On a phone
+
+On a narrow screen the canvas fills the screen. The menu button at the top left opens the filters as a drawer. A selected document opens in a sheet at the bottom of the screen, and the open space moves up above it. Drag with one finger to rotate.
+
+![The five-space viewer on a phone](docs/screenshots/07-phone.png)
 
 ## Repository layout
 
@@ -116,7 +139,7 @@ tools/
   make_viewer.py          builds the two viewers from graph.json
   viewer_template.html    template for viewer.html
   viewer_v2_template.html template for viewer_v2.html
-  check_viewer.js         smoke test for viewer_v2.html (Node, no dependencies)
+  check_viewer.js         smoke test for both viewers (Node, no dependencies)
 docs/screenshots/         the images in this README
 ```
 
@@ -135,4 +158,4 @@ To build a graph from your own documents, point the extractor at three folders o
 python3 tools/extract_graph.py <sop-folder> <forms-folder> <methods-folder>
 ```
 
-Note that `make_viewer.py` writes each document's absolute path into the page so that **Open in Word** works. Don't publish a viewer built from private documents.
+Note that `make_viewer.py` writes each document's absolute path into the page so that **Open in Word** works. It does this only for documents it finds on disk, so a build from this repository has no paths. Don't publish a viewer built from private documents.

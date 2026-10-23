@@ -2,185 +2,356 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Example Labs — Document Graph</title>
+<!-- Optional web fonts. Offline, the page falls back to system faces and still reads right. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* Paper and ink. The tokens are the Lab Report Pipeline's, so the two pages
+     read as siblings: warm paper, ink line work, watercolour washes of blue,
+     sage and lavender. The five node types take a wash each, and each type
+     also has its own shape on the canvas, so type never rests on hue alone. */
   :root {
-    --bg: #0b0e14; --panel: #11151d; --line: #222a38; --ink: #e6edf3;
-    --dim: #8b949e; --accent: #58a6ff;
-    --sop: #58a6ff; --form: #3fb950; --ap: #d29922; --tm: #f85149; --inst: #bc8cff;
-    --web: #2e8b8b;
+    --paper: #fbf8f1; --card: #fffdf8; --ink: #23262e; --ink-2: #464b57; --muted: #6a6f7b;
+    --line: #ddd6c6; --line-soft: #ebe5d7; --input: #ffffff;
+    --w-blue: #b7d0ea; --w-sage: #c5dbb3; --w-lav: #d3cbec; --w-blue-deep: #3d6c9c;
+    --over: #a8322f; --focus: #3d6c9c; --accent: #3d6c9c;
+    /* node washes: hue AND lightness differ, so they part under colour blindness too */
+    --sop: #8fb4de;    /* blue wash      - circle   */
+    --form: #c6ddb2;   /* sage wash      - square   */
+    --ap: #ecc983;     /* ochre wash     - diamond  */
+    --tm: #e5a49b;     /* rose wash      - triangle */
+    --inst: #bcb0e6;   /* lavender wash  - hexagon  */
+    --web: #464b57;    /* links are ink */
+    --grain: .06;
+    --script: "Allura", "Snell Roundhand", "Segoe Script", "Apple Chancery", cursive;
+    --ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    /* motion: strong custom curves, never ease-in */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    color-scheme: light dark;
   }
-  @media (prefers-color-scheme: light) {
+  /* Dark paper, light ink. Same washes, deepened so they hold on a dark ground. */
+  @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #f4f6f9; --panel: #ffffff; --line: #d6dce4; --ink: #1f2328;
-      --dim: #656d76; --accent: #0969da;
-      --sop: #0969da; --form: #1a7f37; --ap: #9a6700; --tm: #cf222e; --inst: #8250df;
-      --web: #6aa9a9;
+      --paper: #18191d; --card: #1f2025; --ink: #ece8de; --ink-2: #c9c4b8; --muted: #9a958a;
+      --line: #3a3a40; --line-soft: #2c2d33; --input: #16171b;
+      --w-blue: #34506e; --w-sage: #3e5536; --w-lav: #4a4268; --w-blue-deep: #9cc1e6;
+      --over: #ff8f88; --focus: #9cc1e6; --accent: #9cc1e6;
+      --sop: #3f6690; --form: #4c6a3f; --ap: #7a6431; --tm: #84463f; --inst: #5c5288;
+      --web: #c9c4b8; --grain: .08;
     }
   }
-  /* Obsidian style brings its own palette: a near-black ground, a teal web,
-     and fluorescent nodes. It overrides the light theme too - this look only
-     works dark, so it stays dark whatever the operating system says. */
+  /* Obsidian brings its own palette: a near-black ground, a teal web and
+     fluorescent nodes. It overrides both themes - this look only works dark. */
   :root[data-style="obsidian"] {
-    --bg: #0e1014; --panel: #14171d; --line: #232833; --ink: #e9eef7;
-    --dim: #78838f; --accent: #ffd93d;
+    --paper: #0e1014; --card: #14171d; --line: #232833; --line-soft: #1b1f27; --input: #0e1014;
+    --ink: #e9eef7; --ink-2: #c3cad6; --muted: #78838f; --accent: #ffd93d; --focus: #ffd93d;
+    --w-blue: #1e2a3d; --w-sage: #1d3029; --w-lav: #2a2540; --w-blue-deep: #ffd93d;
     --sop:  #ffd93d;   /* fluorescent yellow - the backbone procedures */
     --form: #8ea9ff;   /* periwinkle - the numerous small records */
     --ap:   #4ff0d0;   /* aqua */
     --tm:   #ff5c7a;   /* neon red - documents that do not exist */
     --inst: #ff6ec7;   /* hot magenta - the instruments */
     --web:  #2fb8a8;   /* the teal web */
+    --grain: 0;
+    color-scheme: dark;
   }
-  /* The accent is now fluorescent yellow, so anything sitting on it needs
-     dark ink rather than white. */
-  :root[data-style="obsidian"] .seg button.on,
-  :root[data-style="obsidian"] button.primary,
-  :root[data-style="obsidian"] .pill { color: #0e1014; }
-  :root[data-style="obsidian"] button.primary:hover { color: #0e1014; }
+
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
+  html { background: var(--paper); -webkit-text-size-adjust: 100%; }
   body {
-    background: var(--bg); color: var(--ink);
-    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    display: grid; grid-template-columns: 246px 1fr 330px; overflow: hidden;
+    background: var(--paper); color: var(--ink);
+    font: 14px/1.5 var(--ui);
+    display: grid; grid-template-columns: 284px minmax(0, 1fr) 340px; overflow: hidden;
   }
-  aside { background: var(--panel); overflow-y: auto; padding: 16px; }
+  [hidden] { display: none !important; }
+  aside { background: var(--card); overflow-y: auto; padding: 18px 18px 24px; }
   aside.left { border-right: 1px solid var(--line); }
   aside.right { border-left: 1px solid var(--line); }
-  h1 { font-size: 14px; margin: 0 0 2px; }
-  .sub { color: var(--dim); font-size: 11px; }
-  h2 { font-size: 10px; text-transform: uppercase; letter-spacing: .09em;
-       color: var(--dim); margin: 20px 0 8px; font-weight: 600; }
-  input[type=search] {
-    width: 100%; padding: 7px 9px; background: var(--bg); color: var(--ink);
-    border: 1px solid var(--line); border-radius: 6px; font: inherit; margin-top: 14px;
-  }
-  input[type=search]:focus { outline: none; border-color: var(--accent); }
-  label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
-  label:hover { color: var(--accent); }
-  .swatch { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .count { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; font-size: 11px; }
-  .edgekey { width: 20px; border-top: 2px solid var(--dim); flex: none; }
-  .edgekey.dash { border-top-style: dashed; }
-  .hit { padding: 5px 7px; border-radius: 5px; cursor: pointer; }
-  .hit:hover { background: var(--bg); }
-  .hit b { display: block; font-weight: 600; }
-  .hit span { color: var(--dim); font-size: 11px; }
-  main { position: relative; overflow: hidden; }
-  canvas { display: block; width: 100%; height: 100%; cursor: grab; }
-  canvas.grabbing { cursor: grabbing; }
-  #hud { position: absolute; left: 14px; bottom: 12px; color: var(--dim);
-         font-size: 11px; font-variant-numeric: tabular-nums; pointer-events: none; }
-  #hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 12px;
-          color: var(--dim); font-size: 11px; pointer-events: none; white-space: nowrap; }
-  #play {
-    position: absolute; right: 14px; bottom: 12px; width: 38px; height: 38px;
-    border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
-    color: var(--ink); cursor: pointer; display: grid; place-items: center; padding: 0;
-  }
-  #play:hover { border-color: var(--accent); color: var(--accent); }
-  #play svg { width: 14px; height: 14px; fill: currentColor; }
 
-  /* Test panel: a bar at the top right that collapses to its icon. */
-  #lab {
-    position: absolute; top: 12px; right: 12px; display: flex; align-items: stretch;
-    background: color-mix(in srgb, var(--panel) 92%, transparent);
-    border: 1px solid var(--line); border-radius: 9px; overflow: hidden;
-    backdrop-filter: blur(6px); max-width: calc(100% - 24px);
+  /* ---------- masthead: the one place the script face is used ---------- */
+  .brand { position: relative; padding-right: 40px; }
+  .brand h1 { font-family: var(--script); font-weight: 400; font-size: 38px; line-height: 1.05;
+              margin: 4px 0 4px; letter-spacing: .01em; white-space: nowrap; }
+  .brand svg { position: absolute; right: -4px; top: -2px; width: 40px; height: 46px; overflow: visible; }
+  .ink { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .ink.faint { opacity: .35; }
+  .sub { color: var(--muted); font-size: 12.5px; }
+
+  /* ---------- section heads carry the sibling's step badges ---------- */
+  h2 { font-size: 14px; font-weight: 700; color: var(--ink); margin: 22px 0 9px;
+       display: flex; align-items: center; gap: 9px; }
+  .badge {
+    display: inline-grid; place-items: center; width: 28px; height: 24px; flex: none;
+    font: 600 11px var(--mono); color: var(--ink);
+    border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%;
   }
-  #labToggle {
-    width: 34px; height: 34px; flex: none; border: 0; border-radius: 0; padding: 0;
-    background: transparent; color: var(--dim); display: grid; place-items: center; cursor: pointer;
+  .b-blue { background: var(--w-blue); } .b-sage { background: var(--w-sage); } .b-lav { background: var(--w-lav); }
+  .detail h2 { font-size: 13px; margin: 20px 0 6px; }
+
+  input[type=search] {
+    width: 100%; padding: 8px 11px; background: var(--input); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; font: 14px/1.4 var(--ui); margin-top: 14px;
   }
-  #labToggle:hover { color: var(--accent); background: var(--bg); }
-  #labToggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; }
-  #labBody {
-    display: flex; align-items: center; gap: 14px; padding: 0 14px 0 4px;
-    white-space: nowrap; overflow-x: auto;
+  input[type=search]:focus-visible, button:focus-visible, input[type=checkbox]:focus-visible,
+  input[type=range]:focus-visible, .nm:focus-visible {
+    outline: 2px solid var(--focus); outline-offset: 1px;
   }
-  #lab.collapsed #labBody { display: none; }
-  #labBody .grp { display: flex; align-items: center; gap: 7px; }
-  #labBody .grp > span { color: var(--dim); font-size: 10px;
-                         text-transform: uppercase; letter-spacing: .07em; }
-  #labBody .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  #labBody .seg button {
-    width: auto; border: 0; border-radius: 0; padding: 4px 9px;
-    background: transparent; color: var(--dim); font-size: 11px;
+  input[type=checkbox], input[type=range] { accent-color: var(--w-blue-deep); }
+  input[type=checkbox] { margin: 0; flex: none; }
+  label { display: flex; align-items: center; gap: 9px; padding: 3px 0; cursor: pointer; color: var(--ink-2); }
+  .swatch { width: 11px; height: 11px; flex: none; border: 1px solid var(--ink); border-radius: 50%; }
+  /* the swatch takes the node's shape, so the legend teaches the canvas */
+  .sh-form { border-radius: 2px; }
+  .sh-ap { border-radius: 1px; transform: rotate(45deg) scale(.86); }
+  .sh-tm { border: 0; border-radius: 0; clip-path: polygon(50% 4%, 98% 92%, 2% 92%); }
+  .sh-inst { border: 0; border-radius: 0; clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); }
+  .count { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .edgekey { width: 20px; border-top: 1.5px solid var(--ink-2); flex: none; }
+  .edgekey.dash { border-top-style: dashed; }
+  .hit { padding: 6px 8px; border-radius: 8px; cursor: pointer; transition: background-color 120ms ease; }
+  .hit b { display: block; font-weight: 600; color: var(--ink); }
+  .hit span { color: var(--muted); font-size: 12px; }
+
+  /* One row per space. The name is a button: it centres the view on that
+     space. The checkbox shows and hides the whole space. */
+  .space { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 9px;
+           transition: background-color 150ms ease, opacity 150ms ease; }
+  .space .nm { font-weight: 600; cursor: pointer; color: var(--ink); background: none; border: 0;
+               padding: 0; font: 600 14px var(--ui); width: auto; border-radius: 4px; }
+  .space .ct { margin-left: auto; color: var(--muted); font-size: 12px;
+               font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .space.off { opacity: .45; }
+  .space.open { background: color-mix(in srgb, var(--w-blue) 55%, transparent); }
+  .legend { color: var(--muted); font-size: 11.5px; padding: 2px 8px 6px; display: flex; }
+  .legend span { margin-left: auto; }
+  .waiting { color: var(--muted); font-size: 12.5px; padding: 8px 8px 0; line-height: 1.45; }
+  .waiting b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* ---------- canvas on paper ---------- */
+  main { position: relative; overflow: hidden; background:
+           radial-gradient(55% 45% at 12% 8%, color-mix(in srgb, var(--w-blue) 26%, transparent), transparent 72%),
+           radial-gradient(50% 42% at 92% 96%, color-mix(in srgb, var(--w-sage) 24%, transparent), transparent 72%),
+           radial-gradient(40% 36% at 88% 6%, color-mix(in srgb, var(--w-lav) 20%, transparent), transparent 70%),
+           var(--paper); }
+  /* Paper grain: an inline SVG noise, so it needs no network. */
+  main::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--grain);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .14 0 0 0 0 .15 0 0 0 0 .18 0 0 0 1.4 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
-  #labBody .seg button.on { background: var(--accent); color: #fff; }
-  #labBody .seg button:hover:not(.on) { color: var(--accent); background: var(--bg); }
-  #labBody input[type=range] { width: 78px; }
-  #labBody label { padding: 0; font-size: 11px; }
+  :root[data-style="obsidian"] main { background: var(--paper); }
+  canvas { position: relative; display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  canvas.grabbing { cursor: grabbing; }
+  #hud { position: absolute; left: 16px; bottom: 14px; color: var(--muted);
+         font-size: 12px; font-variant-numeric: tabular-nums; pointer-events: none; }
+  #hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 38px;
+          color: var(--muted); font-size: 12.5px; pointer-events: none; white-space: nowrap;
+          transition: opacity 200ms var(--ease-out); }
+
+  /* ---------- buttons: the sibling's pill and wash styles ---------- */
   button {
-    font: inherit; padding: 7px 11px; border-radius: 6px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%;
+    font: 600 14px/1.2 var(--ui); color: var(--ink); cursor: pointer; width: 100%;
+    padding: 9px 16px; border-radius: 999px; border: 1px solid var(--ink); background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 160ms var(--ease-out), background-color 150ms ease,
+                border-color 150ms ease, color 150ms ease;
   }
-  button:hover { border-color: var(--accent); color: var(--accent); }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  button.primary:hover { opacity: .9; color: #fff; }
-  .pill { display: inline-block; padding: 2px 7px; border-radius: 20px;
-          font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-  .detail h3 { margin: 4px 0 2px; font-size: 15px; line-height: 1.3; }
-  .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--dim); }
-  .meta { margin: 14px 0; }
-  .meta div { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid var(--line); }
-  .meta dt { color: var(--dim); width: 74px; flex: none; }
+  /* press feedback: every pressable thing gives a little */
+  button:active, .hit:active, .nb:active { transform: scale(.97); }
+  button.wash-blue { background: var(--w-blue); border-color: color-mix(in srgb, var(--ink) 70%, var(--w-blue)); }
+  button.ghost { background: transparent; border-color: var(--line); }
+  .round {
+    position: absolute; width: 40px; height: 40px; padding: 0; border-radius: 50%;
+    display: grid; place-items: center; color: var(--ink);
+    background: color-mix(in srgb, var(--card) 88%, transparent); border-color: var(--line);
+  }
+  .round svg { width: 15px; height: 15px; }
+  #play { right: 16px; bottom: 14px; border-color: var(--ink); }
+  #play svg { fill: currentColor; }
+  #navBtn { left: 12px; top: 12px; display: none; }
+  #navBtn svg, #labToggle svg { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+  /* Hover only where there is a real pointer: a tap must not leave a hover behind. */
+  @media (hover: hover) and (pointer: fine) {
+    .hit:hover, .nb:hover { background: color-mix(in srgb, var(--w-blue) 32%, transparent); }
+    .space:hover:not(.open) { background: color-mix(in srgb, var(--w-lav) 30%, transparent); }
+    .space .nm:hover, label:hover { color: var(--w-blue-deep); }
+    button.ghost:hover, .round:hover { background: color-mix(in srgb, var(--w-lav) 45%, var(--card)); }
+    button.wash-blue:hover { background: color-mix(in srgb, var(--w-blue) 80%, var(--ink)); }
+    .seg button:hover:not(.on) { background: color-mix(in srgb, var(--w-lav) 40%, transparent); }
+  }
+
+  /* ---------- test controls: a popover that grows from its own button ---------- */
+  #lab { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; }
+  #labToggle { top: 0; right: 0; }
+  #lab:not(.closed) #labToggle { background: var(--w-lav); border-color: var(--ink); }
+  #labPanel {
+    position: absolute; top: 48px; right: 0; width: 292px; padding: 14px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    display: grid; gap: 14px; box-shadow: 0 14px 34px rgb(35 38 46 / .14);
+    transform-origin: top right;
+    /* exit is quicker than entry */
+    transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out), visibility 0s 120ms;
+  }
+  #lab:not(.closed) #labPanel {
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out), visibility 0s;
+  }
+  #lab.closed #labPanel { opacity: 0; transform: scale(.96); visibility: hidden; pointer-events: none; }
+  .labhead { display: flex; align-items: center; font-size: 14px; font-weight: 700; gap: 9px; }
+  .labhead button { width: 28px; height: 28px; margin-left: auto; padding: 0; border: 0;
+                    background: none; color: var(--muted); font-size: 15px; line-height: 1; border-radius: 50%; }
+  .labrow { display: grid; gap: 6px; }
+  .labrow > span { display: flex; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+  .labrow > span b { margin-left: auto; color: var(--ink); font-weight: 600; font-family: var(--mono);
+                     font-size: 12px; font-variant-numeric: tabular-nums; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; padding: 2px; gap: 2px; }
+  .seg button { flex: 1; width: auto; border: 0; border-radius: 999px; padding: 5px 4px;
+                background: transparent; color: var(--ink-2); font-size: 12.5px; }
+  .seg button.on { background: var(--w-blue); color: var(--ink); }
+  :root[data-style="obsidian"] .seg button.on { background: var(--accent); color: #0e1014; }
+  #labPanel input[type=range] { width: 100%; }
+  .labchecks { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; }
+  .labchecks label { padding: 0; font-size: 13px; }
+
+  /* ---------- detail panel ---------- */
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; color: var(--ink);
+          font-size: 11.5px; font-weight: 700; letter-spacing: .03em; border: 1px solid var(--ink); }
+  :root[data-style="obsidian"] .pill { color: #0e1014; border-color: transparent; }
+  .detail h3 { margin: 8px 0 2px; font-size: 19px; line-height: 1.25; font-weight: 700; }
+  .id { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .meta { margin: 14px 0; padding: 4px 12px; border: 1px solid var(--line-soft); border-radius: 10px;
+          background: var(--paper); }
+  .meta div { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line-soft); }
+  .meta div:last-child { border-bottom: 0; }
+  .meta dt { color: var(--muted); width: 74px; flex: none; }
   .meta dd { margin: 0; word-break: break-word; }
-  .nb { display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 5px; cursor: pointer; }
-  .nb:hover { background: var(--bg); }
-  .nb small { color: var(--dim); margin-left: auto; font-size: 10px; flex: none; }
-  .empty { color: var(--dim); padding-top: 40px; text-align: center; }
-  .warn { background: color-mix(in srgb, var(--tm) 14%, transparent);
-          border: 1px solid var(--tm); border-radius: 6px; padding: 9px; margin: 12px 0; font-size: 12px; }
+  .nb { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; cursor: pointer;
+        transition: background-color 120ms ease, transform 160ms var(--ease-out); }
+  .nb small { color: var(--muted); margin-left: auto; font-size: 11px; flex: none; text-align: right; }
+  .nb.out { opacity: .78; }
+  .empty { color: var(--muted); padding-top: 40px; text-align: center; }
+  .empty svg { display: block; margin: 0 auto 12px; width: 64px; height: 64px; }
+  .warn { background: color-mix(in srgb, var(--over) 10%, transparent); color: var(--ink);
+          border: 1px solid color-mix(in srgb, var(--over) 60%, transparent); border-radius: 10px;
+          padding: 10px 12px; margin: 12px 0; font-size: 13px; }
+  .hold { border: 1px dashed var(--line); border-radius: 10px; padding: 9px 11px;
+          margin: 8px 0 6px; color: var(--muted); font-size: 12.5px; line-height: 1.45;
+          background: color-mix(in srgb, var(--w-lav) 16%, transparent); }
   .slider { width: 100%; }
+  #sheetClose { display: none; }
+  #scrim { display: none; }
+
+  /* ---------- narrower screens ---------- */
+  @media (max-width: 1100px) {
+    body { grid-template-columns: 248px minmax(0, 1fr) 300px; }
+  }
+  /* Phone: the canvas takes the screen. The filters become a drawer from the
+     left and the detail panel a sheet from the bottom. */
+  @media (max-width: 760px) {
+    body { grid-template-columns: minmax(0, 1fr); height: 100dvh; }
+    #navBtn { display: grid; }
+    #hint, #hud { display: none; }
+    aside.left {
+      position: fixed; z-index: 20; top: 0; bottom: 0; left: 0; width: min(86vw, 320px);
+      box-shadow: 0 0 40px rgb(35 38 46 / .18);
+      transform: translateX(-104%);
+      transition: transform 200ms var(--ease-drawer);
+    }
+    body.nav-open aside.left { transform: none; transition-duration: 280ms; }
+    #scrim { display: block; position: fixed; inset: 0; z-index: 15; background: rgb(24 25 29 / .28);
+             opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
+    body.nav-open #scrim { opacity: 1; pointer-events: auto; }
+    aside.right {
+      position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; max-height: 58dvh;
+      border: 1px solid var(--line); border-radius: 18px 18px 0 0; padding-top: 10px;
+      box-shadow: 0 -10px 30px rgb(35 38 46 / .12);
+      transform: translateY(104%);
+      transition: transform 200ms var(--ease-drawer);
+    }
+    body.has-sel aside.right { transform: none; transition-duration: 280ms; }
+    #sheetClose { display: grid; position: sticky; top: 0; margin-left: auto; width: 32px; height: 32px;
+                  padding: 0; border-color: var(--line); float: right; font-size: 14px; place-items: center; }
+    #lab { top: 12px; }
+    #labPanel { width: min(292px, calc(100vw - 24px)); }
+    input[type=search] { font-size: 16px; }   /* no zoom on focus in iOS */
+  }
+
+  /* Reduced motion: keep the fades that explain a change, drop every movement. */
+  @media (prefers-reduced-motion: reduce) {
+    button:active, .hit:active, .nb:active { transform: none; }
+    #lab.closed #labPanel { transform: none; }
+    aside.left, aside.right { transition-property: opacity, visibility !important; }
+    @media (max-width: 760px) {
+      aside.left, aside.right { transform: none !important; }
+      body:not(.nav-open) aside.left, body:not(.has-sel) aside.right { opacity: 0; visibility: hidden; }
+    }
+  }
 </style>
 </head>
 <body>
 
-<aside class="left">
-  <h1>Example Labs</h1>
-  <div class="sub">Document graph — prototype</div>
+<aside class="left" id="nav">
+  <div class="brand">
+    <h1>Example Labs</h1>
+    <div class="sub">Document graph · one space</div>
+    <svg viewBox="0 0 50 56" aria-hidden="true" focusable="false">
+      <path class="ink" d="M18 6h12M20 6v14L9 44a4 4 0 0 0 3.6 6h22.8A4 4 0 0 0 39 44L28 20V6"/>
+      <path d="M13.5 37h21L38 44.5a3 3 0 0 1-2.7 4.3H12.7A3 3 0 0 1 10 44.5z" fill="var(--w-blue)" opacity=".85"/>
+      <path class="ink faint" d="M44 10l4 2.3v4.6L44 19.2l-4-2.3v-4.6z"/>
+    </svg>
+  </div>
 
-  <input type="search" id="q" placeholder="Search title or number…" autocomplete="off">
+  <input type="search" id="q" placeholder="Search title or number…" autocomplete="off" aria-label="Search">
   <div id="results"></div>
 
-  <h2>Node types</h2>
+  <h2><span class="badge b-blue">01</span>Node types</h2>
   <div id="types"></div>
 
-  <h2>Link kinds</h2>
+  <h2><span class="badge b-lav">02</span>Link kinds</h2>
   <div id="kinds"></div>
 
-  <h2>Clusters</h2>
+  <h2><span class="badge b-sage">03</span>Clusters</h2>
   <label><input type="checkbox" id="affinity" checked> Group by shared neighbours</label>
   <label><input type="checkbox" id="bycluster"> Colour by cluster</label>
   <div id="clusterList"></div>
 
-  <h2>View</h2>
+  <h2><span class="badge b-blue">04</span>View</h2>
   <label><input type="checkbox" id="spin" checked> Rotate slowly</label>
   <label><input type="checkbox" id="flat"> Flatten to 2D</label>
   <label><input type="checkbox" id="labels" checked> Show labels</label>
   <label><input type="checkbox" id="onlyLinked"> Hide isolated nodes</label>
-  <h2>Link opacity</h2>
-  <input type="range" class="slider" id="alpha" min="4" max="60" value="20">
-  <div style="margin-top:14px"><button id="reset">Reset view</button></div>
+  <h2><span class="badge b-lav">05</span>Link opacity</h2>
+  <input type="range" class="slider" id="alpha" min="4" max="60" value="24" aria-label="Link opacity">
+  <div style="margin-top:16px"><button class="ghost" id="reset">Reset view</button></div>
 </aside>
+<div id="scrim"></div>
 
 <main>
   <canvas id="c"></canvas>
   <div id="hud"></div>
   <div id="hint">drag a node to move it · drag the background to rotate · shift-drag to pan · double-click to focus</div>
-  <button id="play" title="Pause rotation (space)"></button>
+  <button id="play" class="round" title="Pause rotation (space)" aria-label="Pause rotation"></button>
+  <button id="navBtn" class="round" title="Filters" aria-label="Filters">
+    <svg viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+  </button>
 
-  <div id="lab" class="collapsed">
-    <button id="labToggle" title="Test controls">
+  <div id="lab" class="closed">
+    <button id="labToggle" class="round" title="Test controls" aria-label="Test controls">
       <svg viewBox="0 0 16 16"><path d="M1 4h14M1 8h14M1 12h14"/>
-        <circle cx="5" cy="4" r="1.9" fill="currentColor" stroke="none"/>
-        <circle cx="10.5" cy="8" r="1.9" fill="currentColor" stroke="none"/>
-        <circle cx="6.5" cy="12" r="1.9" fill="currentColor" stroke="none"/></svg>
+        <circle cx="5" cy="4" r="1.9" fill="var(--card)"/>
+        <circle cx="10.5" cy="8" r="1.9" fill="var(--card)"/>
+        <circle cx="6.5" cy="12" r="1.9" fill="var(--card)"/></svg>
     </button>
-    <div id="labBody">
-      <div class="grp"><span>Shell</span>
+    <div id="labPanel">
+      <div class="labhead"><span>Test controls</span><button id="labClose" title="Close" aria-label="Close">✕</button></div>
+
+      <div class="labrow"><span>Shell</span>
         <div class="seg" id="shellSeg">
           <button data-shell="none">Off</button>
           <button data-shell="sphere" class="on">Sphere</button>
@@ -188,35 +359,44 @@
           <button data-shell="cylinder">Cylinder</button>
         </div>
       </div>
-      <div class="grp"><span>Size</span>
-        <input type="range" id="shellSize" min="220" max="620" value="400">
-      </div>
-      <div class="grp"><span>Style</span>
+
+      <div class="labrow"><span>Style</span>
         <div class="seg" id="styleSeg">
-          <button data-style="labelled" class="on">Labelled</button>
+          <button data-style="paper" class="on">Paper</button>
           <button data-style="obsidian">Obsidian</button>
         </div>
       </div>
-      <div class="grp">
-        <label><input type="checkbox" id="confine" checked> Confine</label>
-        <label><input type="checkbox" id="axes" checked> Axes</label>
+
+      <div class="labrow"><span>Shell size <b id="shellSizeVal">400</b></span>
+        <input type="range" id="shellSize" min="220" max="620" value="400" aria-label="Shell size">
+      </div>
+
+      <div class="labrow"><span>Show</span>
+        <div class="labchecks">
+          <label><input type="checkbox" id="axes" checked> Axes</label>
+          <label><input type="checkbox" id="confine" checked> Confine</label>
+        </div>
       </div>
     </div>
   </div>
 </main>
 
-<aside class="right"><div id="detail" class="empty">Select a node.</div></aside>
+<aside class="right" id="sheet"><button id="sheetClose" class="round" title="Close" aria-label="Close">✕</button><div id="detail" class="empty"></div></aside>
 
 <script>
 const GRAPH = {"nodes": [{"id": "EXL-SOP01", "type": "standard operating procedure", "cls": "SOP", "title": "Hazel Ridge", "revision": "00", "file": "EXL-SOP01-00 Hazel Ridge.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP02", "type": "standard operating procedure", "cls": "SOP", "title": "Marble Otter", "revision": "00", "file": "EXL-SOP02-00 Marble Otter.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP03", "type": "standard operating procedure", "cls": "SOP", "title": "Tidal Ledge", "revision": "00", "file": "EXL-SOP03-00 Tidal Ledge.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP04", "type": "standard operating procedure", "cls": "SOP", "title": "Sage Meadow", "revision": "00", "file": "EXL-SOP04-00 Sage Meadow.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP05", "type": "standard operating procedure", "cls": "SOP", "title": "Clear Ledge", "revision": "00", "file": "EXL-SOP05-00 Clear Ledge.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP06", "type": "standard operating procedure", "cls": "SOP", "title": "Frost Kestrel", "revision": "00", "file": "EXL-SOP06-00 Frost Kestrel.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP07", "type": "standard operating procedure", "cls": "SOP", "title": "Iron Brook", "revision": "01", "file": "EXL-SOP07-01 Iron Brook.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP08", "type": "standard operating procedure", "cls": "SOP", "title": "Ember Delta", "revision": "01", "file": "EXL-SOP08-01 Ember Delta.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP09", "type": "standard operating procedure", "cls": "SOP", "title": "Ruby Peak", "revision": "00", "file": "EXL-SOP09-00 Ruby Peak.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP10", "type": "standard operating procedure", "cls": "SOP", "title": "Velvet Ledge", "revision": "03", "file": "EXL-SOP10-03 Velvet Ledge.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP11", "type": "standard operating procedure", "cls": "SOP", "title": "Indigo Anchor", "revision": "01", "file": "EXL-SOP11-01 Indigo Anchor.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP12", "type": "standard operating procedure", "cls": "SOP", "title": "North Lark", "revision": "02", "file": "EXL-SOP12-02 North Lark.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP13", "type": "standard operating procedure", "cls": "SOP", "title": "Fern Arrow", "revision": "00", "file": "EXL-SOP13-00 Fern Arrow.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP14", "type": "standard operating procedure", "cls": "SOP", "title": "Velvet Raven", "revision": "00", "file": "EXL-SOP14-00 Velvet Raven.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP15", "type": "standard operating procedure", "cls": "SOP", "title": "Iron Arrow", "revision": "02", "file": "EXL-SOP15-02 Iron Arrow.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP16", "type": "standard operating procedure", "cls": "SOP", "title": "Ember Canyon", "revision": "01", "file": "EXL-SOP16-01 Ember Canyon.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP17", "type": "standard operating procedure", "cls": "SOP", "title": "Quartz Lark", "revision": "01", "file": "EXL-SOP17-01 Quartz Lark.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP18", "type": "standard operating procedure", "cls": "SOP", "title": "River Brook", "revision": "00", "file": "EXL-SOP18-00 River Brook.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP19", "type": "standard operating procedure", "cls": "SOP", "title": "Juniper Valley", "revision": "01", "file": "EXL-SOP19-01 Juniper Valley.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP20", "type": "standard operating procedure", "cls": "SOP", "title": "Clear Compass", "revision": "00", "file": "EXL-SOP20-00 Clear Compass.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP21", "type": "standard operating procedure", "cls": "SOP", "title": "Cedar Hawk", "revision": "02", "file": "EXL-SOP21-02 Cedar Hawk.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP22", "type": "standard operating procedure", "cls": "SOP", "title": "North Horizon", "revision": "01", "file": "EXL-SOP22-01 North Horizon.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP23", "type": "standard operating procedure", "cls": "SOP", "title": "Jade Heron", "revision": "01", "file": "EXL-SOP23-01 Jade Heron.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP24", "type": "standard operating procedure", "cls": "SOP", "title": "Sable Wren", "revision": "00", "file": "EXL-SOP24-00 Sable Wren.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP25", "type": "standard operating procedure", "cls": "SOP", "title": "Granite Cascade", "revision": "00", "file": "EXL-SOP25-00 Granite Cascade.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP26", "type": "standard operating procedure", "cls": "SOP", "title": "Rose Garden", "revision": "02", "file": "EXL-SOP26-02 Rose Garden.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP27", "type": "standard operating procedure", "cls": "SOP", "title": "North Grove", "revision": "01", "file": "EXL-SOP27-01 North Grove.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP29", "type": "standard operating procedure", "cls": "SOP", "title": "Sage Lantern", "revision": "00", "file": "EXL-SOP29-00 Sage Lantern.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP30", "type": "standard operating procedure", "cls": "SOP", "title": "Pine Heron", "revision": "00", "file": "EXL-SOP30-00 Pine Heron.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP32", "type": "standard operating procedure", "cls": "SOP", "title": "Quiet Crane", "revision": "02", "file": "EXL-SOP32-02 Quiet Crane.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP33", "type": "standard operating procedure", "cls": "SOP", "title": "Frost Prism", "revision": "00", "file": "EXL-SOP33-00 Frost Prism.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP34", "type": "standard operating procedure", "cls": "SOP", "title": "Quartz Forge", "revision": "02", "file": "EXL-SOP34-02 Quartz Forge.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP35", "type": "standard operating procedure", "cls": "SOP", "title": "Solar Canyon", "revision": "01", "file": "EXL-SOP35-01 Solar Canyon.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP36", "type": "standard operating procedure", "cls": "SOP", "title": "Golden Comet", "revision": "00", "file": "EXL-SOP36-00 Golden Comet.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP37", "type": "standard operating procedure", "cls": "SOP", "title": "Sage Crane", "revision": "00", "file": "EXL-SOP37-00 Sage Crane.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP38", "type": "standard operating procedure", "cls": "SOP", "title": "Clear Brook", "revision": "00", "file": "EXL-SOP38-00 Clear Brook.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP39", "type": "standard operating procedure", "cls": "SOP", "title": "Quartz Atlas", "revision": "03", "file": "EXL-SOP39-03 Quartz Atlas.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP40", "type": "standard operating procedure", "cls": "SOP", "title": "North Compass", "revision": "01", "file": "EXL-SOP40-01 North Compass.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP41", "type": "standard operating procedure", "cls": "SOP", "title": "Copper Summit", "revision": "02", "file": "EXL-SOP41-02 Copper Summit.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP42", "type": "standard operating procedure", "cls": "SOP", "title": "Jade Quill", "revision": "02", "file": "EXL-SOP42-02 Jade Quill.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP43", "type": "standard operating procedure", "cls": "SOP", "title": "Maple Crane", "revision": "00", "file": "EXL-SOP43-00 Maple Crane.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP44", "type": "standard operating procedure", "cls": "SOP", "title": "Quartz Crest", "revision": "00", "file": "EXL-SOP44-00 Quartz Crest.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP45", "type": "standard operating procedure", "cls": "SOP", "title": "Velvet Anchor", "revision": "02", "file": "EXL-SOP45-02 Velvet Anchor.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP46", "type": "standard operating procedure", "cls": "SOP", "title": "Quartz Garden", "revision": "00", "file": "EXL-SOP46-00 Quartz Garden.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP47", "type": "standard operating procedure", "cls": "SOP", "title": "Azure Wren", "revision": "00", "file": "EXL-SOP47-00 Azure Wren.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP48", "type": "standard operating procedure", "cls": "SOP", "title": "Golden Cascade", "revision": "00", "file": "EXL-SOP48-00 Golden Cascade.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP49", "type": "standard operating procedure", "cls": "SOP", "title": "Winter Lynx", "revision": "00", "file": "EXL-SOP49-00 Winter Lynx.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP50", "type": "standard operating procedure", "cls": "SOP", "title": "Misty Garden", "revision": "00", "file": "EXL-SOP50-00 Misty Garden.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP51", "type": "standard operating procedure", "cls": "SOP", "title": "Golden Atlas", "revision": "00", "file": "EXL-SOP51-00 Golden Atlas.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP52", "type": "standard operating procedure", "cls": "SOP", "title": "Swift Falcon", "revision": "01", "file": "EXL-SOP52-01 Swift Falcon.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP53", "type": "standard operating procedure", "cls": "SOP", "title": "Azure Beacon", "revision": "00", "file": "EXL-SOP53-00 Azure Beacon.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP54", "type": "standard operating procedure", "cls": "SOP", "title": "North Ledge", "revision": "00", "file": "EXL-SOP54-00 North Ledge.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP55", "type": "standard operating procedure", "cls": "SOP", "title": "Meadow Sparrow", "revision": "00", "file": "EXL-SOP55-00 Meadow Sparrow.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP56", "type": "standard operating procedure", "cls": "SOP", "title": "Dawn Orbit", "revision": "00", "file": "EXL-SOP56-00 Dawn Orbit.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP57", "type": "standard operating procedure", "cls": "SOP", "title": "Harbor Orbit", "revision": "00", "file": "EXL-SOP57-00 Harbor Orbit.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP58", "type": "standard operating procedure", "cls": "SOP", "title": "Solar Orbit", "revision": "00", "file": "EXL-SOP58-00 Solar Orbit.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP59", "type": "standard operating procedure", "cls": "SOP", "title": "Willow Peak", "revision": "03", "file": "EXL-SOP59-03 Willow Peak.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-SOP60", "type": "standard operating procedure", "cls": "SOP", "title": "Coral Horizon", "revision": "00", "file": "EXL-SOP60-00 Coral Horizon.docx", "folder": "documents/SOP", "present": true}, {"id": "EXL-FM01", "type": "form", "cls": "FM", "title": "Iron Meadow", "revision": "00", "file": "EXL-FM01-00 Iron Meadow.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM02", "type": "form", "cls": "FM", "title": "Sage Bridge", "revision": "00", "file": "EXL-FM02-00 Sage Bridge.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM03", "type": "form", "cls": "FM", "title": "Amber Wren", "revision": "00", "file": "EXL-FM03-00 Amber Wren.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM04", "type": "form", "cls": "FM", "title": "Dawn Otter", "revision": "01", "file": "EXL-FM04-01 Dawn Otter.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM05", "type": "form", "cls": "FM", "title": "Quartz Heron", "revision": "00", "file": "EXL-FM05-00 Quartz Heron.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM06", "type": "form", "cls": "FM", "title": "Rapid Otter", "revision": "00", "file": "EXL-FM06-00 Rapid Otter.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM07", "type": "form", "cls": "FM", "title": "River Orbit", "revision": "00", "file": "EXL-FM07-00 River Orbit.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM08", "type": "form", "cls": "FM", "title": "Crimson Spire", "revision": "00", "file": "EXL-FM08-00 Crimson Spire.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM09", "type": "form", "cls": "FM", "title": "Amber Prism", "revision": "01", "file": "EXL-FM09-01 Amber Prism.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM10", "type": "form", "cls": "FM", "title": "Marble Beacon", "revision": "00", "file": "EXL-FM10-00 Marble Beacon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM11", "type": "form", "cls": "FM", "title": "Jade Cascade", "revision": "02", "file": "EXL-FM11-02 Jade Cascade.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM12", "type": "form", "cls": "FM", "title": "Ivory Thistle", "revision": "00", "file": "EXL-FM12-00 Ivory Thistle.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM13", "type": "form", "cls": "FM", "title": "Copper Arrow", "revision": "00", "file": "EXL-FM13-00 Copper Arrow.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM14", "type": "form", "cls": "FM", "title": "Indigo Orbit", "revision": "00", "file": "EXL-FM14-00 Indigo Orbit.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM15", "type": "form", "cls": "FM", "title": "Tidal Spire", "revision": "01", "file": "EXL-FM15-01 Tidal Spire.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM16", "type": "form", "cls": "FM", "title": "Lunar Spire", "revision": "00", "file": "EXL-FM16-00 Lunar Spire.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM17", "type": "form", "cls": "FM", "title": "Marble Island", "revision": "00", "file": "EXL-FM17-00 Marble Island.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM19", "type": "form", "cls": "FM", "title": "Winter Lark", "revision": "01", "file": "EXL-FM19-01 Winter Lark.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM20", "type": "form", "cls": "FM", "title": "Pine Birch", "revision": "02", "file": "EXL-FM20-02 Pine Birch.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM21", "type": "form", "cls": "FM", "title": "Velvet Crest", "revision": "02", "file": "EXL-FM21-02 Velvet Crest.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM22", "type": "form", "cls": "FM", "title": "Slate Spire", "revision": "00", "file": "EXL-FM22-00 Slate Spire.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM23", "type": "form", "cls": "FM", "title": "Teal Badger", "revision": "02", "file": "EXL-FM23-02 Teal Badger.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM25", "type": "form", "cls": "FM", "title": "Granite Lynx", "revision": "00", "file": "EXL-FM25-00 Granite Lynx.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM26", "type": "form", "cls": "FM", "title": "Rapid Island", "revision": "00", "file": "EXL-FM26-00 Rapid Island.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM27", "type": "form", "cls": "FM", "title": "Meadow Horizon", "revision": "00", "file": "EXL-FM27-00 Meadow Horizon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM28", "type": "form", "cls": "FM", "title": "Tidal Harbor", "revision": "01", "file": "EXL-FM28-01 Tidal Harbor.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM29", "type": "form", "cls": "FM", "title": "Slate Peak", "revision": "01", "file": "EXL-FM29-01 Slate Peak.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM30", "type": "form", "cls": "FM", "title": "Tidal Crane", "revision": "00", "file": "EXL-FM30-00 Tidal Crane.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM31", "type": "form", "cls": "FM", "title": "Stone Canyon", "revision": "00", "file": "EXL-FM31-00 Stone Canyon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM32", "type": "form", "cls": "FM", "title": "Crimson Bridge", "revision": "00", "file": "EXL-FM32-00 Crimson Bridge.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM33", "type": "form", "cls": "FM", "title": "Willow Thistle", "revision": "00", "file": "EXL-FM33-00 Willow Thistle.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM34", "type": "form", "cls": "FM", "title": "Quartz Kestrel", "revision": "00", "file": "EXL-FM34-00 Quartz Kestrel.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM35", "type": "form", "cls": "FM", "title": "Bright Beacon", "revision": "00", "file": "EXL-FM35-00 Bright Beacon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM36", "type": "form", "cls": "FM", "title": "Sable Finch", "revision": "00", "file": "EXL-FM36-00 Sable Finch.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM37", "type": "form", "cls": "FM", "title": "Granite Ledge", "revision": "00", "file": "EXL-FM37-00 Granite Ledge.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM38", "type": "form", "cls": "FM", "title": "Copper Finch", "revision": "03", "file": "EXL-FM38-03 Copper Finch.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM39", "type": "form", "cls": "FM", "title": "Bright Thistle", "revision": "00", "file": "EXL-FM39-00 Bright Thistle.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM40", "type": "form", "cls": "FM", "title": "Clear Valley", "revision": "00", "file": "EXL-FM40-00 Clear Valley.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM41", "type": "form", "cls": "FM", "title": "Solar Spire", "revision": "00", "file": "EXL-FM41-00 Solar Spire.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM42", "type": "form", "cls": "FM", "title": "Ivory Arrow", "revision": "00", "file": "EXL-FM42-00 Ivory Arrow.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM43", "type": "form", "cls": "FM", "title": "Sage Forge", "revision": "00", "file": "EXL-FM43-00 Sage Forge.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM44", "type": "form", "cls": "FM", "title": "Marble Lantern", "revision": "00", "file": "EXL-FM44-00 Marble Lantern.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM45", "type": "form", "cls": "FM", "title": "Indigo Canyon", "revision": "00", "file": "EXL-FM45-00 Indigo Canyon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM46", "type": "form", "cls": "FM", "title": "Copper Peak", "revision": "00", "file": "EXL-FM46-00 Copper Peak.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM47", "type": "form", "cls": "FM", "title": "Azure Spire", "revision": "00", "file": "EXL-FM47-00 Azure Spire.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM48", "type": "form", "cls": "FM", "title": "Slate Forge", "revision": "00", "file": "EXL-FM48-00 Slate Forge.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM49", "type": "form", "cls": "FM", "title": "River Island", "revision": "00", "file": "EXL-FM49-00 River Island.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM50", "type": "form", "cls": "FM", "title": "Crimson Ledge", "revision": "00", "file": "EXL-FM50-00 Crimson Ledge.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM51", "type": "form", "cls": "FM", "title": "Lunar Anchor", "revision": "00", "file": "EXL-FM51-00 Lunar Anchor.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM52", "type": "form", "cls": "FM", "title": "Maple Island", "revision": "00", "file": "EXL-FM52-00 Maple Island.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM53", "type": "form", "cls": "FM", "title": "Clear Anchor", "revision": "00", "file": "EXL-FM53-00 Clear Anchor.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM54", "type": "form", "cls": "FM", "title": "Silver Delta", "revision": "00", "file": "EXL-FM54-00 Silver Delta.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM55", "type": "form", "cls": "FM", "title": "Granite Lantern", "revision": "00", "file": "EXL-FM55-00 Granite Lantern.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM56", "type": "form", "cls": "FM", "title": "Coral Quill", "revision": "00", "file": "EXL-FM56-00 Coral Quill.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM57", "type": "form", "cls": "FM", "title": "Slate Horizon", "revision": "00", "file": "EXL-FM57-00 Slate Horizon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM58", "type": "form", "cls": "FM", "title": "Harbor Peak", "revision": "00", "file": "EXL-FM58-00 Harbor Peak.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM59", "type": "form", "cls": "FM", "title": "Azure Lark", "revision": "00", "file": "EXL-FM59-00 Azure Lark.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM60", "type": "form", "cls": "FM", "title": "Lunar Beacon", "revision": "00", "file": "EXL-FM60-00 Lunar Beacon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM61", "type": "form", "cls": "FM", "title": "Bright Hawk", "revision": "00", "file": "EXL-FM61-00 Bright Hawk.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM62", "type": "form", "cls": "FM", "title": "Sage Glacier", "revision": "01", "file": "EXL-FM62-01 Sage Glacier.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM63", "type": "form", "cls": "FM", "title": "Teal Raven", "revision": "00", "file": "EXL-FM63-00 Teal Raven.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM64", "type": "form", "cls": "FM", "title": "Hazel Prism", "revision": "00", "file": "EXL-FM64-00 Hazel Prism.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM65", "type": "form", "cls": "FM", "title": "Sable Canyon", "revision": "01", "file": "EXL-FM65-01 Sable Canyon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM66", "type": "form", "cls": "FM", "title": "Violet Horizon", "revision": "00", "file": "EXL-FM66-00 Violet Horizon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM67", "type": "form", "cls": "FM", "title": "Violet Badger", "revision": "00", "file": "EXL-FM67-00 Violet Badger.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM71", "type": "form", "cls": "FM", "title": "Frost Beacon", "revision": "00", "file": "EXL-FM71-00 Frost Beacon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM72", "type": "form", "cls": "FM", "title": "Ember Badger", "revision": "00", "file": "EXL-FM72-00 Ember Badger.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM73", "type": "form", "cls": "FM", "title": "Silver Grove", "revision": "00", "file": "EXL-FM73-00 Silver Grove.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM74", "type": "form", "cls": "FM", "title": "Quartz Quill", "revision": "00", "file": "EXL-FM74-00 Quartz Quill.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM75", "type": "form", "cls": "FM", "title": "Opal Glacier", "revision": "00", "file": "EXL-FM75-00 Opal Glacier.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM76", "type": "form", "cls": "FM", "title": "Azure Grove", "revision": "00", "file": "EXL-FM76-00 Azure Grove.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM77", "type": "form", "cls": "FM", "title": "Clear Harbor", "revision": "00", "file": "EXL-FM77-00 Clear Harbor.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM78", "type": "form", "cls": "FM", "title": "Meadow Lantern", "revision": "00", "file": "EXL-FM78-00 Meadow Lantern.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM80", "type": "form", "cls": "FM", "title": "Sage Falcon", "revision": "00", "file": "EXL-FM80-00 Sage Falcon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM81", "type": "form", "cls": "FM", "title": "Coral Cascade", "revision": "00", "file": "EXL-FM81-00 Coral Cascade.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM82", "type": "form", "cls": "FM", "title": "Coral Canyon", "revision": "00", "file": "EXL-FM82-00 Coral Canyon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM83", "type": "form", "cls": "FM", "title": "Iron Atlas", "revision": "00", "file": "EXL-FM83-00 Iron Atlas.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM84", "type": "form", "cls": "FM", "title": "Iron Canyon", "revision": "00", "file": "EXL-FM84-00 Iron Canyon.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-FM86", "type": "form", "cls": "FM", "title": "Jade Badger", "revision": "01", "file": "EXL-FM86-01 Jade Badger.docx", "folder": "documents/Forms", "present": true}, {"id": "EXL-AP01", "type": "analytical procedure", "cls": "AP", "title": "Marble Compass", "revision": "03", "file": "EXL-AP01-03 Marble Compass.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP02", "type": "analytical procedure", "cls": "AP", "title": "Sable Crest", "revision": "02", "file": "EXL-AP02-02 Sable Crest.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP03", "type": "analytical procedure", "cls": "AP", "title": "Fern Crane", "revision": "07", "file": "EXL-AP03-07 Fern Crane.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP04", "type": "analytical procedure", "cls": "AP", "title": "Slate Mesa", "revision": "05", "file": "EXL-AP04-05 Slate Mesa.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP05", "type": "analytical procedure", "cls": "AP", "title": "Copper Pebble", "revision": "03", "file": "EXL-AP05-03 Copper Pebble.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP06", "type": "analytical procedure", "cls": "AP", "title": "Maple Ridge", "revision": "03", "file": "EXL-AP06-03 Maple Ridge.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP07", "type": "analytical procedure", "cls": "AP", "title": "Rose Falcon", "revision": "01", "file": "EXL-AP07-01 Rose Falcon.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP08", "type": "analytical procedure", "cls": "AP", "title": "Swift Field", "revision": "00", "file": "EXL-AP08-00 Swift Field.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP09", "type": "analytical procedure", "cls": "AP", "title": "Fern Bridge", "revision": "01", "file": "EXL-AP09-01 Fern Bridge.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP10", "type": "analytical procedure", "cls": "AP", "title": "Copper Valley", "revision": "04", "file": "EXL-AP10-04 Copper Valley.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP11", "type": "analytical procedure", "cls": "AP", "title": "Willow Falcon", "revision": "03", "file": "EXL-AP11-03 Willow Falcon.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP12", "type": "analytical procedure", "cls": "AP", "title": "Misty Pebble", "revision": "01", "file": "EXL-AP12-01 Misty Pebble.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP13", "type": "analytical procedure", "cls": "AP", "title": "Stone Sparrow", "revision": "00", "file": "EXL-AP13-00 Stone Sparrow.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP14", "type": "analytical procedure", "cls": "AP", "title": "Azure Brook", "revision": "01", "file": "EXL-AP14-01 Azure Brook.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP15", "type": "analytical procedure", "cls": "AP", "title": "River Summit", "revision": "00", "file": "EXL-AP15-00 River Summit.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP16", "type": "analytical procedure", "cls": "AP", "title": "Meadow Comet", "revision": "03", "file": "EXL-AP16-03 Meadow Comet.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP17", "type": "analytical procedure", "cls": "AP", "title": "Pine Island", "revision": "02", "file": "EXL-AP17-02 Pine Island.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP18", "type": "analytical procedure", "cls": "AP", "title": "Silver Beacon", "revision": "01", "file": "EXL-AP18-01 Silver Beacon.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP19", "type": "analytical procedure", "cls": "AP", "title": "North Falcon", "revision": "00", "file": "EXL-AP19-00 North Falcon.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP20", "type": "analytical procedure", "cls": "AP", "title": "Quiet Sparrow", "revision": "00", "file": "EXL-AP20-00 Quiet Sparrow.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP21", "type": "analytical procedure", "cls": "AP", "title": "Frost Raven", "revision": "01", "file": "EXL-AP21-01 Frost Raven.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP25", "type": "analytical procedure", "cls": "AP", "title": "Ruby Compass", "revision": "00", "file": "EXL-AP25-00 Ruby Compass.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-AP26", "type": "analytical procedure", "cls": "AP", "title": "Quartz Wren", "revision": "00", "file": "EXL-AP26-00 Quartz Wren.docx", "folder": "documents/Methods", "present": true}, {"id": "EXL-TM16", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM06", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM18", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM19", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM08", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM03", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM24", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM22", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM23", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM20", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-TM25", "cls": "TM", "type": "test method", "title": null, "revision": null, "file": null, "present": false, "folder": null}, {"id": "EXL-SOP28", "cls": "SOP", "type": "standard operating procedure", "title": null, "revision": null, "file": null, "present": false, "folder": "documents/SOP"}, {"id": "EXL-FM24", "cls": "FM", "type": "form", "title": null, "revision": null, "file": null, "present": false, "folder": "documents/Forms"}, {"id": "INSTRUMENT:Analytical balance", "cls": "INSTRUMENT", "type": "instrument", "title": "Analytical balance", "present": true, "used_by": ["EXL-AP01", "EXL-AP03", "EXL-AP04", "EXL-AP05", "EXL-AP06", "EXL-AP07", "EXL-AP10", "EXL-AP11", "EXL-AP12", "EXL-AP13", "EXL-AP14", "EXL-AP15", "EXL-AP16", "EXL-AP19", "EXL-AP20", "EXL-AP21", "EXL-AP25", "EXL-AP26", "EXL-FM29", "EXL-FM48", "EXL-SOP26", "EXL-SOP29", "EXL-SOP30", "EXL-SOP34", "EXL-SOP39", "EXL-SOP51", "EXL-SOP59"]}, {"id": "INSTRUMENT:Autoclave", "cls": "INSTRUMENT", "type": "instrument", "title": "Autoclave", "present": true, "used_by": ["EXL-FM04", "EXL-FM56", "EXL-SOP01", "EXL-SOP03", "EXL-SOP08", "EXL-SOP09", "EXL-SOP10", "EXL-SOP11", "EXL-SOP12", "EXL-SOP13", "EXL-SOP17"]}, {"id": "INSTRUMENT:Bead beater", "cls": "INSTRUMENT", "type": "instrument", "title": "Bead beater", "present": true, "used_by": ["EXL-SOP05"]}, {"id": "INSTRUMENT:Biosafety cabinet", "cls": "INSTRUMENT", "type": "instrument", "title": "Biosafety cabinet", "present": true, "used_by": ["EXL-SOP04", "EXL-SOP08", "EXL-SOP17"]}, {"id": "INSTRUMENT:Centrifuge", "cls": "INSTRUMENT", "type": "instrument", "title": "Centrifuge", "present": true, "used_by": ["EXL-AP01", "EXL-AP03", "EXL-AP04", "EXL-AP05", "EXL-AP06", "EXL-AP08", "EXL-AP09", "EXL-AP10", "EXL-AP12", "EXL-AP14", "EXL-AP15", "EXL-AP18", "EXL-AP19", "EXL-AP20", "EXL-FM77", "EXL-SOP05", "EXL-SOP08", "EXL-SOP10", "EXL-SOP23", "EXL-SOP60"]}, {"id": "INSTRUMENT:Electronic pipette", "cls": "INSTRUMENT", "type": "instrument", "title": "Electronic pipette", "present": true, "used_by": ["EXL-AP01", "EXL-AP03", "EXL-AP05", "EXL-AP06", "EXL-AP14", "EXL-AP15", "EXL-AP19", "EXL-AP20", "EXL-AP21", "EXL-AP25", "EXL-AP26", "EXL-SOP06", "EXL-SOP08", "EXL-SOP11", "EXL-SOP12", "EXL-SOP34"]}, {"id": "INSTRUMENT:Freezer", "cls": "INSTRUMENT", "type": "instrument", "title": "Freezer", "present": true, "used_by": ["EXL-AP01", "EXL-AP03", "EXL-AP05", "EXL-AP06", "EXL-AP09", "EXL-FM08", "EXL-FM16", "EXL-FM22", "EXL-FM25", "EXL-FM26", "EXL-FM48", "EXL-FM76", "EXL-SOP37"]}, {"id": "INSTRUMENT:GC-MS", "cls": "INSTRUMENT", "type": "instrument", "title": "GC-MS", "present": true, "used_by": ["EXL-AP08", "EXL-AP10", "EXL-AP20", "EXL-SOP21", "EXL-SOP22", "EXL-SOP23", "EXL-SOP46"]}, {"id": "INSTRUMENT:Hygrometer", "cls": "INSTRUMENT", "type": "instrument", "title": "Hygrometer", "present": true, "used_by": ["EXL-SOP48", "EXL-SOP59"]}, {"id": "INSTRUMENT:ICP-MS", "cls": "INSTRUMENT", "type": "instrument", "title": "ICP-MS", "present": true, "used_by": ["EXL-AP04", "EXL-AP12", "EXL-SOP21", "EXL-SOP22", "EXL-SOP23", "EXL-SOP47"]}, {"id": "INSTRUMENT:Incubator", "cls": "INSTRUMENT", "type": "instrument", "title": "Incubator", "present": true, "used_by": ["EXL-FM01", "EXL-FM16", "EXL-FM58", "EXL-FM59", "EXL-SOP02", "EXL-SOP08", "EXL-SOP10", "EXL-SOP11", "EXL-SOP12", "EXL-SOP17", "EXL-SOP57"]}, {"id": "INSTRUMENT:Karl Fischer titrator", "cls": "INSTRUMENT", "type": "instrument", "title": "Karl Fischer titrator", "present": true, "used_by": ["EXL-SOP52"]}, {"id": "INSTRUMENT:Micropipettor", "cls": "INSTRUMENT", "type": "instrument", "title": "Micropipettor", "present": true, "used_by": ["EXL-AP04", "EXL-AP07", "EXL-AP12", "EXL-FM06", "EXL-SOP08", "EXL-SOP10", "EXL-SOP11", "EXL-SOP12", "EXL-SOP34"]}, {"id": "INSTRUMENT:Moisture balance", "cls": "INSTRUMENT", "type": "instrument", "title": "Moisture balance", "present": true, "used_by": ["EXL-AP11", "EXL-SOP07"]}, {"id": "INSTRUMENT:Refrigerator", "cls": "INSTRUMENT", "type": "instrument", "title": "Refrigerator", "present": true, "used_by": ["EXL-AP01", "EXL-FM02", "EXL-FM16", "EXL-FM22", "EXL-FM48", "EXL-SOP08", "EXL-SOP11", "EXL-SOP37"]}, {"id": "INSTRUMENT:Colony counter", "cls": "INSTRUMENT", "type": "instrument", "title": "Colony counter", "present": true, "used_by": ["EXL-FM07", "EXL-SOP03", "EXL-SOP57"]}, {"id": "INSTRUMENT:TOC analyser", "cls": "INSTRUMENT", "type": "instrument", "title": "TOC analyser", "present": true, "used_by": ["EXL-AP17", "EXL-AP18", "EXL-FM16", "EXL-FM62", "EXL-FM82", "EXL-SOP55"]}, {"id": "INSTRUMENT:Thermometer", "cls": "INSTRUMENT", "type": "instrument", "title": "Thermometer", "present": true, "used_by": ["EXL-FM16", "EXL-FM48", "EXL-SOP08", "EXL-SOP23", "EXL-SOP37"]}, {"id": "INSTRUMENT:UPLC-PDA", "cls": "INSTRUMENT", "type": "instrument", "title": "UPLC-PDA", "present": true, "used_by": ["EXL-AP01", "EXL-AP03", "EXL-AP05", "EXL-AP06", "EXL-AP07", "EXL-AP09", "EXL-AP10", "EXL-AP13", "EXL-AP14", "EXL-AP15", "EXL-AP19", "EXL-AP21", "EXL-AP25", "EXL-AP26", "EXL-SOP13", "EXL-SOP21", "EXL-SOP22", "EXL-SOP23", "EXL-SOP27"]}, {"id": "INSTRUMENT:UV lamp", "cls": "INSTRUMENT", "type": "instrument", "title": "UV lamp", "present": true, "used_by": ["EXL-AP17", "EXL-AP18", "EXL-FM73", "EXL-SOP04", "EXL-SOP17", "EXL-SOP55"]}, {"id": "INSTRUMENT:Water activity meter", "cls": "INSTRUMENT", "type": "instrument", "title": "Water activity meter", "present": true, "used_by": ["EXL-FM53", "EXL-FM66", "EXL-FM67", "EXL-FM75", "EXL-SOP41", "EXL-SOP59"]}, {"id": "INSTRUMENT:Water bath", "cls": "INSTRUMENT", "type": "instrument", "title": "Water bath", "present": true, "used_by": ["EXL-AP09", "EXL-AP13", "EXL-FM03", "EXL-FM16", "EXL-FM48", "EXL-SOP08", "EXL-SOP12"]}, {"id": "INSTRUMENT:Water purification unit", "cls": "INSTRUMENT", "type": "instrument", "title": "Water purification unit", "present": true, "used_by": ["EXL-FM21", "EXL-SOP19"]}, {"id": "INSTRUMENT:pH meter", "cls": "INSTRUMENT", "type": "instrument", "title": "pH meter", "present": true, "used_by": ["EXL-FM16", "EXL-FM30", "EXL-FM71", "EXL-SOP09", "EXL-SOP12", "EXL-SOP36"]}, {"id": "INSTRUMENT:qPCR", "cls": "INSTRUMENT", "type": "instrument", "title": "qPCR", "present": true, "used_by": ["EXL-FM08", "EXL-SOP05", "EXL-SOP10", "EXL-SOP21", "EXL-SOP22", "EXL-SOP23", "EXL-SOP60"]}], "links": [{"source": "EXL-SOP01", "target": "EXL-SOP09", "kind": "declared", "evidence": "[source text withheld] EXL-SOP09"}, {"source": "EXL-SOP01", "target": "EXL-SOP11", "kind": "declared", "evidence": "[source text withheld] EXL-SOP11"}, {"source": "EXL-SOP01", "target": "EXL-SOP13", "kind": "declared", "evidence": "[source text withheld] EXL-SOP13"}, {"source": "EXL-SOP01", "target": "EXL-FM04", "kind": "attached form", "evidence": "[source text withheld] EXL-FM04"}, {"source": "EXL-SOP01", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP02", "target": "EXL-FM01", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM01"}, {"source": "EXL-SOP02", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-SOP03", "target": "EXL-FM07", "kind": "attached form", "evidence": "[source text withheld] EXL-FM07"}, {"source": "EXL-SOP03", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP03", "target": "INSTRUMENT:Colony counter", "kind": "equipment", "evidence": "[source text withheld] names Colony counter"}, {"source": "EXL-SOP04", "target": "INSTRUMENT:Biosafety cabinet", "kind": "equipment", "evidence": "[source text withheld] names Biosafety cabinet"}, {"source": "EXL-SOP04", "target": "INSTRUMENT:UV lamp", "kind": "equipment", "evidence": "[source text withheld] names UV lamp"}, {"source": "EXL-SOP05", "target": "EXL-TM16", "kind": "declared", "evidence": "[source text withheld] EXL-TM16"}, {"source": "EXL-SOP05", "target": "INSTRUMENT:Bead beater", "kind": "equipment", "evidence": "[source text withheld] names Bead beater"}, {"source": "EXL-SOP05", "target": "INSTRUMENT:qPCR", "kind": "equipment", "evidence": "[source text withheld] names qPCR"}, {"source": "EXL-SOP05", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-SOP06", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-SOP07", "target": "EXL-SOP21", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP21"}, {"source": "EXL-SOP07", "target": "EXL-SOP22", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP22"}, {"source": "EXL-SOP07", "target": "EXL-SOP16", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP16"}, {"source": "EXL-SOP07", "target": "INSTRUMENT:Moisture balance", "kind": "equipment", "evidence": "[source text withheld] names Moisture balance"}, {"source": "EXL-SOP08", "target": "EXL-FM02", "kind": "attached form", "evidence": "[source text withheld] EXL-FM02"}, {"source": "EXL-SOP08", "target": "EXL-FM01", "kind": "attached form", "evidence": "[source text withheld] EXL-FM01"}, {"source": "EXL-SOP08", "target": "EXL-FM03", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM03"}, {"source": "EXL-SOP08", "target": "EXL-FM77", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM77"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Biosafety cabinet", "kind": "equipment", "evidence": "[source text withheld] names Biosafety cabinet"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Water bath", "kind": "equipment", "evidence": "[source text withheld] names Water bath"}, {"source": "EXL-SOP08", "target": "INSTRUMENT:Thermometer", "kind": "equipment", "evidence": "[source text withheld] names Thermometer"}, {"source": "EXL-SOP09", "target": "EXL-SOP12", "kind": "declared", "evidence": "[source text withheld] EXL-SOP12"}, {"source": "EXL-SOP09", "target": "EXL-SOP13", "kind": "declared", "evidence": "[source text withheld] EXL-SOP13"}, {"source": "EXL-SOP09", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP09", "target": "INSTRUMENT:pH meter", "kind": "equipment", "evidence": "[source text withheld] names pH meter"}, {"source": "EXL-SOP10", "target": "EXL-TM06", "kind": "declared", "evidence": "[source text withheld] EXL-TM06"}, {"source": "EXL-SOP10", "target": "EXL-TM18", "kind": "declared", "evidence": "[source text withheld] EXL-TM18"}, {"source": "EXL-SOP10", "target": "EXL-TM19", "kind": "declared", "evidence": "[source text withheld] EXL-TM19"}, {"source": "EXL-SOP10", "target": "EXL-SOP11", "kind": "declared", "evidence": "[source text withheld] EXL-SOP11"}, {"source": "EXL-SOP10", "target": "EXL-TM08", "kind": "mentioned", "evidence": "[source text withheld] EXL-TM08"}, {"source": "EXL-SOP10", "target": "EXL-TM03", "kind": "mentioned", "evidence": "[source text withheld] EXL-TM03"}, {"source": "EXL-SOP10", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP10", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-SOP10", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-SOP10", "target": "INSTRUMENT:qPCR", "kind": "equipment", "evidence": "[source text withheld] names qPCR"}, {"source": "EXL-SOP10", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-SOP11", "target": "EXL-SOP13", "kind": "declared", "evidence": "[source text withheld] EXL-SOP13"}, {"source": "EXL-SOP11", "target": "EXL-SOP12", "kind": "declared", "evidence": "[source text withheld] EXL-SOP12"}, {"source": "EXL-SOP11", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP11", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-SOP11", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-SOP11", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-SOP11", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-SOP12", "target": "EXL-SOP09", "kind": "declared", "evidence": "[source text withheld] EXL-SOP09"}, {"source": "EXL-SOP12", "target": "EXL-SOP11", "kind": "declared", "evidence": "[source text withheld] EXL-SOP11"}, {"source": "EXL-SOP12", "target": "EXL-TM06", "kind": "declared", "evidence": "[source text withheld] EXL-TM06"}, {"source": "EXL-SOP12", "target": "EXL-TM18", "kind": "declared", "evidence": "[source text withheld] EXL-TM18"}, {"source": "EXL-SOP12", "target": "EXL-TM19", "kind": "declared", "evidence": "[source text withheld] EXL-TM19"}, {"source": "EXL-SOP12", "target": "EXL-TM24", "kind": "declared", "evidence": "[source text withheld] EXL-TM24"}, {"source": "EXL-SOP12", "target": "EXL-TM22", "kind": "declared", "evidence": "[source text withheld] EXL-TM22"}, {"source": "EXL-SOP12", "target": "EXL-TM23", "kind": "declared", "evidence": "[source text withheld] EXL-TM23"}, {"source": "EXL-SOP12", "target": "EXL-TM20", "kind": "declared", "evidence": "[source text withheld] EXL-TM20"}, {"source": "EXL-SOP12", "target": "EXL-TM25", "kind": "declared", "evidence": "[source text withheld] EXL-TM25"}, {"source": "EXL-SOP12", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP12", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-SOP12", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-SOP12", "target": "INSTRUMENT:pH meter", "kind": "equipment", "evidence": "[source text withheld] names pH meter"}, {"source": "EXL-SOP12", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-SOP12", "target": "INSTRUMENT:Water bath", "kind": "equipment", "evidence": "[source text withheld] names Water bath"}, {"source": "EXL-SOP13", "target": "EXL-SOP28", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP28"}, {"source": "EXL-SOP13", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP13", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-SOP14", "target": "EXL-FM09", "kind": "declared", "evidence": "[source text withheld] EXL-FM09"}, {"source": "EXL-SOP14", "target": "EXL-FM27", "kind": "declared", "evidence": "[source text withheld] EXL-FM27"}, {"source": "EXL-SOP14", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP15", "target": "EXL-SOP22", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP22"}, {"source": "EXL-SOP16", "target": "EXL-FM28", "kind": "declared", "evidence": "[source text withheld] EXL-FM28"}, {"source": "EXL-SOP17", "target": "EXL-SOP01", "kind": "declared", "evidence": "[source text withheld] EXL-SOP01"}, {"source": "EXL-SOP17", "target": "EXL-FM56", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM56"}, {"source": "EXL-SOP17", "target": "EXL-FM59", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM59"}, {"source": "EXL-SOP17", "target": "EXL-FM04", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM04"}, {"source": "EXL-SOP17", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-SOP17", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-SOP17", "target": "INSTRUMENT:Biosafety cabinet", "kind": "equipment", "evidence": "[source text withheld] names Biosafety cabinet"}, {"source": "EXL-SOP17", "target": "INSTRUMENT:UV lamp", "kind": "equipment", "evidence": "[source text withheld] names UV lamp"}, {"source": "EXL-SOP18", "target": "EXL-FM17", "kind": "declared", "evidence": "[source text withheld] EXL-FM17"}, {"source": "EXL-SOP18", "target": "EXL-SOP15", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP19", "target": "EXL-FM21", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM21"}, {"source": "EXL-SOP19", "target": "INSTRUMENT:Water purification unit", "kind": "equipment", "evidence": "[source text withheld] names Water purification unit"}, {"source": "EXL-SOP20", "target": "EXL-FM11", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM11"}, {"source": "EXL-SOP20", "target": "EXL-FM12", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM12"}, {"source": "EXL-SOP20", "target": "EXL-FM13", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM13"}, {"source": "EXL-SOP20", "target": "EXL-FM14", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM14"}, {"source": "EXL-SOP21", "target": "EXL-SOP22", "kind": "declared", "evidence": "[source text withheld] EXL-SOP22"}, {"source": "EXL-SOP21", "target": "EXL-FM34", "kind": "declared", "evidence": "[source text withheld] EXL-FM34"}, {"source": "EXL-SOP21", "target": "EXL-FM24", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM24"}, {"source": "EXL-SOP21", "target": "INSTRUMENT:GC-MS", "kind": "equipment", "evidence": "[source text withheld] names GC-MS"}, {"source": "EXL-SOP21", "target": "INSTRUMENT:ICP-MS", "kind": "equipment", "evidence": "[source text withheld] names ICP-MS"}, {"source": "EXL-SOP21", "target": "INSTRUMENT:qPCR", "kind": "equipment", "evidence": "[source text withheld] names qPCR"}, {"source": "EXL-SOP21", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-SOP22", "target": "EXL-SOP21", "kind": "declared", "evidence": "[source text withheld] EXL-SOP21"}, {"source": "EXL-SOP22", "target": "EXL-FM34", "kind": "declared", "evidence": "[source text withheld] EXL-FM34"}, {"source": "EXL-SOP22", "target": "INSTRUMENT:GC-MS", "kind": "equipment", "evidence": "[source text withheld] names GC-MS"}, {"source": "EXL-SOP22", "target": "INSTRUMENT:ICP-MS", "kind": "equipment", "evidence": "[source text withheld] names ICP-MS"}, {"source": "EXL-SOP22", "target": "INSTRUMENT:qPCR", "kind": "equipment", "evidence": "[source text withheld] names qPCR"}, {"source": "EXL-SOP22", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-SOP23", "target": "EXL-SOP21", "kind": "declared", "evidence": "[source text withheld] EXL-SOP21"}, {"source": "EXL-SOP23", "target": "EXL-SOP22", "kind": "declared", "evidence": "[source text withheld] EXL-SOP22"}, {"source": "EXL-SOP23", "target": "EXL-FM34", "kind": "declared", "evidence": "[source text withheld] EXL-FM34"}, {"source": "EXL-SOP23", "target": "INSTRUMENT:GC-MS", "kind": "equipment", "evidence": "[source text withheld] names GC-MS"}, {"source": "EXL-SOP23", "target": "INSTRUMENT:ICP-MS", "kind": "equipment", "evidence": "[source text withheld] names ICP-MS"}, {"source": "EXL-SOP23", "target": "INSTRUMENT:qPCR", "kind": "equipment", "evidence": "[source text withheld] names qPCR"}, {"source": "EXL-SOP23", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-SOP23", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-SOP23", "target": "INSTRUMENT:Thermometer", "kind": "equipment", "evidence": "[source text withheld] names Thermometer"}, {"source": "EXL-SOP24", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP25", "target": "EXL-FM16", "kind": "declared", "evidence": "[source text withheld] EXL-FM16"}, {"source": "EXL-SOP26", "target": "EXL-FM05", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM05"}, {"source": "EXL-SOP26", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-SOP27", "target": "EXL-FM15", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM15"}, {"source": "EXL-SOP27", "target": "EXL-SOP23", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP23"}, {"source": "EXL-SOP27", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-SOP29", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-SOP30", "target": "EXL-SOP26", "kind": "declared", "evidence": "[source text withheld] EXL-SOP26"}, {"source": "EXL-SOP30", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-SOP32", "target": "EXL-FM23", "kind": "declared", "evidence": "[source text withheld] EXL-FM23"}, {"source": "EXL-SOP34", "target": "EXL-FM06", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM06"}, {"source": "EXL-SOP34", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-SOP34", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-SOP34", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-SOP35", "target": "EXL-FM29", "kind": "declared", "evidence": "[source text withheld] EXL-FM29"}, {"source": "EXL-SOP36", "target": "EXL-FM30", "kind": "declared", "evidence": "[source text withheld] EXL-FM30"}, {"source": "EXL-SOP36", "target": "INSTRUMENT:pH meter", "kind": "equipment", "evidence": "[source text withheld] names pH meter"}, {"source": "EXL-SOP37", "target": "EXL-FM22", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM22"}, {"source": "EXL-SOP37", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-SOP37", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-SOP37", "target": "INSTRUMENT:Thermometer", "kind": "equipment", "evidence": "[source text withheld] names Thermometer"}, {"source": "EXL-SOP38", "target": "EXL-SOP41", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP41"}, {"source": "EXL-SOP39", "target": "EXL-SOP40", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP40"}, {"source": "EXL-SOP39", "target": "EXL-SOP41", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP41"}, {"source": "EXL-SOP39", "target": "EXL-FM53", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM53"}, {"source": "EXL-SOP39", "target": "EXL-FM09", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM09"}, {"source": "EXL-SOP39", "target": "EXL-FM27", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM27"}, {"source": "EXL-SOP39", "target": "EXL-FM19", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM19"}, {"source": "EXL-SOP39", "target": "EXL-FM20", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM20"}, {"source": "EXL-SOP39", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-SOP41", "target": "EXL-AP03", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP03"}, {"source": "EXL-SOP41", "target": "EXL-AP04", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP04"}, {"source": "EXL-SOP41", "target": "EXL-TM06", "kind": "mentioned", "evidence": "[source text withheld] EXL-TM06"}, {"source": "EXL-SOP41", "target": "EXL-TM18", "kind": "mentioned", "evidence": "[source text withheld] EXL-TM18"}, {"source": "EXL-SOP41", "target": "EXL-TM19", "kind": "mentioned", "evidence": "[source text withheld] EXL-TM19"}, {"source": "EXL-SOP41", "target": "EXL-AP10", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP10"}, {"source": "EXL-SOP41", "target": "EXL-AP19", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP19"}, {"source": "EXL-SOP41", "target": "EXL-AP20", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP20"}, {"source": "EXL-SOP41", "target": "EXL-AP05", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP05"}, {"source": "EXL-SOP41", "target": "EXL-SOP59", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP59"}, {"source": "EXL-SOP41", "target": "EXL-AP11", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP11"}, {"source": "EXL-SOP41", "target": "EXL-AP16", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP16"}, {"source": "EXL-SOP41", "target": "INSTRUMENT:Water activity meter", "kind": "equipment", "evidence": "[source text withheld] names Water activity meter"}, {"source": "EXL-SOP42", "target": "EXL-SOP40", "kind": "declared", "evidence": "[source text withheld] EXL-SOP40"}, {"source": "EXL-SOP42", "target": "EXL-FM50", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM50"}, {"source": "EXL-SOP44", "target": "EXL-SOP17", "kind": "declared", "evidence": "[source text withheld] EXL-SOP17"}, {"source": "EXL-SOP45", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP45", "target": "EXL-SOP24", "kind": "declared", "evidence": "[source text withheld] EXL-SOP24"}, {"source": "EXL-SOP45", "target": "EXL-SOP29", "kind": "declared", "evidence": "[source text withheld] EXL-SOP29"}, {"source": "EXL-SOP45", "target": "EXL-FM10", "kind": "declared", "evidence": "[source text withheld] EXL-FM10"}, {"source": "EXL-SOP46", "target": "EXL-SOP14", "kind": "declared", "evidence": "[source text withheld] EXL-SOP14"}, {"source": "EXL-SOP46", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP46", "target": "EXL-FM09", "kind": "declared", "evidence": "[source text withheld] EXL-FM09"}, {"source": "EXL-SOP46", "target": "INSTRUMENT:GC-MS", "kind": "equipment", "evidence": "[source text withheld] names GC-MS"}, {"source": "EXL-SOP47", "target": "EXL-SOP14", "kind": "declared", "evidence": "[source text withheld] EXL-SOP14"}, {"source": "EXL-SOP47", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP47", "target": "EXL-FM09", "kind": "declared", "evidence": "[source text withheld] EXL-FM09"}, {"source": "EXL-SOP47", "target": "INSTRUMENT:ICP-MS", "kind": "equipment", "evidence": "[source text withheld] names ICP-MS"}, {"source": "EXL-SOP48", "target": "EXL-FM42", "kind": "declared", "evidence": "[source text withheld] EXL-FM42"}, {"source": "EXL-SOP48", "target": "INSTRUMENT:Hygrometer", "kind": "equipment", "evidence": "[source text withheld] names Hygrometer"}, {"source": "EXL-SOP49", "target": "EXL-SOP14", "kind": "declared", "evidence": "[source text withheld] EXL-SOP14"}, {"source": "EXL-SOP49", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP49", "target": "EXL-FM11", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM11"}, {"source": "EXL-SOP49", "target": "EXL-FM14", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM14"}, {"source": "EXL-SOP50", "target": "EXL-FM47", "kind": "declared", "evidence": "[source text withheld] EXL-FM47"}, {"source": "EXL-SOP50", "target": "EXL-FM48", "kind": "declared", "evidence": "[source text withheld] EXL-FM48"}, {"source": "EXL-SOP50", "target": "EXL-FM49", "kind": "declared", "evidence": "[source text withheld] EXL-FM49"}, {"source": "EXL-SOP51", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-SOP52", "target": "INSTRUMENT:Karl Fischer titrator", "kind": "equipment", "evidence": "[source text withheld] names Karl Fischer titrator"}, {"source": "EXL-SOP53", "target": "EXL-SOP16", "kind": "declared", "evidence": "[source text withheld] EXL-SOP16"}, {"source": "EXL-SOP53", "target": "EXL-SOP32", "kind": "declared", "evidence": "[source text withheld] EXL-SOP32"}, {"source": "EXL-SOP53", "target": "EXL-FM51", "kind": "declared", "evidence": "[source text withheld] EXL-FM51"}, {"source": "EXL-SOP54", "target": "EXL-FM20", "kind": "declared", "evidence": "[source text withheld] EXL-FM20"}, {"source": "EXL-SOP54", "target": "EXL-FM53", "kind": "declared", "evidence": "[source text withheld] EXL-FM53"}, {"source": "EXL-SOP54", "target": "EXL-SOP24", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP24"}, {"source": "EXL-SOP54", "target": "EXL-SOP15", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP55", "target": "EXL-SOP14", "kind": "declared", "evidence": "[source text withheld] EXL-SOP14"}, {"source": "EXL-SOP55", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP55", "target": "EXL-FM09", "kind": "declared", "evidence": "[source text withheld] EXL-FM09"}, {"source": "EXL-SOP55", "target": "EXL-SOP21", "kind": "declared", "evidence": "[source text withheld] EXL-SOP21"}, {"source": "EXL-SOP55", "target": "EXL-SOP22", "kind": "declared", "evidence": "[source text withheld] EXL-SOP22"}, {"source": "EXL-SOP55", "target": "EXL-SOP23", "kind": "declared", "evidence": "[source text withheld] EXL-SOP23"}, {"source": "EXL-SOP55", "target": "INSTRUMENT:TOC analyser", "kind": "equipment", "evidence": "[source text withheld] names TOC analyser"}, {"source": "EXL-SOP55", "target": "INSTRUMENT:UV lamp", "kind": "equipment", "evidence": "[source text withheld] names UV lamp"}, {"source": "EXL-SOP56", "target": "EXL-FM38", "kind": "declared", "evidence": "[source text withheld] EXL-FM38"}, {"source": "EXL-SOP56", "target": "EXL-FM37", "kind": "declared", "evidence": "[source text withheld] EXL-FM37"}, {"source": "EXL-SOP56", "target": "EXL-SOP13", "kind": "declared", "evidence": "[source text withheld] EXL-SOP13"}, {"source": "EXL-SOP57", "target": "EXL-SOP09", "kind": "declared", "evidence": "[source text withheld] EXL-SOP09"}, {"source": "EXL-SOP57", "target": "EXL-SOP11", "kind": "declared", "evidence": "[source text withheld] EXL-SOP11"}, {"source": "EXL-SOP57", "target": "EXL-SOP12", "kind": "declared", "evidence": "[source text withheld] EXL-SOP12"}, {"source": "EXL-SOP57", "target": "EXL-SOP13", "kind": "declared", "evidence": "[source text withheld] EXL-SOP13"}, {"source": "EXL-SOP57", "target": "EXL-SOP53", "kind": "declared", "evidence": "[source text withheld] EXL-SOP53"}, {"source": "EXL-SOP57", "target": "EXL-FM58", "kind": "mentioned", "evidence": "[source text withheld] EXL-FM58"}, {"source": "EXL-SOP57", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-SOP57", "target": "INSTRUMENT:Colony counter", "kind": "equipment", "evidence": "[source text withheld] names Colony counter"}, {"source": "EXL-SOP58", "target": "EXL-FM60", "kind": "declared", "evidence": "[source text withheld] EXL-FM60"}, {"source": "EXL-SOP58", "target": "EXL-FM61", "kind": "declared", "evidence": "[source text withheld] EXL-FM61"}, {"source": "EXL-SOP59", "target": "EXL-SOP21", "kind": "declared", "evidence": "[source text withheld] EXL-SOP21"}, {"source": "EXL-SOP59", "target": "EXL-FM66", "kind": "declared", "evidence": "[source text withheld] EXL-FM66"}, {"source": "EXL-SOP59", "target": "EXL-FM67", "kind": "declared", "evidence": "[source text withheld] EXL-FM67"}, {"source": "EXL-SOP59", "target": "EXL-SOP26", "kind": "declared", "evidence": "[source text withheld] EXL-SOP26"}, {"source": "EXL-SOP59", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-SOP59", "target": "INSTRUMENT:Water activity meter", "kind": "equipment", "evidence": "[source text withheld] names Water activity meter"}, {"source": "EXL-SOP59", "target": "INSTRUMENT:Hygrometer", "kind": "equipment", "evidence": "[source text withheld] names Hygrometer"}, {"source": "EXL-SOP60", "target": "EXL-TM19", "kind": "declared", "evidence": "[source text withheld] EXL-TM19"}, {"source": "EXL-SOP60", "target": "EXL-SOP14", "kind": "declared", "evidence": "[source text withheld] EXL-SOP14"}, {"source": "EXL-SOP60", "target": "EXL-SOP15", "kind": "declared", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-SOP60", "target": "EXL-FM09", "kind": "declared", "evidence": "[source text withheld] EXL-FM09"}, {"source": "EXL-SOP60", "target": "EXL-SOP21", "kind": "declared", "evidence": "[source text withheld] EXL-SOP21"}, {"source": "EXL-SOP60", "target": "EXL-SOP22", "kind": "declared", "evidence": "[source text withheld] EXL-SOP22"}, {"source": "EXL-SOP60", "target": "EXL-SOP23", "kind": "declared", "evidence": "[source text withheld] EXL-SOP23"}, {"source": "EXL-SOP60", "target": "INSTRUMENT:qPCR", "kind": "equipment", "evidence": "[source text withheld] names qPCR"}, {"source": "EXL-SOP60", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-FM01", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-FM02", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-FM03", "target": "INSTRUMENT:Water bath", "kind": "equipment", "evidence": "[source text withheld] names Water bath"}, {"source": "EXL-FM04", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-FM06", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-FM07", "target": "EXL-SOP03", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP03"}, {"source": "EXL-FM07", "target": "INSTRUMENT:Colony counter", "kind": "equipment", "evidence": "[source text withheld] names Colony counter"}, {"source": "EXL-FM08", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-FM08", "target": "INSTRUMENT:qPCR", "kind": "equipment", "evidence": "[source text withheld] names qPCR"}, {"source": "EXL-FM16", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-FM16", "target": "INSTRUMENT:pH meter", "kind": "equipment", "evidence": "[source text withheld] names pH meter"}, {"source": "EXL-FM16", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-FM16", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-FM16", "target": "INSTRUMENT:TOC analyser", "kind": "equipment", "evidence": "[source text withheld] names TOC analyser"}, {"source": "EXL-FM16", "target": "INSTRUMENT:Water bath", "kind": "equipment", "evidence": "[source text withheld] names Water bath"}, {"source": "EXL-FM16", "target": "INSTRUMENT:Thermometer", "kind": "equipment", "evidence": "[source text withheld] names Thermometer"}, {"source": "EXL-FM17", "target": "EXL-SOP15", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP15"}, {"source": "EXL-FM21", "target": "INSTRUMENT:Water purification unit", "kind": "equipment", "evidence": "[source text withheld] names Water purification unit"}, {"source": "EXL-FM22", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-FM22", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-FM25", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-FM26", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-FM29", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-FM30", "target": "INSTRUMENT:pH meter", "kind": "equipment", "evidence": "[source text withheld] names pH meter"}, {"source": "EXL-FM48", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-FM48", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-FM48", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-FM48", "target": "INSTRUMENT:Water bath", "kind": "equipment", "evidence": "[source text withheld] names Water bath"}, {"source": "EXL-FM48", "target": "INSTRUMENT:Thermometer", "kind": "equipment", "evidence": "[source text withheld] names Thermometer"}, {"source": "EXL-FM53", "target": "INSTRUMENT:Water activity meter", "kind": "equipment", "evidence": "[source text withheld] names Water activity meter"}, {"source": "EXL-FM56", "target": "EXL-SOP17", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP17"}, {"source": "EXL-FM56", "target": "INSTRUMENT:Autoclave", "kind": "equipment", "evidence": "[source text withheld] names Autoclave"}, {"source": "EXL-FM58", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-FM59", "target": "EXL-SOP17", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP17"}, {"source": "EXL-FM59", "target": "INSTRUMENT:Incubator", "kind": "equipment", "evidence": "[source text withheld] names Incubator"}, {"source": "EXL-FM62", "target": "INSTRUMENT:TOC analyser", "kind": "equipment", "evidence": "[source text withheld] names TOC analyser"}, {"source": "EXL-FM66", "target": "INSTRUMENT:Water activity meter", "kind": "equipment", "evidence": "[source text withheld] names Water activity meter"}, {"source": "EXL-FM67", "target": "INSTRUMENT:Water activity meter", "kind": "equipment", "evidence": "[source text withheld] names Water activity meter"}, {"source": "EXL-FM71", "target": "EXL-SOP36", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP36"}, {"source": "EXL-FM71", "target": "INSTRUMENT:pH meter", "kind": "equipment", "evidence": "[source text withheld] names pH meter"}, {"source": "EXL-FM73", "target": "INSTRUMENT:UV lamp", "kind": "equipment", "evidence": "[source text withheld] names UV lamp"}, {"source": "EXL-FM75", "target": "INSTRUMENT:Water activity meter", "kind": "equipment", "evidence": "[source text withheld] names Water activity meter"}, {"source": "EXL-FM76", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-FM77", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-FM82", "target": "INSTRUMENT:TOC analyser", "kind": "equipment", "evidence": "[source text withheld] names TOC analyser"}, {"source": "EXL-AP01", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP01", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP01", "target": "INSTRUMENT:Refrigerator", "kind": "equipment", "evidence": "[source text withheld] names Refrigerator"}, {"source": "EXL-AP01", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-AP01", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP01", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP03", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP03", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP03", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-AP03", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP03", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP04", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP04", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-AP04", "target": "INSTRUMENT:ICP-MS", "kind": "equipment", "evidence": "[source text withheld] names ICP-MS"}, {"source": "EXL-AP04", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP05", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP05", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP05", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-AP05", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP05", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP06", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP06", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP06", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-AP06", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP06", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP07", "target": "EXL-AP09", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP09"}, {"source": "EXL-AP07", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP07", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-AP07", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP08", "target": "EXL-SOP46", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP46"}, {"source": "EXL-AP08", "target": "INSTRUMENT:GC-MS", "kind": "equipment", "evidence": "[source text withheld] names GC-MS"}, {"source": "EXL-AP08", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP09", "target": "EXL-AP07", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP07"}, {"source": "EXL-AP09", "target": "INSTRUMENT:Freezer", "kind": "equipment", "evidence": "[source text withheld] names Freezer"}, {"source": "EXL-AP09", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP09", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP09", "target": "INSTRUMENT:Water bath", "kind": "equipment", "evidence": "[source text withheld] names Water bath"}, {"source": "EXL-AP10", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP10", "target": "INSTRUMENT:GC-MS", "kind": "equipment", "evidence": "[source text withheld] names GC-MS"}, {"source": "EXL-AP10", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP10", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP11", "target": "EXL-SOP21", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP21"}, {"source": "EXL-AP11", "target": "EXL-SOP16", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP16"}, {"source": "EXL-AP11", "target": "EXL-SOP22", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP22"}, {"source": "EXL-AP11", "target": "EXL-SOP07", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP07"}, {"source": "EXL-AP11", "target": "INSTRUMENT:Moisture balance", "kind": "equipment", "evidence": "[source text withheld] names Moisture balance"}, {"source": "EXL-AP11", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP12", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP12", "target": "INSTRUMENT:Micropipettor", "kind": "equipment", "evidence": "[source text withheld] names Micropipettor"}, {"source": "EXL-AP12", "target": "INSTRUMENT:ICP-MS", "kind": "equipment", "evidence": "[source text withheld] names ICP-MS"}, {"source": "EXL-AP12", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP13", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP13", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP13", "target": "INSTRUMENT:Water bath", "kind": "equipment", "evidence": "[source text withheld] names Water bath"}, {"source": "EXL-AP14", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP14", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP14", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP14", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP15", "target": "EXL-AP14", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP14"}, {"source": "EXL-AP15", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP15", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP15", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP15", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP16", "target": "EXL-AP09", "kind": "mentioned", "evidence": "[source text withheld] EXL-AP09"}, {"source": "EXL-AP16", "target": "EXL-TM06", "kind": "mentioned", "evidence": "[source text withheld] EXL-TM06"}, {"source": "EXL-AP16", "target": "EXL-SOP35", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP35"}, {"source": "EXL-AP16", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP17", "target": "EXL-SOP55", "kind": "declared", "evidence": "[source text withheld] EXL-SOP55"}, {"source": "EXL-AP17", "target": "EXL-AP18", "kind": "declared", "evidence": "[source text withheld] EXL-AP18"}, {"source": "EXL-AP17", "target": "INSTRUMENT:TOC analyser", "kind": "equipment", "evidence": "[source text withheld] names TOC analyser"}, {"source": "EXL-AP17", "target": "INSTRUMENT:UV lamp", "kind": "equipment", "evidence": "[source text withheld] names UV lamp"}, {"source": "EXL-AP18", "target": "EXL-SOP55", "kind": "declared", "evidence": "[source text withheld] EXL-SOP55"}, {"source": "EXL-AP18", "target": "EXL-AP17", "kind": "declared", "evidence": "[source text withheld] EXL-AP17"}, {"source": "EXL-AP18", "target": "INSTRUMENT:TOC analyser", "kind": "equipment", "evidence": "[source text withheld] names TOC analyser"}, {"source": "EXL-AP18", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP18", "target": "INSTRUMENT:UV lamp", "kind": "equipment", "evidence": "[source text withheld] names UV lamp"}, {"source": "EXL-AP19", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP19", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP19", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP19", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP20", "target": "EXL-SOP46", "kind": "mentioned", "evidence": "[source text withheld] EXL-SOP46"}, {"source": "EXL-AP20", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP20", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP20", "target": "INSTRUMENT:GC-MS", "kind": "equipment", "evidence": "[source text withheld] names GC-MS"}, {"source": "EXL-AP20", "target": "INSTRUMENT:Centrifuge", "kind": "equipment", "evidence": "[source text withheld] names Centrifuge"}, {"source": "EXL-AP21", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP21", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP21", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP25", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP25", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP25", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-AP26", "target": "INSTRUMENT:Electronic pipette", "kind": "equipment", "evidence": "[source text withheld] names Electronic pipette"}, {"source": "EXL-AP26", "target": "INSTRUMENT:Analytical balance", "kind": "equipment", "evidence": "[source text withheld] names Analytical balance"}, {"source": "EXL-AP26", "target": "INSTRUMENT:UPLC-PDA", "kind": "equipment", "evidence": "[source text withheld] names UPLC-PDA"}, {"source": "EXL-SOP10", "target": "EXL-SOP13", "kind": "title", "evidence": "[source text withheld] Fern Arrow"}, {"source": "EXL-SOP14", "target": "EXL-SOP45", "kind": "title", "evidence": "[source text withheld] Velvet Anchor"}, {"source": "EXL-SOP14", "target": "EXL-FM36", "kind": "title", "evidence": "[source text withheld] Sable Finch"}, {"source": "EXL-SOP15", "target": "EXL-SOP18", "kind": "title", "evidence": "[source text withheld] River Brook"}, {"source": "EXL-SOP15", "target": "EXL-SOP25", "kind": "title", "evidence": "[source text withheld] Granite Cascade"}, {"source": "EXL-SOP15", "target": "EXL-SOP58", "kind": "title", "evidence": "[source text withheld] Solar Orbit"}, {"source": "EXL-SOP15", "target": "EXL-FM17", "kind": "title", "evidence": "[source text withheld] Marble Island"}, {"source": "EXL-SOP15", "target": "EXL-FM36", "kind": "title", "evidence": "[source text withheld] Sable Finch"}, {"source": "EXL-SOP16", "target": "EXL-SOP32", "kind": "title", "evidence": "[source text withheld] Quiet Crane"}, {"source": "EXL-SOP23", "target": "EXL-SOP58", "kind": "title", "evidence": "[source text withheld] Solar Orbit"}, {"source": "EXL-SOP24", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-SOP25", "target": "EXL-SOP15", "kind": "title", "evidence": "[source text withheld] Iron Arrow"}, {"source": "EXL-SOP25", "target": "EXL-FM36", "kind": "title", "evidence": "[source text withheld] Sable Finch"}, {"source": "EXL-SOP27", "target": "EXL-AP03", "kind": "title", "evidence": "[source text withheld] Fern Crane"}, {"source": "EXL-SOP29", "target": "EXL-SOP24", "kind": "title", "evidence": "[source text withheld] Sable Wren"}, {"source": "EXL-SOP29", "target": "EXL-SOP45", "kind": "title", "evidence": "[source text withheld] Velvet Anchor"}, {"source": "EXL-SOP36", "target": "EXL-FM71", "kind": "title", "evidence": "[source text withheld] Frost Beacon"}, {"source": "EXL-SOP39", "target": "EXL-SOP15", "kind": "title", "evidence": "[source text withheld] Iron Arrow"}, {"source": "EXL-SOP39", "target": "EXL-SOP25", "kind": "title", "evidence": "[source text withheld] Granite Cascade"}, {"source": "EXL-SOP39", "target": "EXL-SOP42", "kind": "title", "evidence": "[source text withheld] Jade Quill"}, {"source": "EXL-SOP39", "target": "EXL-SOP45", "kind": "title", "evidence": "[source text withheld] Velvet Anchor"}, {"source": "EXL-SOP50", "target": "EXL-SOP13", "kind": "title", "evidence": "[source text withheld] Fern Arrow"}, {"source": "EXL-SOP51", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-FM16", "target": "EXL-SOP25", "kind": "title", "evidence": "[source text withheld] Granite Cascade"}, {"source": "EXL-FM16", "target": "EXL-FM36", "kind": "title", "evidence": "[source text withheld] Sable Finch"}, {"source": "EXL-FM17", "target": "EXL-SOP18", "kind": "title", "evidence": "[source text withheld] River Brook"}, {"source": "EXL-FM23", "target": "EXL-SOP32", "kind": "title", "evidence": "[source text withheld] Quiet Crane"}, {"source": "EXL-FM48", "target": "EXL-SOP18", "kind": "title", "evidence": "[source text withheld] River Brook"}, {"source": "EXL-FM48", "target": "EXL-SOP25", "kind": "title", "evidence": "[source text withheld] Granite Cascade"}, {"source": "EXL-FM48", "target": "EXL-SOP45", "kind": "title", "evidence": "[source text withheld] Velvet Anchor"}, {"source": "EXL-FM48", "target": "EXL-FM17", "kind": "title", "evidence": "[source text withheld] Marble Island"}, {"source": "EXL-FM48", "target": "EXL-FM36", "kind": "title", "evidence": "[source text withheld] Sable Finch"}, {"source": "EXL-FM53", "target": "EXL-SOP54", "kind": "title", "evidence": "[source text withheld] North Ledge"}, {"source": "EXL-FM53", "target": "EXL-AP11", "kind": "title", "evidence": "[source text withheld] Willow Falcon"}, {"source": "EXL-FM58", "target": "EXL-SOP57", "kind": "title", "evidence": "[source text withheld] Harbor Orbit"}, {"source": "EXL-FM60", "target": "EXL-SOP58", "kind": "title", "evidence": "[source text withheld] Solar Orbit"}, {"source": "EXL-FM61", "target": "EXL-SOP58", "kind": "title", "evidence": "[source text withheld] Solar Orbit"}, {"source": "EXL-FM63", "target": "EXL-AP11", "kind": "title", "evidence": "[source text withheld] Willow Falcon"}, {"source": "EXL-FM71", "target": "EXL-FM30", "kind": "title", "evidence": "[source text withheld] Tidal Crane"}, {"source": "EXL-FM75", "target": "EXL-AP03", "kind": "title", "evidence": "[source text withheld] Fern Crane"}, {"source": "EXL-FM75", "target": "EXL-AP11", "kind": "title", "evidence": "[source text withheld] Willow Falcon"}, {"source": "EXL-FM81", "target": "EXL-SOP14", "kind": "title", "evidence": "[source text withheld] Velvet Raven"}, {"source": "EXL-AP01", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP01", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP03", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP03", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP04", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP05", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP05", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP06", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP06", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP09", "target": "EXL-AP03", "kind": "title", "evidence": "[source text withheld] Fern Crane"}, {"source": "EXL-AP10", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP10", "target": "EXL-AP11", "kind": "title", "evidence": "[source text withheld] Willow Falcon"}, {"source": "EXL-AP11", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP11", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP12", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP14", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP14", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP14", "target": "EXL-AP15", "kind": "title", "evidence": "[source text withheld] River Summit"}, {"source": "EXL-AP15", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP15", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP16", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP16", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP18", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP19", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP19", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP20", "target": "EXL-SOP38", "kind": "title", "evidence": "[source text withheld] Clear Brook"}, {"source": "EXL-AP20", "target": "EXL-SOP43", "kind": "title", "evidence": "[source text withheld] Maple Crane"}, {"source": "EXL-AP26", "target": "EXL-AP21", "kind": "title", "evidence": "[source text withheld] Frost Raven"}], "skipped": [["EXL-SOP28-00 Withheld.docx", "zero bytes"], ["EXL-SOP31-00 Withheld.docx", "zero bytes"]]};
 
 const TYPE = {
-  "standard operating procedure": { key: "SOP",  css: "--sop",  r: 5.5 },
-  "form":                         { key: "Form", css: "--form", r: 4.0 },
-  "analytical procedure":         { key: "AP",   css: "--ap",   r: 5.0 },
-  "test method":                  { key: "TM",   css: "--tm",   r: 4.5 },
-  "instrument":                   { key: "Instrument", css: "--inst", r: 6.5 },
+  "standard operating procedure": { key: "SOP",  css: "--sop",  r: 5.5, shape: "circle" },
+  "form":                         { key: "Form", css: "--form", r: 4.0, shape: "square" },
+  "analytical procedure":         { key: "AP",   css: "--ap",   r: 5.0, shape: "diamond" },
+  "test method":                  { key: "TM",   css: "--tm",   r: 4.5, shape: "triangle" },
+  "instrument":                   { key: "Instrument", css: "--inst", r: 6.5, shape: "hexagon" },
 };
+/* The legend swatch takes the same shape as the node it stands for. */
+const SH = { circle: "", square: "sh-form", diamond: "sh-ap", triangle: "sh-tm", hexagon: "sh-inst" };
+const swatch = (type, extra = "") =>
+  `<span class="swatch ${SH[TYPE[type].shape]}" style="background:var(${TYPE[type].css})${extra}"></span>`;
 /* `mag` is how strongly this kind of evidence binds two documents.
    A declared dependency in the RELATED PROCEDURES section is the laboratory
    stating the relationship. A shared thermometer is barely a relationship at
@@ -235,14 +415,58 @@ const ORDER = ["declared", "attached form", "mentioned", "title", "equipment"];
 const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 const nodeColor = n => colourBy === "cluster" ? clusterColor(n.id) : COLOR[TYPE[n.type].css];
 let COLOR = {};
+const DARK = matchMedia("(prefers-color-scheme: dark)");
+const UI_FONT = '"Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 const readColors = () => {
   COLOR = {};
   for (const s of Object.values(TYPE)) COLOR[s.css] = cssVar(s.css);
-  COLOR.ink = cssVar("--ink"); COLOR.bg = cssVar("--bg"); COLOR.dim = cssVar("--dim");
-  COLOR.web = cssVar("--web");
+  COLOR.ink = cssVar("--ink"); COLOR.ink2 = cssVar("--ink-2");
+  COLOR.bg = cssVar("--paper"); COLOR.dim = cssVar("--muted");
+  COLOR.web = cssVar("--web"); COLOR.accent = cssVar("--accent");
+  COLOR.mode = document.documentElement.dataset.style === "obsidian" ? "obsidian"
+             : DARK.matches ? "dark" : "light";
 };
 readColors();
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
+DARK.addEventListener("change", () => { readColors(); buildClusterList(); draw(); });
+
+/* ---------- motion ----------
+   Every moving thing on the canvas is driven by elapsed time, not by frames,
+   so it runs at the same speed on a 60 Hz and a 120 Hz screen.
+
+   Camera moves and travelling spaces use a critically damped spring (no
+   bounce, about half a second to settle). A spring keeps its velocity when it
+   is given a new target, so clicking another space mid-flight bends the move
+   towards it instead of stopping and starting again. Fades use an exponential
+   approach, which is an ease-out that can also be retargeted at any moment. */
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)");
+let reduced = !!REDUCED.matches;
+REDUCED.addEventListener("change", e => { reduced = e.matches; if (reduced) setSpin(false); });
+const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
+const SPRING_S = 0.5;                          // perceptual duration, seconds
+const OMEGA = 2 * Math.PI / SPRING_S;
+const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+/* Exact step of a critically damped spring, so a long frame cannot overshoot. */
+function springStep(x, v, target, dt) {
+  const d = x - target, c = v + OMEGA * d, e = Math.exp(-OMEGA * dt);
+  return [target + (d + c * dt) * e, (v - OMEGA * c * dt) * e];
+}
+/* Ease-out towards a target: `ms` is the time to cover about 98% of the way. */
+const approach = (cur, target, dt, ms) => {
+  const next = target + (cur - target) * Math.exp(-dt * 4000 / ms);
+  return Math.abs(next - target) < 0.004 ? target : next;
+};
+/* The strong ease-out curve, for things that run on a fixed clock. */
+const easeOut = p => 1 - Math.pow(1 - Math.min(1, Math.max(0, p)), 4);
+/* Fade an element in after its content changed. Movement is dropped when the
+   user asks for reduced motion; the fade stays, because it explains the change. */
+function fadeIn(el, ms = 180) {
+  if (!el.animate) return;
+  el.getAnimations?.().forEach(a => a.cancel());
+  el.animate(reduced
+    ? [{ opacity: 0 }, { opacity: 1 }]
+    : [{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }],
+    { duration: ms, easing: EASE_OUT });
+}
 
 const nodes = GRAPH.nodes.map(n => ({ ...n, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }));
 const byId = new Map(nodes.map(n => [n.id, n]));
@@ -339,19 +563,26 @@ const bigClusters = [...clusterSizes.entries()].filter(([, n]) => n >= 3)
   .sort((a, b) => b[1] - a[1]).map(([l]) => l);
 const clusterIndex = new Map(bigClusters.map((l, i) => [l, i]));
 const CLUSTER_HUES = [200, 140, 40, 350, 275, 175, 15, 310, 95, 240, 60, 325];
+/* Cluster colours follow the ground: soft washes on paper, deeper washes on
+   dark paper, and the original fluorescent set in Obsidian. */
+const clusterHue = i => {
+  const h = CLUSTER_HUES[i % CLUSTER_HUES.length];
+  return COLOR.mode === "obsidian" ? `hsl(${h} 62% 58%)`
+       : COLOR.mode === "dark" ? `hsl(${h} 30% 40%)` : `hsl(${h} 48% 72%)`;
+};
 const clusterColor = id => {
   const i = clusterIndex.get(cluster.get(id));
-  return i === undefined ? cssVar("--dim") : `hsl(${CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)`;
+  return i === undefined ? COLOR.dim : clusterHue(i);
 };
 
-/* ---------- state ---------- */
 const activeTypes = new Set(Object.keys(TYPE));
 const activeKinds = new Set(Object.keys(KIND));
-let showLabels = true, hideIsolated = false, flat = false, spin = true;
-let selected = null, focus = null, edgeAlpha = 0.20;
+let showLabels = true, hideIsolated = false, flat = false, spin = !reduced;
+let selected = null, focus = null, edgeAlpha = 0.24, selectedAt = 0;
+let lastSel = null, selFade = 0;   // the dimming of everything a selection is not
 let useAffinity = true, colourBy = "type";
 let shellShape = "sphere", shellR = 400, confine = true, showAxes = true;
-let style = "labelled", hovered = null;
+let style = "paper", hovered = null;
 let heldNode = null, holdDepth = 0, coastFrames = 0;
 const obs = () => style === "obsidian";
 
@@ -366,7 +597,7 @@ function buildFilters() {
     if (!n) continue;
     const el = document.createElement("label");
     el.innerHTML = `<input type="checkbox" checked>
-      <span class="swatch" style="background:var(${spec.css})"></span>${spec.key}
+      ${swatch(name)}${spec.key}
       <span class="count">${n}</span>`;
     el.querySelector("input").onchange = e => {
       e.target.checked ? activeTypes.add(name) : activeTypes.delete(name);
@@ -630,13 +861,62 @@ const AXES = [
   { v: [0, -1, 0], label: "Y", hue: 140 },
   { v: [0, 0, 1], label: "Z", hue: 215 },
 ];
+let lastDraw = 0, animating = false;
+
+/* A watercolour wash is three soft pools of one colour, a little off-centre
+   from each other, so the edge looks bled rather than drawn with a compass. */
+const WASH = [[-0.07, -0.05, 1.14, 0.22], [0.09, 0.07, 1.0, 0.18], [0.02, -0.10, 0.78, 0.14]];
+const rgba = (hex, a) => {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || "");
+  return m ? `rgba(${parseInt(m[1], 16)},${parseInt(m[2], 16)},${parseInt(m[3], 16)},${a})` : hex;
+};
+
+/* Each type has its own shape, so type is never carried by colour alone. */
+function shapePath(shape, x, y, r) {
+  ctx.beginPath();
+  if (shape === "square") { const h = r * 0.88; ctx.rect(x - h, y - h, 2 * h, 2 * h); return; }
+  if (shape === "diamond") {
+    const h = r * 1.22;
+    ctx.moveTo(x, y - h); ctx.lineTo(x + h, y); ctx.lineTo(x, y + h); ctx.lineTo(x - h, y); ctx.closePath(); return;
+  }
+  if (shape === "triangle") {
+    const h = r * 1.3;
+    ctx.moveTo(x, y - h); ctx.lineTo(x + h * 0.866, y + h * 0.5); ctx.lineTo(x - h * 0.866, y + h * 0.5);
+    ctx.closePath(); return;
+  }
+  if (shape === "hexagon") {
+    const h = r * 1.08;
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 3 * i;
+      i ? ctx.lineTo(x + h * Math.cos(a), y + h * Math.sin(a)) : ctx.moveTo(x + h, y);
+    }
+    ctx.closePath(); return;
+  }
+  ctx.arc(x, y, r, 0, 6.2832);
+}
 
 function drawShellAndAxes() {
   const p3 = (x, y, z) => project({ x, y, z });
+  const paper = !obs();
+
+  if (paper) {
+    // One space, one wash: blue with a little lavender bled into it.
+    const c = p3(0, 0, 0), R = shellR * c.k, wa = COLOR.mode === "dark" ? 1.5 : 1;
+    WASH.forEach(([ox, oy, rk, a], i) => {
+      const col = i === 1 ? COLOR["--inst"] : COLOR["--sop"];
+      const x = c.sx + ox * R, y = c.sy + oy * R, rr = Math.max(4, R * rk);
+      const g = ctx.createRadialGradient(x, y, rr * 0.1, x, y, rr);
+      g.addColorStop(0, rgba(col, a * 0.8 * wa));
+      g.addColorStop(0.65, rgba(col, a * 0.6 * wa));
+      g.addColorStop(1, rgba(col, 0));
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(x, y, rr, 0, 6.2832); ctx.fill();
+    });
+  }
 
   if (shellShape !== "none") {
-    ctx.strokeStyle = COLOR.dim;
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = paper ? COLOR.ink : COLOR.dim;
+    ctx.lineWidth = paper ? 0.8 : 1;
     for (const line of SHELL[shellShape].wire(shellR)) {
       ctx.beginPath();
       line.forEach(([x, y, z], i) => {
@@ -653,7 +933,7 @@ function drawShellAndAxes() {
   }
 
   if (showAxes) {
-    ctx.lineWidth = 1.4;
+    ctx.lineWidth = paper ? 1 : 1.4;
     for (const ax of AXES) {
       // Each shell depth() is linear in position, so the distance from the
       // origin to the surface along a unit direction is exactly 1/depth(v).
@@ -664,23 +944,37 @@ function drawShellAndAxes() {
         : 1 / SHELL[shellShape].depth(ax.v[0], ax.v[1], ax.v[2], shellR);
       const o = p3(0, 0, 0), e = p3(ax.v[0] * L, ax.v[1] * L, ax.v[2] * L);
       const n = p3(-ax.v[0] * L, -ax.v[1] * L, -ax.v[2] * L);
-      ctx.strokeStyle = `hsl(${ax.hue} 70% 58%)`;
-      ctx.globalAlpha = 0.20;
+      ctx.strokeStyle = ctx.fillStyle = paper ? COLOR.ink2 : `hsl(${ax.hue} 70% 58%)`;
+      ctx.globalAlpha = paper ? 0.14 : 0.20;
+      if (paper) ctx.setLineDash([3, 3]);
       ctx.beginPath(); ctx.moveTo(n.sx, n.sy); ctx.lineTo(o.sx, o.sy); ctx.stroke();
-      ctx.globalAlpha = 0.65;
+      ctx.setLineDash([]);
+      ctx.globalAlpha = paper ? 0.42 : 0.65;
       ctx.beginPath(); ctx.moveTo(o.sx, o.sy); ctx.lineTo(e.sx, e.sy); ctx.stroke();
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = `hsl(${ax.hue} 70% 58%)`;
-      ctx.font = "600 11px -apple-system, system-ui, sans-serif";
+      ctx.globalAlpha = paper ? 0.75 : 1;
+      ctx.font = `600 11px ${UI_FONT}`;
       ctx.textAlign = "center";
       ctx.fillText(ax.label, e.sx, e.sy - 5);
+      ctx.globalAlpha = 1;
     }
   }
 }
 
 function draw() {
+  // Fades run on elapsed time, whoever asks for the frame.
+  const t0 = now();
+  const dt = lastDraw ? Math.min(0.05, (t0 - lastDraw) / 1000) : 0;
+  lastDraw = t0;
+  animating = false;
   ctx.clearRect(0, 0, W, H);
-  const near = selected ? new Set([selected, ...nbrs.get(selected)]) : null;
+  // A selection dims everything it is not linked to. The dimming fades in
+  // (180 ms) and back out a little faster (120 ms), so the eye can follow it.
+  if (selected) lastSel = selected;
+  selFade = approach(selFade, selected ? 1 : 0, dt, selected ? 180 : 120);
+  if (selFade !== (selected ? 1 : 0)) animating = true;
+  const dimId = selected || (selFade > 0 ? lastSel : null);
+  const near = dimId ? new Set([dimId, ...nbrs.get(dimId)]) : null;
+  const dim = lit => (lit ? 1 : 1 - selFade * 0.9);
 
   drawShellAndAxes();
 
@@ -692,23 +986,25 @@ function draw() {
   const zNear = Math.min(...zs), zFar = Math.max(...zs), span = Math.max(1, zFar - zNear);
 
   ctx.shadowBlur = 0;
+  ctx.lineCap = "round";
   for (const e of VE) {
     const a = e.s.p, b = e.t.p;
     if (!a || !b) continue;
     const lit = !near || (near.has(e.source) && near.has(e.target));
+    const hot = near && lit && selFade > 0.5;
     const mid = ((a.depth + b.depth) / 2 - zNear) / span;   // 0 near, 1 far
-    // Magnitude shows twice: a stronger bond draws thicker and brighter.
+    // Magnitude shows twice: a stronger bond draws thicker and darker.
     const m = Math.min(e.mag, MAXMAG) / MAXMAG;
     if (obs()) {
       // One hue, hairline, barely there. The web reads as texture behind the
       // nodes rather than as a set of lines to be traced individually.
-      ctx.globalAlpha = (lit ? edgeAlpha * 0.85 : edgeAlpha * 0.10) * (1 - mid * 0.55);
-      ctx.strokeStyle = near && lit ? cssVar("--accent") : COLOR.web;
-      ctx.lineWidth = (near && lit ? 1.3 : 0.7) * Math.min(1.3, a.k);
+      ctx.globalAlpha = edgeAlpha * 0.85 * (lit ? 1 : 1 - selFade * 0.88) * (1 - mid * 0.55);
+      ctx.strokeStyle = hot ? COLOR.accent : COLOR.web;
+      ctx.lineWidth = (hot ? 1.3 : 0.7) * Math.min(1.3, a.k);
     } else {
-      ctx.globalAlpha = (lit ? edgeAlpha * (0.35 + 1.5 * m) : edgeAlpha * 0.12) * (1 - mid * 0.65);
-      ctx.strokeStyle = near && lit ? cssVar("--accent") : COLOR.dim;
-      ctx.lineWidth = (0.5 + 2.2 * m) * (lit && near ? 1.5 : 1) * Math.min(1.4, a.k);
+      ctx.globalAlpha = Math.min(1, edgeAlpha * (0.5 + 1.3 * m) * (lit ? 1 : 1 - selFade * 0.85) * (1 - mid * 0.6));
+      ctx.strokeStyle = hot ? COLOR.accent : COLOR.web;
+      ctx.lineWidth = (0.6 + 1.3 * m) * (hot ? 1.5 : 1) * Math.min(1.4, a.k);
     }
     if (KIND[e.kind].dash) ctx.setLineDash([5, 4]); else ctx.setLineDash([]);
     ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
@@ -718,74 +1014,99 @@ function draw() {
 
   const labels = [];
   for (const n of drawn) {
-    const p = n.p, spec = TYPE[n.type];
+    const p = n.p;
     const t = (p.depth - zNear) / span;
     const r = radiusOf(n) * p.k;
     const lit = !near || near.has(n.id);
-    ctx.globalAlpha = (lit ? 1 : 0.10) * (1 - t * 0.55);
+    const base = dim(lit) * (1 - t * 0.55);
+    ctx.globalAlpha = base;
 
     const col = nodeColor(n);
-    // The bloom is what makes a node look lit rather than painted. It grows
-    // with degree, so hubs glow and leaves stay as points.
     if (obs()) {
+      // The bloom is what makes a node look lit rather than painted. It grows
+      // with degree, so hubs glow and leaves stay as points.
       ctx.shadowColor = col;
       ctx.shadowBlur = (4 + Math.min(16, n.deg * 0.9)) * Math.min(1.6, p.k)
                        * (lit ? 1 : 0.3) * (1 - t * 0.5);
-    }
-    ctx.beginPath();
-    ctx.arc(p.sx, p.sy, Math.max(1.2, r), 0, 6.2832);
-    if (n.present === false) {
-      ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.setLineDash([2.5, 2.5]);
-      ctx.stroke(); ctx.setLineDash([]);
-    } else {
-      ctx.fillStyle = col; ctx.fill();
-      if (obs()) {
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, Math.max(1.2, r), 0, 6.2832);
+      if (n.present === false) {
+        ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.setLineDash([2.5, 2.5]);
+        ctx.stroke(); ctx.setLineDash([]);
+      } else {
+        ctx.fillStyle = col; ctx.fill();
         // A second, tighter pass so the centre reads solid through the bloom.
         ctx.shadowBlur = 0;
         ctx.beginPath(); ctx.arc(p.sx, p.sy, Math.max(0.8, r * 0.62), 0, 6.2832);
         ctx.fillStyle = "#fff"; ctx.globalAlpha *= 0.55; ctx.fill();
         ctx.globalAlpha /= 0.55;
+      }
+      ctx.shadowBlur = 0;
+    } else {
+      // Ink outline, watercolour fill, and a shape for the type.
+      shapePath(TYPE[n.type].shape, p.sx, p.sy, Math.max(1.8, r));
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = COLOR.ink;
+      ctx.lineWidth = Math.max(0.7, Math.min(1.4, 0.6 + 0.45 * p.k));
+      if (n.present === false) {
+        ctx.fillStyle = rgba(col, 0.25); ctx.fill();
+        ctx.setLineDash([2.2, 2.2]); ctx.stroke(); ctx.setLineDash([]);
       } else {
-        ctx.strokeStyle = COLOR.bg; ctx.lineWidth = 1.5 * p.k; ctx.stroke();
+        ctx.fillStyle = col; ctx.fill(); ctx.stroke();
+      }
+      if (n.id === hovered && n.id !== selected) {
+        // Hover happens dozens of times a minute: it answers at once, no motion.
+        ctx.globalAlpha = 0.5 * base;
+        ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 4, 0, 6.2832); ctx.stroke();
       }
     }
-    ctx.shadowBlur = 0;
     if (n.id === selected) {
-      ctx.strokeStyle = cssVar("--accent"); ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 5, 0, 6.2832); ctx.stroke();
+      // The ring closes in on the node and fades up: 200 ms, strong ease-out.
+      // With reduced motion it only fades.
+      const since = t0 - selectedAt;
+      const k = reduced ? 1 : easeOut(since / 200), a = easeOut(since / 160);
+      if (since < 200) animating = true;
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = COLOR.accent; ctx.lineWidth = obs() ? 2.5 : 2;
+      ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 5 + 6 * (1 - k), 0, 6.2832); ctx.stroke();
     }
     /* Two ways a label appears.
 
        Standing labels are what the "Show labels" checkbox controls. The
        Obsidian style keeps them sparse - hubs only until you zoom in - so the
-       field of dots survives, but the checkbox still does something visible,
-       which it did not before.
+       field of dots survives, but the checkbox still does something visible.
+       They fade in and out as the zoom crosses the threshold or a selection
+       dims their node.
 
        On-demand labels are selection and hover. Those are an explicit request
-       for one name, so they ignore the checkbox entirely. */
-    const standing = showLabels && (obs()
+       for one name, so they ignore the checkbox entirely, and appear at once. */
+    const standing = showLabels && (!near || near.has(n.id) || !selected) && (obs()
       ? (n.deg >= 8 || zoom > 1.5 || (focus && VN.length < 40))
-      : (n.deg > 4 || (focus && VN.length < 40)));
+      : (n.deg > 4 || zoom > 1.6 || (focus && VN.length < 40)));
+    const want = standing ? 1 : 0;
+    n.la = n.la === undefined ? want : approach(n.la, want, dt, want ? 240 : 140);
+    if (n.la !== want) animating = true;
     const onDemand = n.id === selected || n.id === hovered;
-    if (lit && (standing || onDemand)) labels.push({ n, p, t, r, lead: onDemand });
+    if (onDemand || n.la * dim(lit) > 0.05) labels.push({ n, p, t, r, lead: onDemand, la: onDemand ? 1 : n.la * dim(lit) });
   }
 
   // Labels last, nearest first, so the closest text wins any overlap.
   ctx.globalAlpha = 1;
   ctx.textAlign = "center";
+  ctx.lineJoin = "round";
   const taken = [];
   // Selected and hovered names are claimed first, so a nearer standing label
   // can never push aside the one the user actually asked for.
   labels.sort((a, b) => (b.lead - a.lead) || (a.t - b.t));
   for (const L of labels) {
     const text = (L.n.title || L.n.id).slice(0, 34);
-    const size = Math.max(8, Math.min(13, 11 * L.p.k));
-    ctx.font = `${L.lead ? "600 " : ""}${size}px -apple-system, system-ui, sans-serif`;
-    const w = ctx.measureText(text).width, x = L.p.sx, y = L.p.sy - L.r - 5;
+    const size = Math.max(9, Math.min(14, 12 * L.p.k));
+    ctx.font = `${L.lead ? "700" : "500"} ${size}px ${UI_FONT}`;
+    const w = ctx.measureText(text).width, x = L.p.sx, y = L.p.sy - L.r - 6;
     if (taken.some(b => Math.abs(b.x - x) < (b.w + w) / 2 && Math.abs(b.y - y) < 12)) continue;
     taken.push({ x, y, w });
-    ctx.globalAlpha = L.lead ? 1 : 1 - L.t * 0.6;
-    ctx.lineWidth = 3; ctx.strokeStyle = COLOR.bg; ctx.strokeText(text, x, y);
+    ctx.globalAlpha = L.lead ? 1 : (1 - L.t * 0.6) * L.la;
+    ctx.lineWidth = 3.5; ctx.strokeStyle = COLOR.bg; ctx.strokeText(text, x, y);
     ctx.fillStyle = COLOR.ink; ctx.fillText(text, x, y);
   }
   ctx.globalAlpha = 1;
@@ -831,18 +1152,28 @@ function physicsFrame() {
 }
 
 /* ---------- animation ---------- */
-let raf = null;
+let raf = null, lastTick = 0, spinRate = 0;
+const SPIN = 0.096;                  // radians a second: constant, so linear
 function tick() {
+  const t = now();
+  const dt = lastTick ? Math.min(0.05, (t - lastTick) / 1000) : 1 / 60;
+  lastTick = t;
   const busy = physicsFrame();
-  if (spin && !dragging && !heldNode && !flat) yaw += 0.0016;
-  if (busy || (spin && !dragging && !heldNode && !flat)) draw();
+  const turning = spin && !dragging && !heldNode && !flat;
+  // Idle rotation is constant motion, so it is linear. It ramps up from rest
+  // over about 600 ms so it does not lurch, and stops at once when asked.
+  spinRate = turning ? approach(spinRate, SPIN, dt, 600) : 0;
+  if (turning) yaw += spinRate * dt;
+  if (busy || turning || animating) draw();
   raf = requestAnimationFrame(tick);
 }
 
 /* ---------- interaction ---------- */
 let dragging = false, last = null, moved = 0;
 
-canvas.addEventListener("mousedown", ev => {
+/* Pointer events, so a finger rotates and drags just as a mouse does. */
+canvas.addEventListener("pointerdown", ev => {
+  if (dragging || heldNode) return;    // a second finger does not take over
   moved = 0;
   const hit = ev.shiftKey ? null : pick(ev);
   if (hit) {
@@ -856,18 +1187,18 @@ canvas.addEventListener("mousedown", ev => {
     return;
   }
   dragging = true;
-  last = { x: ev.clientX, y: ev.clientY, shift: ev.shiftKey };
+  last = { x: ev.clientX, y: ev.clientY, shift: ev.shiftKey, id: ev.pointerId };
   canvas.classList.add("grabbing");
 });
-canvas.addEventListener("mousemove", ev => {
-  if (dragging || heldNode) return;
+canvas.addEventListener("pointermove", ev => {
+  if (dragging || heldNode || ev.pointerType === "touch") return;
   const h = pick(ev);
   const id = h ? h.id : null;
   if (id !== hovered) { hovered = id; canvas.style.cursor = id ? "pointer" : "grab"; draw(); }
 });
-canvas.addEventListener("mouseleave", () => { if (hovered) { hovered = null; draw(); } });
+canvas.addEventListener("pointerleave", () => { if (hovered) { hovered = null; draw(); } });
 
-window.addEventListener("mousemove", ev => {
+window.addEventListener("pointermove", ev => {
   if (heldNode) {
     moved += 6;
     const b = canvas.getBoundingClientRect();
@@ -876,7 +1207,7 @@ window.addEventListener("mousemove", ev => {
     heldNode.vx = heldNode.vy = heldNode.vz = 0;
     return;                       // the physics frame redraws
   }
-  if (!dragging) return;
+  if (!dragging || ev.pointerId !== last.id) return;
   const dx = ev.clientX - last.x, dy = ev.clientY - last.y;
   moved += Math.abs(dx) + Math.abs(dy);
   if (last.shift) { panX += dx; panY += dy; }
@@ -887,11 +1218,13 @@ window.addEventListener("mousemove", ev => {
   last.x = ev.clientX; last.y = ev.clientY;
   draw();
 });
-window.addEventListener("mouseup", () => {
+const release = () => {
   if (heldNode) { heldNode = null; coastFrames = 45; canvas.style.cursor = "grab"; }
   dragging = false;
   canvas.classList.remove("grabbing");
-});
+};
+window.addEventListener("pointerup", release);
+window.addEventListener("pointercancel", release);
 
 canvas.addEventListener("wheel", ev => {
   ev.preventDefault();
@@ -924,6 +1257,7 @@ function setSpin(on) {
   spinBox.checked = on;
   playBtn.innerHTML = on ? PAUSE : PLAY;
   playBtn.title = on ? "Pause rotation (space)" : "Resume rotation (space)";
+  playBtn.setAttribute && playBtn.setAttribute("aria-label", on ? "Pause rotation" : "Resume rotation");
 }
 
 canvas.addEventListener("click", ev => {
@@ -936,7 +1270,13 @@ canvas.addEventListener("click", ev => {
 });
 playBtn.onclick = () => setSpin(!spin);
 window.addEventListener("keydown", ev => {
-  if (ev.code === "Space" && ev.target.tagName !== "INPUT") { ev.preventDefault(); setSpin(!spin); }
+  if (ev.target.tagName === "INPUT") return;
+  if (ev.code === "Space" && ev.target.tagName !== "BUTTON") { ev.preventDefault(); setSpin(!spin); }
+  if (ev.code === "Escape") {
+    if (!lab.classList.contains("closed")) { lab.classList.add("closed"); return; }
+    if (document.body.classList.contains("nav-open")) { document.body.classList.remove("nav-open"); return; }
+    select(null);
+  }
 });
 canvas.addEventListener("dblclick", ev => {
   const n = pick(ev);
@@ -945,12 +1285,24 @@ canvas.addEventListener("dblclick", ev => {
 });
 
 /* ---------- detail panel ---------- */
+const EMPTY = `<svg viewBox="0 0 64 64" aria-hidden="true">
+    <circle cx="32" cy="32" r="24" fill="var(--w-blue)" opacity=".5"/>
+    <path class="ink" d="M18 40l14-16 14 10M32 24v-6"/>
+    <circle class="ink" cx="18" cy="40" r="4.5" fill="var(--sop)"/>
+    <rect class="ink" x="28" y="20" width="8" height="8" fill="var(--form)"/>
+    <path class="ink" d="M46 28.5l5.5 5.5-5.5 5.5-5.5-5.5z" fill="var(--ap)"/>
+    <circle class="ink faint" cx="32" cy="15" r="3"/></svg>Select a node.`;
+
 function select(id) {
+  const changed = id !== selected;
+  if (changed) selectedAt = now();
   selected = id;
   if (id) setSpin(false);   // reading beats spinning, whichever route you came by
+  document.body && document.body.classList.toggle("has-sel", !!id);
+  if (id && document.body) document.body.classList.remove("nav-open");
   draw();
   const el = document.getElementById("detail");
-  if (!id) { el.className = "empty"; el.textContent = "Select a node."; return; }
+  if (!id) { el.className = "empty"; el.innerHTML = EMPTY; return; }
   const n = byId.get(id), spec = TYPE[n.type];
   const mine = edges.filter(e => e.source === id || e.target === id)
     .map(e => ({ other: byId.get(e.source === id ? e.target : e.source),
@@ -959,7 +1311,7 @@ function select(id) {
 
   el.className = "detail";
   el.innerHTML = `
-    <span class="pill" style="background:var(${spec.css});color:#fff">${spec.key}</span>
+    <span class="pill" style="background:var(${spec.css})">${spec.key}</span>
     <h3>${n.title || n.id}</h3>
     <div class="id">${n.id}${n.revision ? " rev " + n.revision : ""}</div>
     ${n.present === false ? `<div class="warn"><b>Not in any folder.</b>
@@ -970,13 +1322,16 @@ function select(id) {
       <div><dt>Revision</dt><dd>${n.revision || "—"}</dd></div>
       <div><dt>Links</dt><dd>${mine.length}</dd></div>
     </div>
-    <button class="primary" id="openbtn">Open in Word</button>` : ""}
-    <h2>Connected to ${mine.length}</h2>
+    <button class="wash-blue" id="openbtn">Open in Word</button>` : ""}
+    <h2><span class="badge b-blue">${String(mine.length).padStart(2, "0")}</span>Connected</h2>
     ${mine.map(m => `<div class="nb" data-go="${m.other.id}">
-      <span class="swatch" style="background:var(${TYPE[m.other.type].css})"></span>
+      ${swatch(m.other.type)}
       <span>${m.other.title || m.other.id}</span>
-      <small>${"\u25CF".repeat(Math.max(1, Math.round(m.mag)))} ${m.kinds.join(", ")}</small>
+      <small>${m.kinds.join(", ")}</small>
       </div>`).join("") || '<div class="sub">Nothing.</div>'}`;
+
+  // New content fades up into place: 180 ms, strong ease-out.
+  if (changed) { fadeIn(el); el.parentNode && (el.parentNode.scrollTop = 0); }
 
   el.querySelectorAll("[data-go]").forEach(d => d.onclick = () => select(d.dataset.go));
   const btn = el.querySelector("#openbtn");
@@ -1030,8 +1385,15 @@ document.getElementById("onlyLinked").onchange = e => { hideIsolated = e.target.
 document.getElementById("alpha").oninput   = e => { edgeAlpha = e.target.value / 100; draw(); };
 document.getElementById("affinity").onchange = e => { useAffinity = e.target.checked; resolve(); };
 
+/* The test controls are a popover: CSS transitions carry it in and out, so a
+   second click mid-animation reverses it from where it is. */
 const lab = document.getElementById("lab");
-document.getElementById("labToggle").onclick = () => lab.classList.toggle("collapsed");
+document.getElementById("labToggle").onclick = () => lab.classList.toggle("closed");
+document.getElementById("labClose").onclick = () => lab.classList.add("closed");
+/* Phone: the filters drawer and the detail sheet. */
+document.getElementById("navBtn").onclick = () => document.body.classList.toggle("nav-open");
+document.getElementById("scrim").onclick = () => document.body.classList.remove("nav-open");
+document.getElementById("sheetClose").onclick = () => select(null);
 document.getElementById("shellSeg").onclick = ev => {
   const b = ev.target.closest("[data-shell]");
   if (!b) return;
@@ -1039,7 +1401,11 @@ document.getElementById("shellSeg").onclick = ev => {
   [...b.parentNode.children].forEach(x => x.classList.toggle("on", x === b));
   resolve();
 };
-document.getElementById("shellSize").oninput = e => { shellR = +e.target.value; resolve(240); };
+document.getElementById("shellSize").oninput = e => {
+  shellR = +e.target.value;
+  document.getElementById("shellSizeVal").textContent = e.target.value;
+  resolve(240);
+};
 document.getElementById("styleSeg").onclick = ev => {
   const b = ev.target.closest("[data-style]");
   if (!b) return;
@@ -1047,9 +1413,10 @@ document.getElementById("styleSeg").onclick = ev => {
   [...b.parentNode.children].forEach(x => x.classList.toggle("on", x === b));
   document.documentElement.dataset.style = style;
   readColors();
-  // Obsidian's web only reads at low opacity; the labelled style needs more.
+  buildClusterList();
+  // Obsidian's web only reads at low opacity; ink on paper needs more.
   const a = document.getElementById("alpha");
-  a.value = obs() ? 14 : 20;
+  a.value = obs() ? 14 : 24;
   edgeAlpha = a.value / 100;
   resolve();   // the spring rules changed, so the layout must be re-solved
 };
@@ -1066,9 +1433,8 @@ function buildClusterList() {
     const lead = members.slice().sort((a, b) => b.deg - a.deg)[0];
     const i = clusterIndex.get(lab);
     return `<div class="hit" data-go="${lead.id}" title="${members.length} documents">
-      <b style="font-size:12px"><span class="swatch" style="display:inline-block;background:hsl(${
-        CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)"></span> ${
-        (lead.title || lead.id).slice(0, 26)}</b>
+      <b style="font-size:13px"><span class="swatch" style="display:inline-block;background:${
+        clusterHue(i)}"></span> ${(lead.title || lead.id).slice(0, 26)}</b>
       <span>${members.length} documents</span></div>`;
   }).join("");
   box.querySelectorAll("[data-go]").forEach(d => d.onclick = () => select(d.dataset.go));
@@ -1082,11 +1448,13 @@ document.getElementById("reset").onclick = () => {
 buildFilters();
 buildClusterList();
 setSpin(spin);
+// The web fonts are optional. When they arrive, the canvas text is redrawn in them.
+document.fonts && document.fonts.ready.then(() => draw());
 window.addEventListener("resize", () => { resize(); draw(); });
 resize();
 recompute();
 layout(700, null);
-draw();
+select(null);
 tick();
 </script>
 </body>

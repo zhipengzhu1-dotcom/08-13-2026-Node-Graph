@@ -2,185 +2,356 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Example Labs — Document Graph</title>
+<!-- Optional web fonts. Offline, the page falls back to system faces and still reads right. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* Paper and ink. The tokens are the Lab Report Pipeline's, so the two pages
+     read as siblings: warm paper, ink line work, watercolour washes of blue,
+     sage and lavender. The five node types take a wash each, and each type
+     also has its own shape on the canvas, so type never rests on hue alone. */
   :root {
-    --bg: #0b0e14; --panel: #11151d; --line: #222a38; --ink: #e6edf3;
-    --dim: #8b949e; --accent: #58a6ff;
-    --sop: #58a6ff; --form: #3fb950; --ap: #d29922; --tm: #f85149; --inst: #bc8cff;
-    --web: #2e8b8b;
+    --paper: #fbf8f1; --card: #fffdf8; --ink: #23262e; --ink-2: #464b57; --muted: #6a6f7b;
+    --line: #ddd6c6; --line-soft: #ebe5d7; --input: #ffffff;
+    --w-blue: #b7d0ea; --w-sage: #c5dbb3; --w-lav: #d3cbec; --w-blue-deep: #3d6c9c;
+    --over: #a8322f; --focus: #3d6c9c; --accent: #3d6c9c;
+    /* node washes: hue AND lightness differ, so they part under colour blindness too */
+    --sop: #8fb4de;    /* blue wash      - circle   */
+    --form: #c6ddb2;   /* sage wash      - square   */
+    --ap: #ecc983;     /* ochre wash     - diamond  */
+    --tm: #e5a49b;     /* rose wash      - triangle */
+    --inst: #bcb0e6;   /* lavender wash  - hexagon  */
+    --web: #464b57;    /* links are ink */
+    --grain: .06;
+    --script: "Allura", "Snell Roundhand", "Segoe Script", "Apple Chancery", cursive;
+    --ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    /* motion: strong custom curves, never ease-in */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    color-scheme: light dark;
   }
-  @media (prefers-color-scheme: light) {
+  /* Dark paper, light ink. Same washes, deepened so they hold on a dark ground. */
+  @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #f4f6f9; --panel: #ffffff; --line: #d6dce4; --ink: #1f2328;
-      --dim: #656d76; --accent: #0969da;
-      --sop: #0969da; --form: #1a7f37; --ap: #9a6700; --tm: #cf222e; --inst: #8250df;
-      --web: #6aa9a9;
+      --paper: #18191d; --card: #1f2025; --ink: #ece8de; --ink-2: #c9c4b8; --muted: #9a958a;
+      --line: #3a3a40; --line-soft: #2c2d33; --input: #16171b;
+      --w-blue: #34506e; --w-sage: #3e5536; --w-lav: #4a4268; --w-blue-deep: #9cc1e6;
+      --over: #ff8f88; --focus: #9cc1e6; --accent: #9cc1e6;
+      --sop: #3f6690; --form: #4c6a3f; --ap: #7a6431; --tm: #84463f; --inst: #5c5288;
+      --web: #c9c4b8; --grain: .08;
     }
   }
-  /* Obsidian style brings its own palette: a near-black ground, a teal web,
-     and fluorescent nodes. It overrides the light theme too - this look only
-     works dark, so it stays dark whatever the operating system says. */
+  /* Obsidian brings its own palette: a near-black ground, a teal web and
+     fluorescent nodes. It overrides both themes - this look only works dark. */
   :root[data-style="obsidian"] {
-    --bg: #0e1014; --panel: #14171d; --line: #232833; --ink: #e9eef7;
-    --dim: #78838f; --accent: #ffd93d;
+    --paper: #0e1014; --card: #14171d; --line: #232833; --line-soft: #1b1f27; --input: #0e1014;
+    --ink: #e9eef7; --ink-2: #c3cad6; --muted: #78838f; --accent: #ffd93d; --focus: #ffd93d;
+    --w-blue: #1e2a3d; --w-sage: #1d3029; --w-lav: #2a2540; --w-blue-deep: #ffd93d;
     --sop:  #ffd93d;   /* fluorescent yellow - the backbone procedures */
     --form: #8ea9ff;   /* periwinkle - the numerous small records */
     --ap:   #4ff0d0;   /* aqua */
     --tm:   #ff5c7a;   /* neon red - documents that do not exist */
     --inst: #ff6ec7;   /* hot magenta - the instruments */
     --web:  #2fb8a8;   /* the teal web */
+    --grain: 0;
+    color-scheme: dark;
   }
-  /* The accent is now fluorescent yellow, so anything sitting on it needs
-     dark ink rather than white. */
-  :root[data-style="obsidian"] .seg button.on,
-  :root[data-style="obsidian"] button.primary,
-  :root[data-style="obsidian"] .pill { color: #0e1014; }
-  :root[data-style="obsidian"] button.primary:hover { color: #0e1014; }
+
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
+  html { background: var(--paper); -webkit-text-size-adjust: 100%; }
   body {
-    background: var(--bg); color: var(--ink);
-    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    display: grid; grid-template-columns: 246px 1fr 330px; overflow: hidden;
+    background: var(--paper); color: var(--ink);
+    font: 14px/1.5 var(--ui);
+    display: grid; grid-template-columns: 284px minmax(0, 1fr) 340px; overflow: hidden;
   }
-  aside { background: var(--panel); overflow-y: auto; padding: 16px; }
+  [hidden] { display: none !important; }
+  aside { background: var(--card); overflow-y: auto; padding: 18px 18px 24px; }
   aside.left { border-right: 1px solid var(--line); }
   aside.right { border-left: 1px solid var(--line); }
-  h1 { font-size: 14px; margin: 0 0 2px; }
-  .sub { color: var(--dim); font-size: 11px; }
-  h2 { font-size: 10px; text-transform: uppercase; letter-spacing: .09em;
-       color: var(--dim); margin: 20px 0 8px; font-weight: 600; }
-  input[type=search] {
-    width: 100%; padding: 7px 9px; background: var(--bg); color: var(--ink);
-    border: 1px solid var(--line); border-radius: 6px; font: inherit; margin-top: 14px;
-  }
-  input[type=search]:focus { outline: none; border-color: var(--accent); }
-  label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
-  label:hover { color: var(--accent); }
-  .swatch { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .count { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; font-size: 11px; }
-  .edgekey { width: 20px; border-top: 2px solid var(--dim); flex: none; }
-  .edgekey.dash { border-top-style: dashed; }
-  .hit { padding: 5px 7px; border-radius: 5px; cursor: pointer; }
-  .hit:hover { background: var(--bg); }
-  .hit b { display: block; font-weight: 600; }
-  .hit span { color: var(--dim); font-size: 11px; }
-  main { position: relative; overflow: hidden; }
-  canvas { display: block; width: 100%; height: 100%; cursor: grab; }
-  canvas.grabbing { cursor: grabbing; }
-  #hud { position: absolute; left: 14px; bottom: 12px; color: var(--dim);
-         font-size: 11px; font-variant-numeric: tabular-nums; pointer-events: none; }
-  #hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 12px;
-          color: var(--dim); font-size: 11px; pointer-events: none; white-space: nowrap; }
-  #play {
-    position: absolute; right: 14px; bottom: 12px; width: 38px; height: 38px;
-    border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
-    color: var(--ink); cursor: pointer; display: grid; place-items: center; padding: 0;
-  }
-  #play:hover { border-color: var(--accent); color: var(--accent); }
-  #play svg { width: 14px; height: 14px; fill: currentColor; }
 
-  /* Test panel: a bar at the top right that collapses to its icon. */
-  #lab {
-    position: absolute; top: 12px; right: 12px; display: flex; align-items: stretch;
-    background: color-mix(in srgb, var(--panel) 92%, transparent);
-    border: 1px solid var(--line); border-radius: 9px; overflow: hidden;
-    backdrop-filter: blur(6px); max-width: calc(100% - 24px);
+  /* ---------- masthead: the one place the script face is used ---------- */
+  .brand { position: relative; padding-right: 40px; }
+  .brand h1 { font-family: var(--script); font-weight: 400; font-size: 38px; line-height: 1.05;
+              margin: 4px 0 4px; letter-spacing: .01em; white-space: nowrap; }
+  .brand svg { position: absolute; right: -4px; top: -2px; width: 40px; height: 46px; overflow: visible; }
+  .ink { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .ink.faint { opacity: .35; }
+  .sub { color: var(--muted); font-size: 12.5px; }
+
+  /* ---------- section heads carry the sibling's step badges ---------- */
+  h2 { font-size: 14px; font-weight: 700; color: var(--ink); margin: 22px 0 9px;
+       display: flex; align-items: center; gap: 9px; }
+  .badge {
+    display: inline-grid; place-items: center; width: 28px; height: 24px; flex: none;
+    font: 600 11px var(--mono); color: var(--ink);
+    border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%;
   }
-  #labToggle {
-    width: 34px; height: 34px; flex: none; border: 0; border-radius: 0; padding: 0;
-    background: transparent; color: var(--dim); display: grid; place-items: center; cursor: pointer;
+  .b-blue { background: var(--w-blue); } .b-sage { background: var(--w-sage); } .b-lav { background: var(--w-lav); }
+  .detail h2 { font-size: 13px; margin: 20px 0 6px; }
+
+  input[type=search] {
+    width: 100%; padding: 8px 11px; background: var(--input); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; font: 14px/1.4 var(--ui); margin-top: 14px;
   }
-  #labToggle:hover { color: var(--accent); background: var(--bg); }
-  #labToggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; }
-  #labBody {
-    display: flex; align-items: center; gap: 14px; padding: 0 14px 0 4px;
-    white-space: nowrap; overflow-x: auto;
+  input[type=search]:focus-visible, button:focus-visible, input[type=checkbox]:focus-visible,
+  input[type=range]:focus-visible, .nm:focus-visible {
+    outline: 2px solid var(--focus); outline-offset: 1px;
   }
-  #lab.collapsed #labBody { display: none; }
-  #labBody .grp { display: flex; align-items: center; gap: 7px; }
-  #labBody .grp > span { color: var(--dim); font-size: 10px;
-                         text-transform: uppercase; letter-spacing: .07em; }
-  #labBody .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  #labBody .seg button {
-    width: auto; border: 0; border-radius: 0; padding: 4px 9px;
-    background: transparent; color: var(--dim); font-size: 11px;
+  input[type=checkbox], input[type=range] { accent-color: var(--w-blue-deep); }
+  input[type=checkbox] { margin: 0; flex: none; }
+  label { display: flex; align-items: center; gap: 9px; padding: 3px 0; cursor: pointer; color: var(--ink-2); }
+  .swatch { width: 11px; height: 11px; flex: none; border: 1px solid var(--ink); border-radius: 50%; }
+  /* the swatch takes the node's shape, so the legend teaches the canvas */
+  .sh-form { border-radius: 2px; }
+  .sh-ap { border-radius: 1px; transform: rotate(45deg) scale(.86); }
+  .sh-tm { border: 0; border-radius: 0; clip-path: polygon(50% 4%, 98% 92%, 2% 92%); }
+  .sh-inst { border: 0; border-radius: 0; clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); }
+  .count { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .edgekey { width: 20px; border-top: 1.5px solid var(--ink-2); flex: none; }
+  .edgekey.dash { border-top-style: dashed; }
+  .hit { padding: 6px 8px; border-radius: 8px; cursor: pointer; transition: background-color 120ms ease; }
+  .hit b { display: block; font-weight: 600; color: var(--ink); }
+  .hit span { color: var(--muted); font-size: 12px; }
+
+  /* One row per space. The name is a button: it centres the view on that
+     space. The checkbox shows and hides the whole space. */
+  .space { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 9px;
+           transition: background-color 150ms ease, opacity 150ms ease; }
+  .space .nm { font-weight: 600; cursor: pointer; color: var(--ink); background: none; border: 0;
+               padding: 0; font: 600 14px var(--ui); width: auto; border-radius: 4px; }
+  .space .ct { margin-left: auto; color: var(--muted); font-size: 12px;
+               font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .space.off { opacity: .45; }
+  .space.open { background: color-mix(in srgb, var(--w-blue) 55%, transparent); }
+  .legend { color: var(--muted); font-size: 11.5px; padding: 2px 8px 6px; display: flex; }
+  .legend span { margin-left: auto; }
+  .waiting { color: var(--muted); font-size: 12.5px; padding: 8px 8px 0; line-height: 1.45; }
+  .waiting b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* ---------- canvas on paper ---------- */
+  main { position: relative; overflow: hidden; background:
+           radial-gradient(55% 45% at 12% 8%, color-mix(in srgb, var(--w-blue) 26%, transparent), transparent 72%),
+           radial-gradient(50% 42% at 92% 96%, color-mix(in srgb, var(--w-sage) 24%, transparent), transparent 72%),
+           radial-gradient(40% 36% at 88% 6%, color-mix(in srgb, var(--w-lav) 20%, transparent), transparent 70%),
+           var(--paper); }
+  /* Paper grain: an inline SVG noise, so it needs no network. */
+  main::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--grain);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .14 0 0 0 0 .15 0 0 0 0 .18 0 0 0 1.4 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
-  #labBody .seg button.on { background: var(--accent); color: #fff; }
-  #labBody .seg button:hover:not(.on) { color: var(--accent); background: var(--bg); }
-  #labBody input[type=range] { width: 78px; }
-  #labBody label { padding: 0; font-size: 11px; }
+  :root[data-style="obsidian"] main { background: var(--paper); }
+  canvas { position: relative; display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  canvas.grabbing { cursor: grabbing; }
+  #hud { position: absolute; left: 16px; bottom: 14px; color: var(--muted);
+         font-size: 12px; font-variant-numeric: tabular-nums; pointer-events: none; }
+  #hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 38px;
+          color: var(--muted); font-size: 12.5px; pointer-events: none; white-space: nowrap;
+          transition: opacity 200ms var(--ease-out); }
+
+  /* ---------- buttons: the sibling's pill and wash styles ---------- */
   button {
-    font: inherit; padding: 7px 11px; border-radius: 6px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%;
+    font: 600 14px/1.2 var(--ui); color: var(--ink); cursor: pointer; width: 100%;
+    padding: 9px 16px; border-radius: 999px; border: 1px solid var(--ink); background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 160ms var(--ease-out), background-color 150ms ease,
+                border-color 150ms ease, color 150ms ease;
   }
-  button:hover { border-color: var(--accent); color: var(--accent); }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  button.primary:hover { opacity: .9; color: #fff; }
-  .pill { display: inline-block; padding: 2px 7px; border-radius: 20px;
-          font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-  .detail h3 { margin: 4px 0 2px; font-size: 15px; line-height: 1.3; }
-  .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--dim); }
-  .meta { margin: 14px 0; }
-  .meta div { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid var(--line); }
-  .meta dt { color: var(--dim); width: 74px; flex: none; }
+  /* press feedback: every pressable thing gives a little */
+  button:active, .hit:active, .nb:active { transform: scale(.97); }
+  button.wash-blue { background: var(--w-blue); border-color: color-mix(in srgb, var(--ink) 70%, var(--w-blue)); }
+  button.ghost { background: transparent; border-color: var(--line); }
+  .round {
+    position: absolute; width: 40px; height: 40px; padding: 0; border-radius: 50%;
+    display: grid; place-items: center; color: var(--ink);
+    background: color-mix(in srgb, var(--card) 88%, transparent); border-color: var(--line);
+  }
+  .round svg { width: 15px; height: 15px; }
+  #play { right: 16px; bottom: 14px; border-color: var(--ink); }
+  #play svg { fill: currentColor; }
+  #navBtn { left: 12px; top: 12px; display: none; }
+  #navBtn svg, #labToggle svg { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+  /* Hover only where there is a real pointer: a tap must not leave a hover behind. */
+  @media (hover: hover) and (pointer: fine) {
+    .hit:hover, .nb:hover { background: color-mix(in srgb, var(--w-blue) 32%, transparent); }
+    .space:hover:not(.open) { background: color-mix(in srgb, var(--w-lav) 30%, transparent); }
+    .space .nm:hover, label:hover { color: var(--w-blue-deep); }
+    button.ghost:hover, .round:hover { background: color-mix(in srgb, var(--w-lav) 45%, var(--card)); }
+    button.wash-blue:hover { background: color-mix(in srgb, var(--w-blue) 80%, var(--ink)); }
+    .seg button:hover:not(.on) { background: color-mix(in srgb, var(--w-lav) 40%, transparent); }
+  }
+
+  /* ---------- test controls: a popover that grows from its own button ---------- */
+  #lab { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; }
+  #labToggle { top: 0; right: 0; }
+  #lab:not(.closed) #labToggle { background: var(--w-lav); border-color: var(--ink); }
+  #labPanel {
+    position: absolute; top: 48px; right: 0; width: 292px; padding: 14px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    display: grid; gap: 14px; box-shadow: 0 14px 34px rgb(35 38 46 / .14);
+    transform-origin: top right;
+    /* exit is quicker than entry */
+    transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out), visibility 0s 120ms;
+  }
+  #lab:not(.closed) #labPanel {
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out), visibility 0s;
+  }
+  #lab.closed #labPanel { opacity: 0; transform: scale(.96); visibility: hidden; pointer-events: none; }
+  .labhead { display: flex; align-items: center; font-size: 14px; font-weight: 700; gap: 9px; }
+  .labhead button { width: 28px; height: 28px; margin-left: auto; padding: 0; border: 0;
+                    background: none; color: var(--muted); font-size: 15px; line-height: 1; border-radius: 50%; }
+  .labrow { display: grid; gap: 6px; }
+  .labrow > span { display: flex; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+  .labrow > span b { margin-left: auto; color: var(--ink); font-weight: 600; font-family: var(--mono);
+                     font-size: 12px; font-variant-numeric: tabular-nums; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; padding: 2px; gap: 2px; }
+  .seg button { flex: 1; width: auto; border: 0; border-radius: 999px; padding: 5px 4px;
+                background: transparent; color: var(--ink-2); font-size: 12.5px; }
+  .seg button.on { background: var(--w-blue); color: var(--ink); }
+  :root[data-style="obsidian"] .seg button.on { background: var(--accent); color: #0e1014; }
+  #labPanel input[type=range] { width: 100%; }
+  .labchecks { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; }
+  .labchecks label { padding: 0; font-size: 13px; }
+
+  /* ---------- detail panel ---------- */
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; color: var(--ink);
+          font-size: 11.5px; font-weight: 700; letter-spacing: .03em; border: 1px solid var(--ink); }
+  :root[data-style="obsidian"] .pill { color: #0e1014; border-color: transparent; }
+  .detail h3 { margin: 8px 0 2px; font-size: 19px; line-height: 1.25; font-weight: 700; }
+  .id { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .meta { margin: 14px 0; padding: 4px 12px; border: 1px solid var(--line-soft); border-radius: 10px;
+          background: var(--paper); }
+  .meta div { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line-soft); }
+  .meta div:last-child { border-bottom: 0; }
+  .meta dt { color: var(--muted); width: 74px; flex: none; }
   .meta dd { margin: 0; word-break: break-word; }
-  .nb { display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 5px; cursor: pointer; }
-  .nb:hover { background: var(--bg); }
-  .nb small { color: var(--dim); margin-left: auto; font-size: 10px; flex: none; }
-  .empty { color: var(--dim); padding-top: 40px; text-align: center; }
-  .warn { background: color-mix(in srgb, var(--tm) 14%, transparent);
-          border: 1px solid var(--tm); border-radius: 6px; padding: 9px; margin: 12px 0; font-size: 12px; }
+  .nb { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; cursor: pointer;
+        transition: background-color 120ms ease, transform 160ms var(--ease-out); }
+  .nb small { color: var(--muted); margin-left: auto; font-size: 11px; flex: none; text-align: right; }
+  .nb.out { opacity: .78; }
+  .empty { color: var(--muted); padding-top: 40px; text-align: center; }
+  .empty svg { display: block; margin: 0 auto 12px; width: 64px; height: 64px; }
+  .warn { background: color-mix(in srgb, var(--over) 10%, transparent); color: var(--ink);
+          border: 1px solid color-mix(in srgb, var(--over) 60%, transparent); border-radius: 10px;
+          padding: 10px 12px; margin: 12px 0; font-size: 13px; }
+  .hold { border: 1px dashed var(--line); border-radius: 10px; padding: 9px 11px;
+          margin: 8px 0 6px; color: var(--muted); font-size: 12.5px; line-height: 1.45;
+          background: color-mix(in srgb, var(--w-lav) 16%, transparent); }
   .slider { width: 100%; }
+  #sheetClose { display: none; }
+  #scrim { display: none; }
+
+  /* ---------- narrower screens ---------- */
+  @media (max-width: 1100px) {
+    body { grid-template-columns: 248px minmax(0, 1fr) 300px; }
+  }
+  /* Phone: the canvas takes the screen. The filters become a drawer from the
+     left and the detail panel a sheet from the bottom. */
+  @media (max-width: 760px) {
+    body { grid-template-columns: minmax(0, 1fr); height: 100dvh; }
+    #navBtn { display: grid; }
+    #hint, #hud { display: none; }
+    aside.left {
+      position: fixed; z-index: 20; top: 0; bottom: 0; left: 0; width: min(86vw, 320px);
+      box-shadow: 0 0 40px rgb(35 38 46 / .18);
+      transform: translateX(-104%);
+      transition: transform 200ms var(--ease-drawer);
+    }
+    body.nav-open aside.left { transform: none; transition-duration: 280ms; }
+    #scrim { display: block; position: fixed; inset: 0; z-index: 15; background: rgb(24 25 29 / .28);
+             opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
+    body.nav-open #scrim { opacity: 1; pointer-events: auto; }
+    aside.right {
+      position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; max-height: 58dvh;
+      border: 1px solid var(--line); border-radius: 18px 18px 0 0; padding-top: 10px;
+      box-shadow: 0 -10px 30px rgb(35 38 46 / .12);
+      transform: translateY(104%);
+      transition: transform 200ms var(--ease-drawer);
+    }
+    body.has-sel aside.right { transform: none; transition-duration: 280ms; }
+    #sheetClose { display: grid; position: sticky; top: 0; margin-left: auto; width: 32px; height: 32px;
+                  padding: 0; border-color: var(--line); float: right; font-size: 14px; place-items: center; }
+    #lab { top: 12px; }
+    #labPanel { width: min(292px, calc(100vw - 24px)); }
+    input[type=search] { font-size: 16px; }   /* no zoom on focus in iOS */
+  }
+
+  /* Reduced motion: keep the fades that explain a change, drop every movement. */
+  @media (prefers-reduced-motion: reduce) {
+    button:active, .hit:active, .nb:active { transform: none; }
+    #lab.closed #labPanel { transform: none; }
+    aside.left, aside.right { transition-property: opacity, visibility !important; }
+    @media (max-width: 760px) {
+      aside.left, aside.right { transform: none !important; }
+      body:not(.nav-open) aside.left, body:not(.has-sel) aside.right { opacity: 0; visibility: hidden; }
+    }
+  }
 </style>
 </head>
 <body>
 
-<aside class="left">
-  <h1>Example Labs</h1>
-  <div class="sub">Document graph — prototype</div>
+<aside class="left" id="nav">
+  <div class="brand">
+    <h1>Example Labs</h1>
+    <div class="sub">Document graph · one space</div>
+    <svg viewBox="0 0 50 56" aria-hidden="true" focusable="false">
+      <path class="ink" d="M18 6h12M20 6v14L9 44a4 4 0 0 0 3.6 6h22.8A4 4 0 0 0 39 44L28 20V6"/>
+      <path d="M13.5 37h21L38 44.5a3 3 0 0 1-2.7 4.3H12.7A3 3 0 0 1 10 44.5z" fill="var(--w-blue)" opacity=".85"/>
+      <path class="ink faint" d="M44 10l4 2.3v4.6L44 19.2l-4-2.3v-4.6z"/>
+    </svg>
+  </div>
 
-  <input type="search" id="q" placeholder="Search title or number…" autocomplete="off">
+  <input type="search" id="q" placeholder="Search title or number…" autocomplete="off" aria-label="Search">
   <div id="results"></div>
 
-  <h2>Node types</h2>
+  <h2><span class="badge b-blue">01</span>Node types</h2>
   <div id="types"></div>
 
-  <h2>Link kinds</h2>
+  <h2><span class="badge b-lav">02</span>Link kinds</h2>
   <div id="kinds"></div>
 
-  <h2>Clusters</h2>
+  <h2><span class="badge b-sage">03</span>Clusters</h2>
   <label><input type="checkbox" id="affinity" checked> Group by shared neighbours</label>
   <label><input type="checkbox" id="bycluster"> Colour by cluster</label>
   <div id="clusterList"></div>
 
-  <h2>View</h2>
+  <h2><span class="badge b-blue">04</span>View</h2>
   <label><input type="checkbox" id="spin" checked> Rotate slowly</label>
   <label><input type="checkbox" id="flat"> Flatten to 2D</label>
   <label><input type="checkbox" id="labels" checked> Show labels</label>
   <label><input type="checkbox" id="onlyLinked"> Hide isolated nodes</label>
-  <h2>Link opacity</h2>
-  <input type="range" class="slider" id="alpha" min="4" max="60" value="20">
-  <div style="margin-top:14px"><button id="reset">Reset view</button></div>
+  <h2><span class="badge b-lav">05</span>Link opacity</h2>
+  <input type="range" class="slider" id="alpha" min="4" max="60" value="24" aria-label="Link opacity">
+  <div style="margin-top:16px"><button class="ghost" id="reset">Reset view</button></div>
 </aside>
+<div id="scrim"></div>
 
 <main>
   <canvas id="c"></canvas>
   <div id="hud"></div>
   <div id="hint">drag a node to move it · drag the background to rotate · shift-drag to pan · double-click to focus</div>
-  <button id="play" title="Pause rotation (space)"></button>
+  <button id="play" class="round" title="Pause rotation (space)" aria-label="Pause rotation"></button>
+  <button id="navBtn" class="round" title="Filters" aria-label="Filters">
+    <svg viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+  </button>
 
-  <div id="lab" class="collapsed">
-    <button id="labToggle" title="Test controls">
+  <div id="lab" class="closed">
+    <button id="labToggle" class="round" title="Test controls" aria-label="Test controls">
       <svg viewBox="0 0 16 16"><path d="M1 4h14M1 8h14M1 12h14"/>
-        <circle cx="5" cy="4" r="1.9" fill="currentColor" stroke="none"/>
-        <circle cx="10.5" cy="8" r="1.9" fill="currentColor" stroke="none"/>
-        <circle cx="6.5" cy="12" r="1.9" fill="currentColor" stroke="none"/></svg>
+        <circle cx="5" cy="4" r="1.9" fill="var(--card)"/>
+        <circle cx="10.5" cy="8" r="1.9" fill="var(--card)"/>
+        <circle cx="6.5" cy="12" r="1.9" fill="var(--card)"/></svg>
     </button>
-    <div id="labBody">
-      <div class="grp"><span>Shell</span>
+    <div id="labPanel">
+      <div class="labhead"><span>Test controls</span><button id="labClose" title="Close" aria-label="Close">✕</button></div>
+
+      <div class="labrow"><span>Shell</span>
         <div class="seg" id="shellSeg">
           <button data-shell="none">Off</button>
           <button data-shell="sphere" class="on">Sphere</button>
@@ -188,35 +359,44 @@
           <button data-shell="cylinder">Cylinder</button>
         </div>
       </div>
-      <div class="grp"><span>Size</span>
-        <input type="range" id="shellSize" min="220" max="620" value="400">
-      </div>
-      <div class="grp"><span>Style</span>
+
+      <div class="labrow"><span>Style</span>
         <div class="seg" id="styleSeg">
-          <button data-style="labelled" class="on">Labelled</button>
+          <button data-style="paper" class="on">Paper</button>
           <button data-style="obsidian">Obsidian</button>
         </div>
       </div>
-      <div class="grp">
-        <label><input type="checkbox" id="confine" checked> Confine</label>
-        <label><input type="checkbox" id="axes" checked> Axes</label>
+
+      <div class="labrow"><span>Shell size <b id="shellSizeVal">400</b></span>
+        <input type="range" id="shellSize" min="220" max="620" value="400" aria-label="Shell size">
+      </div>
+
+      <div class="labrow"><span>Show</span>
+        <div class="labchecks">
+          <label><input type="checkbox" id="axes" checked> Axes</label>
+          <label><input type="checkbox" id="confine" checked> Confine</label>
+        </div>
       </div>
     </div>
   </div>
 </main>
 
-<aside class="right"><div id="detail" class="empty">Select a node.</div></aside>
+<aside class="right" id="sheet"><button id="sheetClose" class="round" title="Close" aria-label="Close">✕</button><div id="detail" class="empty"></div></aside>
 
 <script>
 const GRAPH = /*__GRAPH__*/null;
 
 const TYPE = {
-  "standard operating procedure": { key: "SOP",  css: "--sop",  r: 5.5 },
-  "form":                         { key: "Form", css: "--form", r: 4.0 },
-  "analytical procedure":         { key: "AP",   css: "--ap",   r: 5.0 },
-  "test method":                  { key: "TM",   css: "--tm",   r: 4.5 },
-  "instrument":                   { key: "Instrument", css: "--inst", r: 6.5 },
+  "standard operating procedure": { key: "SOP",  css: "--sop",  r: 5.5, shape: "circle" },
+  "form":                         { key: "Form", css: "--form", r: 4.0, shape: "square" },
+  "analytical procedure":         { key: "AP",   css: "--ap",   r: 5.0, shape: "diamond" },
+  "test method":                  { key: "TM",   css: "--tm",   r: 4.5, shape: "triangle" },
+  "instrument":                   { key: "Instrument", css: "--inst", r: 6.5, shape: "hexagon" },
 };
+/* The legend swatch takes the same shape as the node it stands for. */
+const SH = { circle: "", square: "sh-form", diamond: "sh-ap", triangle: "sh-tm", hexagon: "sh-inst" };
+const swatch = (type, extra = "") =>
+  `<span class="swatch ${SH[TYPE[type].shape]}" style="background:var(${TYPE[type].css})${extra}"></span>`;
 /* `mag` is how strongly this kind of evidence binds two documents.
    A declared dependency in the RELATED PROCEDURES section is the laboratory
    stating the relationship. A shared thermometer is barely a relationship at
@@ -235,14 +415,58 @@ const ORDER = ["declared", "attached form", "mentioned", "title", "equipment"];
 const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 const nodeColor = n => colourBy === "cluster" ? clusterColor(n.id) : COLOR[TYPE[n.type].css];
 let COLOR = {};
+const DARK = matchMedia("(prefers-color-scheme: dark)");
+const UI_FONT = '"Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 const readColors = () => {
   COLOR = {};
   for (const s of Object.values(TYPE)) COLOR[s.css] = cssVar(s.css);
-  COLOR.ink = cssVar("--ink"); COLOR.bg = cssVar("--bg"); COLOR.dim = cssVar("--dim");
-  COLOR.web = cssVar("--web");
+  COLOR.ink = cssVar("--ink"); COLOR.ink2 = cssVar("--ink-2");
+  COLOR.bg = cssVar("--paper"); COLOR.dim = cssVar("--muted");
+  COLOR.web = cssVar("--web"); COLOR.accent = cssVar("--accent");
+  COLOR.mode = document.documentElement.dataset.style === "obsidian" ? "obsidian"
+             : DARK.matches ? "dark" : "light";
 };
 readColors();
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
+DARK.addEventListener("change", () => { readColors(); buildClusterList(); draw(); });
+
+/* ---------- motion ----------
+   Every moving thing on the canvas is driven by elapsed time, not by frames,
+   so it runs at the same speed on a 60 Hz and a 120 Hz screen.
+
+   Camera moves and travelling spaces use a critically damped spring (no
+   bounce, about half a second to settle). A spring keeps its velocity when it
+   is given a new target, so clicking another space mid-flight bends the move
+   towards it instead of stopping and starting again. Fades use an exponential
+   approach, which is an ease-out that can also be retargeted at any moment. */
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)");
+let reduced = !!REDUCED.matches;
+REDUCED.addEventListener("change", e => { reduced = e.matches; if (reduced) setSpin(false); });
+const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
+const SPRING_S = 0.5;                          // perceptual duration, seconds
+const OMEGA = 2 * Math.PI / SPRING_S;
+const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+/* Exact step of a critically damped spring, so a long frame cannot overshoot. */
+function springStep(x, v, target, dt) {
+  const d = x - target, c = v + OMEGA * d, e = Math.exp(-OMEGA * dt);
+  return [target + (d + c * dt) * e, (v - OMEGA * c * dt) * e];
+}
+/* Ease-out towards a target: `ms` is the time to cover about 98% of the way. */
+const approach = (cur, target, dt, ms) => {
+  const next = target + (cur - target) * Math.exp(-dt * 4000 / ms);
+  return Math.abs(next - target) < 0.004 ? target : next;
+};
+/* The strong ease-out curve, for things that run on a fixed clock. */
+const easeOut = p => 1 - Math.pow(1 - Math.min(1, Math.max(0, p)), 4);
+/* Fade an element in after its content changed. Movement is dropped when the
+   user asks for reduced motion; the fade stays, because it explains the change. */
+function fadeIn(el, ms = 180) {
+  if (!el.animate) return;
+  el.getAnimations?.().forEach(a => a.cancel());
+  el.animate(reduced
+    ? [{ opacity: 0 }, { opacity: 1 }]
+    : [{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }],
+    { duration: ms, easing: EASE_OUT });
+}
 
 const nodes = GRAPH.nodes.map(n => ({ ...n, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }));
 const byId = new Map(nodes.map(n => [n.id, n]));
@@ -339,19 +563,26 @@ const bigClusters = [...clusterSizes.entries()].filter(([, n]) => n >= 3)
   .sort((a, b) => b[1] - a[1]).map(([l]) => l);
 const clusterIndex = new Map(bigClusters.map((l, i) => [l, i]));
 const CLUSTER_HUES = [200, 140, 40, 350, 275, 175, 15, 310, 95, 240, 60, 325];
+/* Cluster colours follow the ground: soft washes on paper, deeper washes on
+   dark paper, and the original fluorescent set in Obsidian. */
+const clusterHue = i => {
+  const h = CLUSTER_HUES[i % CLUSTER_HUES.length];
+  return COLOR.mode === "obsidian" ? `hsl(${h} 62% 58%)`
+       : COLOR.mode === "dark" ? `hsl(${h} 30% 40%)` : `hsl(${h} 48% 72%)`;
+};
 const clusterColor = id => {
   const i = clusterIndex.get(cluster.get(id));
-  return i === undefined ? cssVar("--dim") : `hsl(${CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)`;
+  return i === undefined ? COLOR.dim : clusterHue(i);
 };
 
-/* ---------- state ---------- */
 const activeTypes = new Set(Object.keys(TYPE));
 const activeKinds = new Set(Object.keys(KIND));
-let showLabels = true, hideIsolated = false, flat = false, spin = true;
-let selected = null, focus = null, edgeAlpha = 0.20;
+let showLabels = true, hideIsolated = false, flat = false, spin = !reduced;
+let selected = null, focus = null, edgeAlpha = 0.24, selectedAt = 0;
+let lastSel = null, selFade = 0;   // the dimming of everything a selection is not
 let useAffinity = true, colourBy = "type";
 let shellShape = "sphere", shellR = 400, confine = true, showAxes = true;
-let style = "labelled", hovered = null;
+let style = "paper", hovered = null;
 let heldNode = null, holdDepth = 0, coastFrames = 0;
 const obs = () => style === "obsidian";
 
@@ -366,7 +597,7 @@ function buildFilters() {
     if (!n) continue;
     const el = document.createElement("label");
     el.innerHTML = `<input type="checkbox" checked>
-      <span class="swatch" style="background:var(${spec.css})"></span>${spec.key}
+      ${swatch(name)}${spec.key}
       <span class="count">${n}</span>`;
     el.querySelector("input").onchange = e => {
       e.target.checked ? activeTypes.add(name) : activeTypes.delete(name);
@@ -630,13 +861,62 @@ const AXES = [
   { v: [0, -1, 0], label: "Y", hue: 140 },
   { v: [0, 0, 1], label: "Z", hue: 215 },
 ];
+let lastDraw = 0, animating = false;
+
+/* A watercolour wash is three soft pools of one colour, a little off-centre
+   from each other, so the edge looks bled rather than drawn with a compass. */
+const WASH = [[-0.07, -0.05, 1.14, 0.22], [0.09, 0.07, 1.0, 0.18], [0.02, -0.10, 0.78, 0.14]];
+const rgba = (hex, a) => {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || "");
+  return m ? `rgba(${parseInt(m[1], 16)},${parseInt(m[2], 16)},${parseInt(m[3], 16)},${a})` : hex;
+};
+
+/* Each type has its own shape, so type is never carried by colour alone. */
+function shapePath(shape, x, y, r) {
+  ctx.beginPath();
+  if (shape === "square") { const h = r * 0.88; ctx.rect(x - h, y - h, 2 * h, 2 * h); return; }
+  if (shape === "diamond") {
+    const h = r * 1.22;
+    ctx.moveTo(x, y - h); ctx.lineTo(x + h, y); ctx.lineTo(x, y + h); ctx.lineTo(x - h, y); ctx.closePath(); return;
+  }
+  if (shape === "triangle") {
+    const h = r * 1.3;
+    ctx.moveTo(x, y - h); ctx.lineTo(x + h * 0.866, y + h * 0.5); ctx.lineTo(x - h * 0.866, y + h * 0.5);
+    ctx.closePath(); return;
+  }
+  if (shape === "hexagon") {
+    const h = r * 1.08;
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 3 * i;
+      i ? ctx.lineTo(x + h * Math.cos(a), y + h * Math.sin(a)) : ctx.moveTo(x + h, y);
+    }
+    ctx.closePath(); return;
+  }
+  ctx.arc(x, y, r, 0, 6.2832);
+}
 
 function drawShellAndAxes() {
   const p3 = (x, y, z) => project({ x, y, z });
+  const paper = !obs();
+
+  if (paper) {
+    // One space, one wash: blue with a little lavender bled into it.
+    const c = p3(0, 0, 0), R = shellR * c.k, wa = COLOR.mode === "dark" ? 1.5 : 1;
+    WASH.forEach(([ox, oy, rk, a], i) => {
+      const col = i === 1 ? COLOR["--inst"] : COLOR["--sop"];
+      const x = c.sx + ox * R, y = c.sy + oy * R, rr = Math.max(4, R * rk);
+      const g = ctx.createRadialGradient(x, y, rr * 0.1, x, y, rr);
+      g.addColorStop(0, rgba(col, a * 0.8 * wa));
+      g.addColorStop(0.65, rgba(col, a * 0.6 * wa));
+      g.addColorStop(1, rgba(col, 0));
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(x, y, rr, 0, 6.2832); ctx.fill();
+    });
+  }
 
   if (shellShape !== "none") {
-    ctx.strokeStyle = COLOR.dim;
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = paper ? COLOR.ink : COLOR.dim;
+    ctx.lineWidth = paper ? 0.8 : 1;
     for (const line of SHELL[shellShape].wire(shellR)) {
       ctx.beginPath();
       line.forEach(([x, y, z], i) => {
@@ -653,7 +933,7 @@ function drawShellAndAxes() {
   }
 
   if (showAxes) {
-    ctx.lineWidth = 1.4;
+    ctx.lineWidth = paper ? 1 : 1.4;
     for (const ax of AXES) {
       // Each shell depth() is linear in position, so the distance from the
       // origin to the surface along a unit direction is exactly 1/depth(v).
@@ -664,23 +944,37 @@ function drawShellAndAxes() {
         : 1 / SHELL[shellShape].depth(ax.v[0], ax.v[1], ax.v[2], shellR);
       const o = p3(0, 0, 0), e = p3(ax.v[0] * L, ax.v[1] * L, ax.v[2] * L);
       const n = p3(-ax.v[0] * L, -ax.v[1] * L, -ax.v[2] * L);
-      ctx.strokeStyle = `hsl(${ax.hue} 70% 58%)`;
-      ctx.globalAlpha = 0.20;
+      ctx.strokeStyle = ctx.fillStyle = paper ? COLOR.ink2 : `hsl(${ax.hue} 70% 58%)`;
+      ctx.globalAlpha = paper ? 0.14 : 0.20;
+      if (paper) ctx.setLineDash([3, 3]);
       ctx.beginPath(); ctx.moveTo(n.sx, n.sy); ctx.lineTo(o.sx, o.sy); ctx.stroke();
-      ctx.globalAlpha = 0.65;
+      ctx.setLineDash([]);
+      ctx.globalAlpha = paper ? 0.42 : 0.65;
       ctx.beginPath(); ctx.moveTo(o.sx, o.sy); ctx.lineTo(e.sx, e.sy); ctx.stroke();
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = `hsl(${ax.hue} 70% 58%)`;
-      ctx.font = "600 11px -apple-system, system-ui, sans-serif";
+      ctx.globalAlpha = paper ? 0.75 : 1;
+      ctx.font = `600 11px ${UI_FONT}`;
       ctx.textAlign = "center";
       ctx.fillText(ax.label, e.sx, e.sy - 5);
+      ctx.globalAlpha = 1;
     }
   }
 }
 
 function draw() {
+  // Fades run on elapsed time, whoever asks for the frame.
+  const t0 = now();
+  const dt = lastDraw ? Math.min(0.05, (t0 - lastDraw) / 1000) : 0;
+  lastDraw = t0;
+  animating = false;
   ctx.clearRect(0, 0, W, H);
-  const near = selected ? new Set([selected, ...nbrs.get(selected)]) : null;
+  // A selection dims everything it is not linked to. The dimming fades in
+  // (180 ms) and back out a little faster (120 ms), so the eye can follow it.
+  if (selected) lastSel = selected;
+  selFade = approach(selFade, selected ? 1 : 0, dt, selected ? 180 : 120);
+  if (selFade !== (selected ? 1 : 0)) animating = true;
+  const dimId = selected || (selFade > 0 ? lastSel : null);
+  const near = dimId ? new Set([dimId, ...nbrs.get(dimId)]) : null;
+  const dim = lit => (lit ? 1 : 1 - selFade * 0.9);
 
   drawShellAndAxes();
 
@@ -692,23 +986,25 @@ function draw() {
   const zNear = Math.min(...zs), zFar = Math.max(...zs), span = Math.max(1, zFar - zNear);
 
   ctx.shadowBlur = 0;
+  ctx.lineCap = "round";
   for (const e of VE) {
     const a = e.s.p, b = e.t.p;
     if (!a || !b) continue;
     const lit = !near || (near.has(e.source) && near.has(e.target));
+    const hot = near && lit && selFade > 0.5;
     const mid = ((a.depth + b.depth) / 2 - zNear) / span;   // 0 near, 1 far
-    // Magnitude shows twice: a stronger bond draws thicker and brighter.
+    // Magnitude shows twice: a stronger bond draws thicker and darker.
     const m = Math.min(e.mag, MAXMAG) / MAXMAG;
     if (obs()) {
       // One hue, hairline, barely there. The web reads as texture behind the
       // nodes rather than as a set of lines to be traced individually.
-      ctx.globalAlpha = (lit ? edgeAlpha * 0.85 : edgeAlpha * 0.10) * (1 - mid * 0.55);
-      ctx.strokeStyle = near && lit ? cssVar("--accent") : COLOR.web;
-      ctx.lineWidth = (near && lit ? 1.3 : 0.7) * Math.min(1.3, a.k);
+      ctx.globalAlpha = edgeAlpha * 0.85 * (lit ? 1 : 1 - selFade * 0.88) * (1 - mid * 0.55);
+      ctx.strokeStyle = hot ? COLOR.accent : COLOR.web;
+      ctx.lineWidth = (hot ? 1.3 : 0.7) * Math.min(1.3, a.k);
     } else {
-      ctx.globalAlpha = (lit ? edgeAlpha * (0.35 + 1.5 * m) : edgeAlpha * 0.12) * (1 - mid * 0.65);
-      ctx.strokeStyle = near && lit ? cssVar("--accent") : COLOR.dim;
-      ctx.lineWidth = (0.5 + 2.2 * m) * (lit && near ? 1.5 : 1) * Math.min(1.4, a.k);
+      ctx.globalAlpha = Math.min(1, edgeAlpha * (0.5 + 1.3 * m) * (lit ? 1 : 1 - selFade * 0.85) * (1 - mid * 0.6));
+      ctx.strokeStyle = hot ? COLOR.accent : COLOR.web;
+      ctx.lineWidth = (0.6 + 1.3 * m) * (hot ? 1.5 : 1) * Math.min(1.4, a.k);
     }
     if (KIND[e.kind].dash) ctx.setLineDash([5, 4]); else ctx.setLineDash([]);
     ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
@@ -718,74 +1014,99 @@ function draw() {
 
   const labels = [];
   for (const n of drawn) {
-    const p = n.p, spec = TYPE[n.type];
+    const p = n.p;
     const t = (p.depth - zNear) / span;
     const r = radiusOf(n) * p.k;
     const lit = !near || near.has(n.id);
-    ctx.globalAlpha = (lit ? 1 : 0.10) * (1 - t * 0.55);
+    const base = dim(lit) * (1 - t * 0.55);
+    ctx.globalAlpha = base;
 
     const col = nodeColor(n);
-    // The bloom is what makes a node look lit rather than painted. It grows
-    // with degree, so hubs glow and leaves stay as points.
     if (obs()) {
+      // The bloom is what makes a node look lit rather than painted. It grows
+      // with degree, so hubs glow and leaves stay as points.
       ctx.shadowColor = col;
       ctx.shadowBlur = (4 + Math.min(16, n.deg * 0.9)) * Math.min(1.6, p.k)
                        * (lit ? 1 : 0.3) * (1 - t * 0.5);
-    }
-    ctx.beginPath();
-    ctx.arc(p.sx, p.sy, Math.max(1.2, r), 0, 6.2832);
-    if (n.present === false) {
-      ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.setLineDash([2.5, 2.5]);
-      ctx.stroke(); ctx.setLineDash([]);
-    } else {
-      ctx.fillStyle = col; ctx.fill();
-      if (obs()) {
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, Math.max(1.2, r), 0, 6.2832);
+      if (n.present === false) {
+        ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.setLineDash([2.5, 2.5]);
+        ctx.stroke(); ctx.setLineDash([]);
+      } else {
+        ctx.fillStyle = col; ctx.fill();
         // A second, tighter pass so the centre reads solid through the bloom.
         ctx.shadowBlur = 0;
         ctx.beginPath(); ctx.arc(p.sx, p.sy, Math.max(0.8, r * 0.62), 0, 6.2832);
         ctx.fillStyle = "#fff"; ctx.globalAlpha *= 0.55; ctx.fill();
         ctx.globalAlpha /= 0.55;
+      }
+      ctx.shadowBlur = 0;
+    } else {
+      // Ink outline, watercolour fill, and a shape for the type.
+      shapePath(TYPE[n.type].shape, p.sx, p.sy, Math.max(1.8, r));
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = COLOR.ink;
+      ctx.lineWidth = Math.max(0.7, Math.min(1.4, 0.6 + 0.45 * p.k));
+      if (n.present === false) {
+        ctx.fillStyle = rgba(col, 0.25); ctx.fill();
+        ctx.setLineDash([2.2, 2.2]); ctx.stroke(); ctx.setLineDash([]);
       } else {
-        ctx.strokeStyle = COLOR.bg; ctx.lineWidth = 1.5 * p.k; ctx.stroke();
+        ctx.fillStyle = col; ctx.fill(); ctx.stroke();
+      }
+      if (n.id === hovered && n.id !== selected) {
+        // Hover happens dozens of times a minute: it answers at once, no motion.
+        ctx.globalAlpha = 0.5 * base;
+        ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 4, 0, 6.2832); ctx.stroke();
       }
     }
-    ctx.shadowBlur = 0;
     if (n.id === selected) {
-      ctx.strokeStyle = cssVar("--accent"); ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 5, 0, 6.2832); ctx.stroke();
+      // The ring closes in on the node and fades up: 200 ms, strong ease-out.
+      // With reduced motion it only fades.
+      const since = t0 - selectedAt;
+      const k = reduced ? 1 : easeOut(since / 200), a = easeOut(since / 160);
+      if (since < 200) animating = true;
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = COLOR.accent; ctx.lineWidth = obs() ? 2.5 : 2;
+      ctx.beginPath(); ctx.arc(p.sx, p.sy, r + 5 + 6 * (1 - k), 0, 6.2832); ctx.stroke();
     }
     /* Two ways a label appears.
 
        Standing labels are what the "Show labels" checkbox controls. The
        Obsidian style keeps them sparse - hubs only until you zoom in - so the
-       field of dots survives, but the checkbox still does something visible,
-       which it did not before.
+       field of dots survives, but the checkbox still does something visible.
+       They fade in and out as the zoom crosses the threshold or a selection
+       dims their node.
 
        On-demand labels are selection and hover. Those are an explicit request
-       for one name, so they ignore the checkbox entirely. */
-    const standing = showLabels && (obs()
+       for one name, so they ignore the checkbox entirely, and appear at once. */
+    const standing = showLabels && (!near || near.has(n.id) || !selected) && (obs()
       ? (n.deg >= 8 || zoom > 1.5 || (focus && VN.length < 40))
-      : (n.deg > 4 || (focus && VN.length < 40)));
+      : (n.deg > 4 || zoom > 1.6 || (focus && VN.length < 40)));
+    const want = standing ? 1 : 0;
+    n.la = n.la === undefined ? want : approach(n.la, want, dt, want ? 240 : 140);
+    if (n.la !== want) animating = true;
     const onDemand = n.id === selected || n.id === hovered;
-    if (lit && (standing || onDemand)) labels.push({ n, p, t, r, lead: onDemand });
+    if (onDemand || n.la * dim(lit) > 0.05) labels.push({ n, p, t, r, lead: onDemand, la: onDemand ? 1 : n.la * dim(lit) });
   }
 
   // Labels last, nearest first, so the closest text wins any overlap.
   ctx.globalAlpha = 1;
   ctx.textAlign = "center";
+  ctx.lineJoin = "round";
   const taken = [];
   // Selected and hovered names are claimed first, so a nearer standing label
   // can never push aside the one the user actually asked for.
   labels.sort((a, b) => (b.lead - a.lead) || (a.t - b.t));
   for (const L of labels) {
     const text = (L.n.title || L.n.id).slice(0, 34);
-    const size = Math.max(8, Math.min(13, 11 * L.p.k));
-    ctx.font = `${L.lead ? "600 " : ""}${size}px -apple-system, system-ui, sans-serif`;
-    const w = ctx.measureText(text).width, x = L.p.sx, y = L.p.sy - L.r - 5;
+    const size = Math.max(9, Math.min(14, 12 * L.p.k));
+    ctx.font = `${L.lead ? "700" : "500"} ${size}px ${UI_FONT}`;
+    const w = ctx.measureText(text).width, x = L.p.sx, y = L.p.sy - L.r - 6;
     if (taken.some(b => Math.abs(b.x - x) < (b.w + w) / 2 && Math.abs(b.y - y) < 12)) continue;
     taken.push({ x, y, w });
-    ctx.globalAlpha = L.lead ? 1 : 1 - L.t * 0.6;
-    ctx.lineWidth = 3; ctx.strokeStyle = COLOR.bg; ctx.strokeText(text, x, y);
+    ctx.globalAlpha = L.lead ? 1 : (1 - L.t * 0.6) * L.la;
+    ctx.lineWidth = 3.5; ctx.strokeStyle = COLOR.bg; ctx.strokeText(text, x, y);
     ctx.fillStyle = COLOR.ink; ctx.fillText(text, x, y);
   }
   ctx.globalAlpha = 1;
@@ -831,18 +1152,28 @@ function physicsFrame() {
 }
 
 /* ---------- animation ---------- */
-let raf = null;
+let raf = null, lastTick = 0, spinRate = 0;
+const SPIN = 0.096;                  // radians a second: constant, so linear
 function tick() {
+  const t = now();
+  const dt = lastTick ? Math.min(0.05, (t - lastTick) / 1000) : 1 / 60;
+  lastTick = t;
   const busy = physicsFrame();
-  if (spin && !dragging && !heldNode && !flat) yaw += 0.0016;
-  if (busy || (spin && !dragging && !heldNode && !flat)) draw();
+  const turning = spin && !dragging && !heldNode && !flat;
+  // Idle rotation is constant motion, so it is linear. It ramps up from rest
+  // over about 600 ms so it does not lurch, and stops at once when asked.
+  spinRate = turning ? approach(spinRate, SPIN, dt, 600) : 0;
+  if (turning) yaw += spinRate * dt;
+  if (busy || turning || animating) draw();
   raf = requestAnimationFrame(tick);
 }
 
 /* ---------- interaction ---------- */
 let dragging = false, last = null, moved = 0;
 
-canvas.addEventListener("mousedown", ev => {
+/* Pointer events, so a finger rotates and drags just as a mouse does. */
+canvas.addEventListener("pointerdown", ev => {
+  if (dragging || heldNode) return;    // a second finger does not take over
   moved = 0;
   const hit = ev.shiftKey ? null : pick(ev);
   if (hit) {
@@ -856,18 +1187,18 @@ canvas.addEventListener("mousedown", ev => {
     return;
   }
   dragging = true;
-  last = { x: ev.clientX, y: ev.clientY, shift: ev.shiftKey };
+  last = { x: ev.clientX, y: ev.clientY, shift: ev.shiftKey, id: ev.pointerId };
   canvas.classList.add("grabbing");
 });
-canvas.addEventListener("mousemove", ev => {
-  if (dragging || heldNode) return;
+canvas.addEventListener("pointermove", ev => {
+  if (dragging || heldNode || ev.pointerType === "touch") return;
   const h = pick(ev);
   const id = h ? h.id : null;
   if (id !== hovered) { hovered = id; canvas.style.cursor = id ? "pointer" : "grab"; draw(); }
 });
-canvas.addEventListener("mouseleave", () => { if (hovered) { hovered = null; draw(); } });
+canvas.addEventListener("pointerleave", () => { if (hovered) { hovered = null; draw(); } });
 
-window.addEventListener("mousemove", ev => {
+window.addEventListener("pointermove", ev => {
   if (heldNode) {
     moved += 6;
     const b = canvas.getBoundingClientRect();
@@ -876,7 +1207,7 @@ window.addEventListener("mousemove", ev => {
     heldNode.vx = heldNode.vy = heldNode.vz = 0;
     return;                       // the physics frame redraws
   }
-  if (!dragging) return;
+  if (!dragging || ev.pointerId !== last.id) return;
   const dx = ev.clientX - last.x, dy = ev.clientY - last.y;
   moved += Math.abs(dx) + Math.abs(dy);
   if (last.shift) { panX += dx; panY += dy; }
@@ -887,11 +1218,13 @@ window.addEventListener("mousemove", ev => {
   last.x = ev.clientX; last.y = ev.clientY;
   draw();
 });
-window.addEventListener("mouseup", () => {
+const release = () => {
   if (heldNode) { heldNode = null; coastFrames = 45; canvas.style.cursor = "grab"; }
   dragging = false;
   canvas.classList.remove("grabbing");
-});
+};
+window.addEventListener("pointerup", release);
+window.addEventListener("pointercancel", release);
 
 canvas.addEventListener("wheel", ev => {
   ev.preventDefault();
@@ -924,6 +1257,7 @@ function setSpin(on) {
   spinBox.checked = on;
   playBtn.innerHTML = on ? PAUSE : PLAY;
   playBtn.title = on ? "Pause rotation (space)" : "Resume rotation (space)";
+  playBtn.setAttribute && playBtn.setAttribute("aria-label", on ? "Pause rotation" : "Resume rotation");
 }
 
 canvas.addEventListener("click", ev => {
@@ -936,7 +1270,13 @@ canvas.addEventListener("click", ev => {
 });
 playBtn.onclick = () => setSpin(!spin);
 window.addEventListener("keydown", ev => {
-  if (ev.code === "Space" && ev.target.tagName !== "INPUT") { ev.preventDefault(); setSpin(!spin); }
+  if (ev.target.tagName === "INPUT") return;
+  if (ev.code === "Space" && ev.target.tagName !== "BUTTON") { ev.preventDefault(); setSpin(!spin); }
+  if (ev.code === "Escape") {
+    if (!lab.classList.contains("closed")) { lab.classList.add("closed"); return; }
+    if (document.body.classList.contains("nav-open")) { document.body.classList.remove("nav-open"); return; }
+    select(null);
+  }
 });
 canvas.addEventListener("dblclick", ev => {
   const n = pick(ev);
@@ -945,12 +1285,24 @@ canvas.addEventListener("dblclick", ev => {
 });
 
 /* ---------- detail panel ---------- */
+const EMPTY = `<svg viewBox="0 0 64 64" aria-hidden="true">
+    <circle cx="32" cy="32" r="24" fill="var(--w-blue)" opacity=".5"/>
+    <path class="ink" d="M18 40l14-16 14 10M32 24v-6"/>
+    <circle class="ink" cx="18" cy="40" r="4.5" fill="var(--sop)"/>
+    <rect class="ink" x="28" y="20" width="8" height="8" fill="var(--form)"/>
+    <path class="ink" d="M46 28.5l5.5 5.5-5.5 5.5-5.5-5.5z" fill="var(--ap)"/>
+    <circle class="ink faint" cx="32" cy="15" r="3"/></svg>Select a node.`;
+
 function select(id) {
+  const changed = id !== selected;
+  if (changed) selectedAt = now();
   selected = id;
   if (id) setSpin(false);   // reading beats spinning, whichever route you came by
+  document.body && document.body.classList.toggle("has-sel", !!id);
+  if (id && document.body) document.body.classList.remove("nav-open");
   draw();
   const el = document.getElementById("detail");
-  if (!id) { el.className = "empty"; el.textContent = "Select a node."; return; }
+  if (!id) { el.className = "empty"; el.innerHTML = EMPTY; return; }
   const n = byId.get(id), spec = TYPE[n.type];
   const mine = edges.filter(e => e.source === id || e.target === id)
     .map(e => ({ other: byId.get(e.source === id ? e.target : e.source),
@@ -959,7 +1311,7 @@ function select(id) {
 
   el.className = "detail";
   el.innerHTML = `
-    <span class="pill" style="background:var(${spec.css});color:#fff">${spec.key}</span>
+    <span class="pill" style="background:var(${spec.css})">${spec.key}</span>
     <h3>${n.title || n.id}</h3>
     <div class="id">${n.id}${n.revision ? " rev " + n.revision : ""}</div>
     ${n.present === false ? `<div class="warn"><b>Not in any folder.</b>
@@ -970,13 +1322,16 @@ function select(id) {
       <div><dt>Revision</dt><dd>${n.revision || "—"}</dd></div>
       <div><dt>Links</dt><dd>${mine.length}</dd></div>
     </div>
-    <button class="primary" id="openbtn">Open in Word</button>` : ""}
-    <h2>Connected to ${mine.length}</h2>
+    <button class="wash-blue" id="openbtn">Open in Word</button>` : ""}
+    <h2><span class="badge b-blue">${String(mine.length).padStart(2, "0")}</span>Connected</h2>
     ${mine.map(m => `<div class="nb" data-go="${m.other.id}">
-      <span class="swatch" style="background:var(${TYPE[m.other.type].css})"></span>
+      ${swatch(m.other.type)}
       <span>${m.other.title || m.other.id}</span>
-      <small>${"\u25CF".repeat(Math.max(1, Math.round(m.mag)))} ${m.kinds.join(", ")}</small>
+      <small>${m.kinds.join(", ")}</small>
       </div>`).join("") || '<div class="sub">Nothing.</div>'}`;
+
+  // New content fades up into place: 180 ms, strong ease-out.
+  if (changed) { fadeIn(el); el.parentNode && (el.parentNode.scrollTop = 0); }
 
   el.querySelectorAll("[data-go]").forEach(d => d.onclick = () => select(d.dataset.go));
   const btn = el.querySelector("#openbtn");
@@ -1030,8 +1385,15 @@ document.getElementById("onlyLinked").onchange = e => { hideIsolated = e.target.
 document.getElementById("alpha").oninput   = e => { edgeAlpha = e.target.value / 100; draw(); };
 document.getElementById("affinity").onchange = e => { useAffinity = e.target.checked; resolve(); };
 
+/* The test controls are a popover: CSS transitions carry it in and out, so a
+   second click mid-animation reverses it from where it is. */
 const lab = document.getElementById("lab");
-document.getElementById("labToggle").onclick = () => lab.classList.toggle("collapsed");
+document.getElementById("labToggle").onclick = () => lab.classList.toggle("closed");
+document.getElementById("labClose").onclick = () => lab.classList.add("closed");
+/* Phone: the filters drawer and the detail sheet. */
+document.getElementById("navBtn").onclick = () => document.body.classList.toggle("nav-open");
+document.getElementById("scrim").onclick = () => document.body.classList.remove("nav-open");
+document.getElementById("sheetClose").onclick = () => select(null);
 document.getElementById("shellSeg").onclick = ev => {
   const b = ev.target.closest("[data-shell]");
   if (!b) return;
@@ -1039,7 +1401,11 @@ document.getElementById("shellSeg").onclick = ev => {
   [...b.parentNode.children].forEach(x => x.classList.toggle("on", x === b));
   resolve();
 };
-document.getElementById("shellSize").oninput = e => { shellR = +e.target.value; resolve(240); };
+document.getElementById("shellSize").oninput = e => {
+  shellR = +e.target.value;
+  document.getElementById("shellSizeVal").textContent = e.target.value;
+  resolve(240);
+};
 document.getElementById("styleSeg").onclick = ev => {
   const b = ev.target.closest("[data-style]");
   if (!b) return;
@@ -1047,9 +1413,10 @@ document.getElementById("styleSeg").onclick = ev => {
   [...b.parentNode.children].forEach(x => x.classList.toggle("on", x === b));
   document.documentElement.dataset.style = style;
   readColors();
-  // Obsidian's web only reads at low opacity; the labelled style needs more.
+  buildClusterList();
+  // Obsidian's web only reads at low opacity; ink on paper needs more.
   const a = document.getElementById("alpha");
-  a.value = obs() ? 14 : 20;
+  a.value = obs() ? 14 : 24;
   edgeAlpha = a.value / 100;
   resolve();   // the spring rules changed, so the layout must be re-solved
 };
@@ -1066,9 +1433,8 @@ function buildClusterList() {
     const lead = members.slice().sort((a, b) => b.deg - a.deg)[0];
     const i = clusterIndex.get(lab);
     return `<div class="hit" data-go="${lead.id}" title="${members.length} documents">
-      <b style="font-size:12px"><span class="swatch" style="display:inline-block;background:hsl(${
-        CLUSTER_HUES[i % CLUSTER_HUES.length]} 62% 58%)"></span> ${
-        (lead.title || lead.id).slice(0, 26)}</b>
+      <b style="font-size:13px"><span class="swatch" style="display:inline-block;background:${
+        clusterHue(i)}"></span> ${(lead.title || lead.id).slice(0, 26)}</b>
       <span>${members.length} documents</span></div>`;
   }).join("");
   box.querySelectorAll("[data-go]").forEach(d => d.onclick = () => select(d.dataset.go));
@@ -1082,11 +1448,13 @@ document.getElementById("reset").onclick = () => {
 buildFilters();
 buildClusterList();
 setSpin(spin);
+// The web fonts are optional. When they arrive, the canvas text is redrawn in them.
+document.fonts && document.fonts.ready.then(() => draw());
 window.addEventListener("resize", () => { resize(); draw(); });
 resize();
 recompute();
 layout(700, null);
-draw();
+select(null);
 tick();
 </script>
 </body>

@@ -20,10 +20,14 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 graph = json.loads((ROOT / "graph.json").read_text())
 
-# Absolute paths so a click can open the real document in Word.
+# Absolute paths so a click can open the real document in Word. A path is
+# written only when the document is on this machine, so a build made from the
+# public repository (which has no documents) carries no local path at all.
 for node in graph["nodes"]:
     if node.get("folder") and node.get("file"):
-        node["path"] = str(Path(node["folder"]).resolve() / node["file"])
+        doc = (ROOT / node["folder"]).resolve() / node["file"]
+        if doc.is_file():
+            node["path"] = str(doc)
 
 BUILDS = [
     ("viewer_template.html", "viewer.html"),
